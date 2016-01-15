@@ -19,10 +19,10 @@ namespace Assets.Scripts.Util
                 PlaySong(0);
             if (dontDestroy)
                 DontDestroyOnLoad(this.gameObject);
-            //if (SFX)
-            //    audio.volume = Managers.GameManager.SFXVol;
-            //else
-            //    audio.volume = Managers.GameManager.MusicVol;
+            if (SFX)
+                audio.volume = Managers.GameManager.SFXVol;
+            else
+                audio.volume = Managers.GameManager.MusicVol;
         }
 
         void Update()

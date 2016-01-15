@@ -9,7 +9,7 @@ namespace Assets.Scripts.Util
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput
         {
-            Up, Down, Left, Right, Pause, Accept, Cancel, Attack
+            Up, Down, Left, Right, LookUp, LookDown, LookLeft, LookRight, Pause, Accept, Cancel, Attack
         }
 
         /// <summary> The file to save the bindings to. </summary>
@@ -24,6 +24,10 @@ namespace Assets.Scripts.Util
             rawSign[(int)UserInput.Down] = -1;
             rawSign[(int)UserInput.Left] = -1;
             rawSign[(int)UserInput.Right] = 1;
+            rawSign[(int)UserInput.LookUp] = 1;
+            rawSign[(int)UserInput.LookDown] = -1;
+            rawSign[(int)UserInput.LookLeft] = -1;
+            rawSign[(int)UserInput.LookRight] = 1;
             rawSign[(int)UserInput.Pause] = 1;
             rawSign[(int)UserInput.Accept] = 1;
             rawSign[(int)UserInput.Cancel] = 1;
@@ -39,15 +43,14 @@ namespace Assets.Scripts.Util
         {
             if (keyboard == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-
             keyboard[(int)UserInput.Up, 0] = KeyCode.W;
             keyboard[(int)UserInput.Down, 0] = KeyCode.S;
             keyboard[(int)UserInput.Left, 0] = KeyCode.A;
             keyboard[(int)UserInput.Right, 0] = KeyCode.D;
             keyboard[(int)UserInput.Pause, 0] = KeyCode.Escape;
-            keyboard[(int)UserInput.Accept, 0] = KeyCode.K;
-            keyboard[(int)UserInput.Cancel, 0] = KeyCode.J;
-            keyboard[(int)UserInput.Attack, 0] = KeyCode.K;
+            keyboard[(int)UserInput.Accept, 0] = KeyCode.KeypadEnter;
+            keyboard[(int)UserInput.Cancel, 0] = KeyCode.Backspace;
+            keyboard[(int)UserInput.Attack, 0] = KeyCode.Mouse0;
         }
 
         /// <summary> 
@@ -59,25 +62,38 @@ namespace Assets.Scripts.Util
         {
             if (gamepad == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-
-            gamepad[(int)UserInput.Up, 0] = DPAD_UP;
-            gamepad[(int)UserInput.Down, 0] = DPAD_DOWN;
-            gamepad[(int)UserInput.Left, 0] = DPAD_LEFT;
-            gamepad[(int)UserInput.Right, 0] = DPAD_RIGHT;
+            gamepad[(int)UserInput.Up, 0] = LEFT_STICK_UP;
+            gamepad[(int)UserInput.Down, 0] = LEFT_STICK_DOWN;
+            gamepad[(int)UserInput.Left, 0] = LEFT_STICK_LEFT;
+            gamepad[(int)UserInput.Right, 0] = LEFT_STICK_RIGHT;
+            gamepad[(int)UserInput.LookUp, 0] = RIGHT_STICK_UP;
+            gamepad[(int)UserInput.LookDown, 0] = RIGHT_STICK_DOWN;
+            gamepad[(int)UserInput.LookLeft, 0] = RIGHT_STICK_LEFT;
+            gamepad[(int)UserInput.LookRight, 0] = RIGHT_STICK_RIGHT;
             gamepad[(int)UserInput.Pause, 0] = START;
             gamepad[(int)UserInput.Accept, 0] = A;
             gamepad[(int)UserInput.Cancel, 0] = B;
-            gamepad[(int)UserInput.Attack, 0] = A;
+            gamepad[(int)UserInput.Attack, 0] = RIGHT_TRIGGER;
         }
 
         /// <summary> Bool for whether or not Keyboard is disabled. </summary>
         private static bool usingKeyboard = true;
 
         /// <summary> Disables Keyboard input. </summary>
-        public static  bool UsingKeyboard
+        public static bool UsingKeyboard
         {
             get { return usingKeyboard; }
             set { usingKeyboard = value; }
+        }
+
+        public static float MouseX
+        {
+            get { return Input.mousePosition.x;}
+        }
+
+        public static float MouseY
+        {
+            get { return Input.mousePosition.y; }
         }
 
         // NOTE: Modification of the code below this should be unecessary.
@@ -496,7 +512,9 @@ namespace Assets.Scripts.Util
             XmlElement root = bindings.CreateElement("Controls");
             bindings.InsertAfter(root, bindings.DocumentElement);
             element = bindings.CreateElement("UsingKeyBoard");
-            element.Value = usingKeyboard.ToString();
+            node = bindings.CreateTextNode("UsingKeyBoard");
+            node.Value = usingKeyboard.ToString();
+            element.AppendChild(node);
             root.AppendChild(element);
             for (int p = 0; p < 7; p++)
             {

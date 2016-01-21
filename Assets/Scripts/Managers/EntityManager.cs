@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Util;
 
 namespace Assets.Scripts.Managers
 {
@@ -17,17 +18,13 @@ namespace Assets.Scripts.Managers
         private int[] entityCounts;
 
         /// <summary> internal struct to keep track of Entities. </summary>
-        protected struct EntityData { public bool active; public float lifeTime; public Entity entity; }
-
-        /// <summary> Number of active entities. </summary>
-        protected int activeEntityCount;
+        protected struct EntityData { public bool active; public Entity entity; }
 
         /// <summary> Data structure that holds all entities that this GameObject manages. </summary>
         protected EntityData[][] entities;
 
         void Start()
         {
-            activeEntityCount = 0;
             //use raged array due to possible uneven counts. 
             entities = new EntityData[entityPrefabs.Length][];
             for (int i = 0; i < entityPrefabs.Length; i++)
@@ -36,41 +33,53 @@ namespace Assets.Scripts.Managers
                 for(int j = 0; j < entityCounts[i]; j++)
                 {
                     entities[i][j].active = false;
-                    entities[i][j].lifeTime = 0f;
                     entities[i][j].entity = Instantiate(entityPrefabs[i]);
                     entities[i][j].entity.transform.position = INIT_OBJECT_SPAWN;
+                    entities[i][j].entity.gameObject.SetActive(false);
                 }
             }
         }
-        
-        void Update()
+
+        /// <summary> Readys an entity if one is available. </summary>
+        /// <param name="type"> The type of entity to aquire. </param>
+        /// <param name="loc"> The location to spawn the entity in. </param>
+        /// <param name="direction"> The direction the entity should initially face. </param>
+        /// <returns> True if an entity was able to be readied. </returns>
+        protected bool AquireEntity(int type, Transform loc, Enums.Direction direction) 
         {
-            if(GameManager.IsRunning && activeEntityCount > 0)
+            if (type >= entities.Length || type < 0)
+                throw new System.IndexOutOfRangeException("Invalid Entity Type. ");
+            for(int i = 0; i < entities[type].Length; i++)
             {
-                for (int i = 0; i < entities.Length; i++)
+                if(!entities[type][i].active)
                 {
-                    for (int j = 0; j < entities[i].Length; j++)
-                    {
-                        if (entities[i][j].active)
-                        {
-                            entities[i][j].lifeTime += Time.deltaTime;
-                            entities[i][j].entity.Update(entities[i][j].lifeTime);
-                            if(entities[i][j].entity.isDead)
-                            {
-                                entities[i][j].active = false;
-                                entities[i][j].lifeTime = 0f;
-                                entities[i][j].entity.transform.position = INIT_OBJECT_SPAWN;
-                                activeEntityCount--;
-                            }
-                        }
-                    }
+                    entities[type][i].active = true;
+                    entities[type][i].entity.Init(loc, this, type, i, direction);
+                    entities[type][i].entity.gameObject.SetActive(true);
+                    return true;
                 }
             }
+            return false;
         }
 
-        protected bool AquireEntity(Transform loc, int type)
+        /// <summary> Releases the given entity if it is active. </summary>
+        /// <param name="type"> The type of entity to release. </param>
+        /// <param name="instance"> The specific instance to release. </param>
+        /// <returns> True if an entity was able to be released. </returns>
+        public virtual bool ReleaseEntity(int type, int instance)
         {
-
+            if (type >= entities.Length || type < 0)
+                throw new System.IndexOutOfRangeException("Invalid Entity Type. ");
+            if (instance >= entities[type].Length || instance < 0)
+                throw new System.IndexOutOfRangeException("Invalid Entity instance. ");
+            if(entities[type][instance].active)
+            {
+                entities[type][instance].active = false;
+                entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
+                entities[type][instance].entity.gameObject.SetActive(false);
+                return true;
+            }
+            return false;
         }
     }
 }

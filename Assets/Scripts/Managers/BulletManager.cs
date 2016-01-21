@@ -5,9 +5,16 @@ namespace Assets.Scripts.Managers
 {
     public class BulletManager : EntityManager
     {
-        public bool Shoot(Transform loc, Enums.BulletTypes type)
+        public bool Shoot(Enums.BulletTypes type, Transform loc, Enums.Direction direction)
         {
-            return AquireEntity(loc, (int)type);
+            try {
+                return AquireEntity((int)type, loc, direction);
+            }
+            catch(System.IndexOutOfRangeException ex)
+            {
+                Debug.LogError("Error: Invalid Bullet Type. : " + ex.Message);
+                return false;
+            }
         }
     }
 }

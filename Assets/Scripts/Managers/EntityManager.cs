@@ -18,7 +18,7 @@ namespace Assets.Scripts.Managers
         private int[] entityCounts;
 
         /// <summary> internal struct to keep track of Entities. </summary>
-        protected struct EntityData { public bool active; public Entity entity; }
+        protected struct EntityData { public bool active; public Entity entity; public Callback callback; }
 
         /// <summary> Data structure that holds all entities that this GameObject manages. </summary>
         protected EntityData[][] entities;
@@ -36,6 +36,7 @@ namespace Assets.Scripts.Managers
                     entities[i][j].entity = Instantiate(entityPrefabs[i]);
                     entities[i][j].entity.transform.position = INIT_OBJECT_SPAWN;
                     entities[i][j].entity.gameObject.SetActive(false);
+                    entities[i][j].callback = null;
                 }
             }
         }
@@ -44,8 +45,9 @@ namespace Assets.Scripts.Managers
         /// <param name="type"> The type of entity to aquire. </param>
         /// <param name="loc"> The location to spawn the entity in. </param>
         /// <param name="direction"> The direction the entity should initially face. </param>
+        /// <param name="callback"> The object to send a message to upon the aquired entites death. </param>
         /// <returns> True if an entity was able to be readied. </returns>
-        protected bool AquireEntity(int type, Transform loc, Enums.Direction direction) 
+        protected bool AquireEntity(int type, Transform loc, Enums.Direction direction, Callback callback = null) 
         {
             if (type >= entities.Length || type < 0)
                 throw new System.IndexOutOfRangeException("Invalid Entity Type. ");
@@ -56,13 +58,14 @@ namespace Assets.Scripts.Managers
                     entities[type][i].active = true;
                     entities[type][i].entity.Init(loc, this, type, i, direction);
                     entities[type][i].entity.gameObject.SetActive(true);
+                    entities[type][i].callback = callback;
                     return true;
                 }
             }
             return false;
         }
 
-        /// <summary> Releases the given entity if it is active. </summary>
+        /// <summary> Releases the given entity if it is active and sends a message to the callback if one was given. </summary>
         /// <param name="type"> The type of entity to release. </param>
         /// <param name="instance"> The specific instance to release. </param>
         /// <returns> True if an entity was able to be released. </returns>
@@ -77,6 +80,11 @@ namespace Assets.Scripts.Managers
                 entities[type][instance].active = false;
                 entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
                 entities[type][instance].entity.gameObject.SetActive(false);
+                if(entities[type][instance].callback != null)
+                {
+                    entities[type][instance].callback.entityDied(entities[type][instance].entity);
+                    entities[type][instance].callback = null;
+                }
                 return true;
             }
             return false;

@@ -7,5 +7,6 @@ namespace Assets.Scripts.Util
         public enum PlayerState { Idle = 0, Moving, Hit, Dead, Attack, Jump };
         public enum GameStates { Running, CutScene, Paused };
         public enum BulletTypes { Player = 0, Enemy };
+        public enum EnemiesLevel01 { Walkers, Flyers };
     }
 }

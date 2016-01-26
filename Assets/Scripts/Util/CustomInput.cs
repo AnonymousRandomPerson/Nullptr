@@ -6,10 +6,14 @@ namespace Assets.Scripts.Util
     /// <summary> Wraps Keyboard and Gamepad inputs into one set of booleans and raw float data. </summary>
     public class CustomInput : MonoBehaviour
     {
+
+        [SerializeField]
+        private bool UseConfigFile;
+
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput
         {
-            Up, Down, Left, Right, LookUp, LookDown, LookLeft, LookRight, Pause, Accept, Cancel, Attack
+            Up, Down, Left, Right, LookUp, LookDown, LookLeft, LookRight, Pause, Accept, Cancel, Attack, Jump
         }
 
         /// <summary> The file to save the bindings to. </summary>
@@ -32,6 +36,7 @@ namespace Assets.Scripts.Util
             rawSign[(int)UserInput.Accept] = 1;
             rawSign[(int)UserInput.Cancel] = 1;
             rawSign[(int)UserInput.Attack] = 1;
+            rawSign[(int)UserInput.Jump] = 1;
         }
 
         /// <summary> 
@@ -51,6 +56,7 @@ namespace Assets.Scripts.Util
             keyboard[(int)UserInput.Accept, 0] = KeyCode.KeypadEnter;
             keyboard[(int)UserInput.Cancel, 0] = KeyCode.Backspace;
             keyboard[(int)UserInput.Attack, 0] = KeyCode.Mouse0;
+            keyboard[(int)UserInput.Jump, 0] = KeyCode.Space;
         }
 
         /// <summary> 
@@ -73,11 +79,12 @@ namespace Assets.Scripts.Util
             gamepad[(int)UserInput.Pause, 0] = START;
             gamepad[(int)UserInput.Accept, 0] = A;
             gamepad[(int)UserInput.Cancel, 0] = B;
-            gamepad[(int)UserInput.Attack, 0] = RIGHT_TRIGGER;
+            gamepad[(int)UserInput.Attack, 0] = RB;
+            gamepad[(int)UserInput.Jump, 0] = LB;
         }
 
         /// <summary> Bool for whether or not Keyboard is disabled. </summary>
-        private static bool usingKeyboard = true;
+        private static bool usingKeyboard = false;
 
         /// <summary> Disables Keyboard input. </summary>
         public static bool UsingKeyboard
@@ -446,7 +453,7 @@ namespace Assets.Scripts.Util
 
             RawSign();
 
-            if (FileExists())
+            if (UseConfigFile && FileExists())
                 Load();
             else
             {

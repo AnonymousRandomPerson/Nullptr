@@ -42,7 +42,6 @@ namespace Assets.Scripts.Managers
         {
             transform.position = loc.position;
             transform.localRotation = loc.rotation;
-            transform.localScale = loc.localScale;
             this.manager = manager;
             this.type = type;
             this.instance = instance;

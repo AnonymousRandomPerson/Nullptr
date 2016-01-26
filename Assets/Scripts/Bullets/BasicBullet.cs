@@ -33,19 +33,19 @@ namespace Assets.Scripts.Bullets
             {
                 case Enums.Direction.Up:
                     transform.Translate(transform.up * speed * Time.deltaTime);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, transform.up, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.Raycast(rayCastPoint.position, Vector2.up, raycastLenght, ~rayCastLayer));
                     break;
                 case Enums.Direction.Down:
                     transform.Translate(-transform.up * speed * Time.deltaTime);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, -transform.up, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.Raycast(rayCastPoint.position, -Vector2.up, raycastLenght, ~rayCastLayer));
                     break;
                 case Enums.Direction.Left:
                     transform.Translate(-transform.right * speed * Time.deltaTime);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, -transform.right, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.Raycast(rayCastPoint.position, -Vector2.right, raycastLenght, ~rayCastLayer));
                     break;
                 case Enums.Direction.Right:
-                    transform.Translate(transform.right * speed * Time.deltaTime);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, transform.right, raycastLenght, ~rayCastLayer));
+                    transform.Translate(Vector2.right * speed * Time.deltaTime);
+                    hit = (Physics2D.Raycast(rayCastPoint.position, Vector2.right, raycastLenght, ~rayCastLayer));
                     break;
                 default:
                     hit = (Physics2D.Raycast(rayCastPoint.position, transform.right, raycastLenght, ~rayCastLayer));

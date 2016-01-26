@@ -66,7 +66,10 @@ namespace Assets.Scripts.Enemy
                 Render(true);
             }
             if (currentHealth < 0)
+            {
+                Render(true);
                 Die();
+            }
         }
 
         public override void HitByEntity(Entity col)

@@ -6,6 +6,11 @@ namespace Assets.Scripts.UI
     {
         public GameObject fakeTitle, Error, StartButton;
 
+        void Start()
+        {
+            Managers.GameManager.Intro();
+        }
+
         public void FakePlay()
         {
             Error.SetActive(true);

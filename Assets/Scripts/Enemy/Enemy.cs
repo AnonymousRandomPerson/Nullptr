@@ -65,7 +65,7 @@ namespace Assets.Scripts.Enemy
                 render = true;
                 Render(true);
             }
-            if (currentHealth < 0)
+            if (currentHealth <= 0)
             {
                 Render(true);
                 Die();
@@ -87,7 +87,7 @@ namespace Assets.Scripts.Enemy
 
         void OnCollisionEnter2D(Collision2D coll)
         {
-            if (!GameManager.IsRunning)
+            if (GameManager.IsRunning)
             {
                 if (coll.gameObject.tag == "Enemy")
                     Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), coll.gameObject.GetComponent<Collider2D>());

@@ -93,8 +93,8 @@ namespace Assets.Scripts.Player
                 render = true;
                 Render(true);
             }
-            if (currentHealth < 0)
-                Die();
+            //if (currentHealth < 0)
+            //    Die();
             bool inAir = false, blocked= false;
             TouchingSomething(ref inAir, ref blocked);
             Move(ref inAir);
@@ -203,7 +203,7 @@ namespace Assets.Scripts.Player
 
         void OnCollisionEnter2D(Collision2D coll)
         {
-            if (!GameManager.IsRunning)
+            if (GameManager.IsRunning)
             {
                 if (coll.gameObject.tag == "Enemy")
                     hit = true;

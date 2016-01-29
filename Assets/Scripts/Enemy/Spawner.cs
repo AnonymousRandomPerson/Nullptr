@@ -27,6 +27,9 @@ namespace Assets.Scripts.Enemy
         /// <summary> Direction to send enemies in. </summary>
         [SerializeField]
         private Enums.Direction direction;
+        /// <summary> If true the spawner will continue spawning things forever. </summary>
+        [SerializeField]
+        private bool spawnInfinitely;
 
         /// <summary> Reference to EnemyManager to spawn things. </summary>
         private EnemyManager manager;
@@ -50,7 +53,7 @@ namespace Assets.Scripts.Enemy
 
         void Update()
         {
-            if(GameManager.IsRunning && (target.transform.position.x > leftBound.position.x && target.transform.position.x < rightBound.position.x))
+            if(currentEnemy < enemiesToSpawn.Length && GameManager.IsRunning && (target.transform.position.x > leftBound.position.x && target.transform.position.x < rightBound.position.x))
             {
                 if(numOfEnemies < enemiesToSpawn.Length && (timeWaited += Time.deltaTime) > SpawnWaitTime)
                 {
@@ -59,7 +62,7 @@ namespace Assets.Scripts.Enemy
                     {
                         numOfEnemies++;
                         currentEnemy++;
-                        if (currentEnemy >= enemiesToSpawn.Length)
+                        if (spawnInfinitely && currentEnemy >= enemiesToSpawn.Length)
                             currentEnemy = 0;
                     }
                     else

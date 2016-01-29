@@ -8,8 +8,14 @@ namespace Assets.Scripts.Enemy.Enemies
         [SerializeField]
         private float speed;
         [SerializeField]
-        private float range;
+        private float wait;
+        [SerializeField]
+        private Transform barrel;
+        [SerializeField]
+        private float LifeTime;
 
+        private float currWait;
+        private float currLifeTime;
         private GameObject player;
         private Managers.BulletManager bulletManager;
 
@@ -18,14 +24,22 @@ namespace Assets.Scripts.Enemy.Enemies
             base.InitData();
             player = FindObjectOfType<Player.Player>().gameObject;
             bulletManager = FindObjectOfType<Managers.BulletManager>();
+            currWait = 0;
+            currLifeTime = 0;
         }
 
         public override void RunEntity()
         {
             base.RunEntity();
             transform.Translate(GetForward() * speed * Time.deltaTime);
-            //if(Vector3.Distance(this.transform.position, player.transform.position) < range)
-            //    bulletManager.Shoot(Enums.BulletTypes.Enemy, barrel, Enums.Direction.Right);
+            if ((currWait += Time.deltaTime) > wait)
+            {
+                bulletManager.Shoot(Enums.BulletTypes.Enemy, barrel, Enums.Direction.Down);
+                currWait = 0;
+            }
+            currLifeTime+= Time.deltaTime;
+            if (currLifeTime > LifeTime)
+                Die();
         }
     }
 }

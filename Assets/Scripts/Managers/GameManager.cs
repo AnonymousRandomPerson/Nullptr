@@ -17,8 +17,8 @@ namespace Assets.Scripts.Managers
             {
                 DontDestroyOnLoad(this.gameObject);
                 instance = this;
-                state = Enums.GameStates.Intro;
-                prevState = Enums.GameStates.Intro;
+                state = Enums.GameStates.Running;
+                prevState = Enums.GameStates.Running;
                 musicVol = .5f;
                 sfxVol = .5f;
             }
@@ -32,6 +32,12 @@ namespace Assets.Scripts.Managers
         {
             prevState = state;
             state = Enums.GameStates.Running;
+        }
+
+        public static void Intro()
+        {
+            prevState = state;
+            state = Enums.GameStates.Intro;
         }
 
         public static Enums.GameStates State

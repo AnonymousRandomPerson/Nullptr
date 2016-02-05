@@ -7,10 +7,24 @@ namespace Assets.Scripts.Managers
     {
         [SerializeField]
         private Transform spawnPoint;
+
+        private Player.Player player;
              
-        void Start()
+        public override void Start()
         {
-            AquireEntity(0, spawnPoint, Enums.Direction.Right);
+            if (player == null)
+            {
+                base.Start();
+                AquireEntity(0, spawnPoint, Enums.Direction.Right);
+                player = FindObjectOfType<Player.Player>();
+            }
+        }
+
+        public Player.Player GetPlayer()
+        {
+            if (player == null)
+                Start();
+            return player;
         }
     }
 }

@@ -20,17 +20,26 @@ namespace Assets.Scripts.Managers
         /// <summary> internal struct to keep track of Entities. </summary>
         protected struct EntityData { public bool active; public Entity entity; public Callback callback; }
 
+        private bool inited = false;
+
         /// <summary> Data structure that holds all entities that this GameObject manages. </summary>
         protected EntityData[][] entities;
 
-        void Start()
+        public virtual void Start()
         {
+            if (!inited)
+                Init();
+        }
+
+        protected void Init()
+        {
+            inited = true;
             //use raged array due to possible uneven counts. 
             entities = new EntityData[entityPrefabs.Length][];
             for (int i = 0; i < entityPrefabs.Length; i++)
             {
                 entities[i] = new EntityData[entityCounts[i]];
-                for(int j = 0; j < entityCounts[i]; j++)
+                for (int j = 0; j < entityCounts[i]; j++)
                 {
                     entities[i][j].active = false;
                     entities[i][j].entity = Instantiate(entityPrefabs[i]);
@@ -40,6 +49,7 @@ namespace Assets.Scripts.Managers
                 }
             }
         }
+
 
         /// <summary> Readys an entity if one is available. </summary>
         /// <param name="type"> The type of entity to aquire. </param>
@@ -77,7 +87,6 @@ namespace Assets.Scripts.Managers
                 throw new System.IndexOutOfRangeException("Invalid Entity instance. ");
             if(entities[type][instance].active)
             {
-                entities[type][instance].active = false;
                 entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
                 entities[type][instance].entity.gameObject.SetActive(false);
                 if(entities[type][instance].callback != null)
@@ -85,6 +94,7 @@ namespace Assets.Scripts.Managers
                     entities[type][instance].callback.entityDied(entities[type][instance].entity);
                     entities[type][instance].callback = null;
                 }
+                entities[type][instance].active = false;
                 return true;
             }
             return false;

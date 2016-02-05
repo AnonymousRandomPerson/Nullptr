@@ -6,9 +6,6 @@ namespace Assets.Scripts.Enemy
 {
     class Spawner : MonoBehaviour, Callback
     {
-        /// <summary> The GameObject that must be in range to start spawning. </summary>
-        [SerializeField]
-        private GameObject target;
         /// <summary> Left bound for the target range. </summary>
         [SerializeField]
         private Transform leftBound;
@@ -33,6 +30,8 @@ namespace Assets.Scripts.Enemy
 
         /// <summary> Reference to EnemyManager to spawn things. </summary>
         private EnemyManager manager;
+        /// <summary> The GameObject that must be in range to start spawning. </summary>
+        private GameObject target;
         /// <summary> Time waited so far. </summary>
         private float timeWaited;
         /// <summary> Pointer to current enemy in enemiesToSpawn array. </summary>
@@ -45,6 +44,7 @@ namespace Assets.Scripts.Enemy
         void Start()
         {
             manager = FindObjectOfType<EnemyManager>();
+            target = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
             timeWaited = 0f;
             currentEnemy = 0;
             numOfEnemies = 0;

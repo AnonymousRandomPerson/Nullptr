@@ -21,7 +21,7 @@ namespace Assets.Scripts.Enemy
         [SerializeField]
         private float invulerabilityTime;
 
-        /// <summary> When greater than 0, this enemy is invunerable and takes damage. </summary>
+        /// <summary> When greater than 0, this enemy is invunerable and doesn't take damage. </summary>
         private float invulerability;
         /// <summary> When true this enemy's sprite is being rendered. </summary>
         private bool render;
@@ -30,6 +30,11 @@ namespace Assets.Scripts.Enemy
         protected int currentHealth;
         /// <summary> True if the enemy has been hit by something damaging. </summary>
         protected bool hit;
+
+        protected bool Invincible
+        {
+            get { return invulerability > 0; }
+        }
 
         public override void InitData()
         {

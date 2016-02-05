@@ -17,6 +17,8 @@ namespace Assets.Scripts.Platforms
             {
                 if (coll.gameObject.tag == "Enemy")
                 {
+                    gameObject.layer = LayerMask.NameToLayer("Default");
+                    gameObject.GetComponent<SpriteRenderer>().enabled = true;
                     DestroyThis();
                 }
             }

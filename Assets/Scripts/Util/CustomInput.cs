@@ -13,7 +13,7 @@ namespace Assets.Scripts.Util
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput
         {
-            Up, Down, Left, Right, LookUp, LookDown, LookLeft, LookRight, Pause, Accept, Cancel, Attack, Jump
+            Up, Down, Left, Right, LookUp, LookDown, LookLeft, LookRight, Pause, Accept, Cancel, Attack, Jump, SwitchLeft, SwitchRight
         }
 
         /// <summary> The file to save the bindings to. </summary>
@@ -37,6 +37,8 @@ namespace Assets.Scripts.Util
             rawSign[(int)UserInput.Cancel] = 1;
             rawSign[(int)UserInput.Attack] = 1;
             rawSign[(int)UserInput.Jump] = 1;
+            rawSign[(int)UserInput.SwitchLeft] = 1;
+            rawSign[(int)UserInput.SwitchRight] = 1;
         }
 
         /// <summary> 
@@ -57,6 +59,8 @@ namespace Assets.Scripts.Util
             keyboard[(int)UserInput.Cancel, 0] = KeyCode.Backspace;
             keyboard[(int)UserInput.Attack, 0] = KeyCode.Mouse0;
             keyboard[(int)UserInput.Jump, 0] = KeyCode.Space;
+            keyboard[(int)UserInput.SwitchLeft, 0] = KeyCode.Q;
+            keyboard[(int)UserInput.SwitchRight, 0] = KeyCode.E;
         }
 
         /// <summary> 
@@ -81,16 +85,8 @@ namespace Assets.Scripts.Util
             gamepad[(int)UserInput.Cancel, 0] = B;
             gamepad[(int)UserInput.Attack, 0] = RB;
             gamepad[(int)UserInput.Jump, 0] = LB;
-        }
-
-        /// <summary> Bool for whether or not Keyboard is disabled. </summary>
-        private static bool usingKeyboard = false;
-
-        /// <summary> Disables Keyboard input. </summary>
-        public static bool UsingKeyboard
-        {
-            get { return usingKeyboard; }
-            set { usingKeyboard = value; }
+            gamepad[(int)UserInput.SwitchLeft, 0] = LEFT_TRIGGER;
+            gamepad[(int)UserInput.SwitchRight, 0] = RIGHT_TRIGGER;
         }
 
         public static float MouseX
@@ -483,8 +479,6 @@ namespace Assets.Scripts.Util
             {
                 using (XmlReader reader = XmlReader.Create(filename))
                 {
-                    reader.ReadToFollowing("UsingKeyBoard");
-                    usingKeyboard = bool.Parse(reader.ReadElementContentAsString());
                     for (int p = 0; p < 7; p++)
                     {
                         reader.ReadToFollowing("Player" + p);
@@ -518,11 +512,6 @@ namespace Assets.Scripts.Util
             XmlElement element, child;
             XmlElement root = bindings.CreateElement("Controls");
             bindings.InsertAfter(root, bindings.DocumentElement);
-            element = bindings.CreateElement("UsingKeyBoard");
-            node = bindings.CreateTextNode("UsingKeyBoard");
-            node.Value = usingKeyboard.ToString();
-            element.AppendChild(node);
-            root.AppendChild(element);
             for (int p = 0; p < 7; p++)
             {
                 element = bindings.CreateElement("Player" + p);
@@ -606,7 +595,23 @@ namespace Assets.Scripts.Util
 
         void Update()
         {
-            if (usingKeyboard)
+            if (Input.anyKey)
+                usingPad = false;
+            else if (AnyPadInput())
+                usingPad = true;
+            if (usingPad)
+            {
+                UpdateGamePadArray();
+                for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
+                {
+                    for (int p = 0; p < 7; p++)
+                    {
+                        if (gamepad[i, p] != null)
+                            updatePad(i, p);
+                    }
+                }
+            }
+            else
             {
                 for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
                 {
@@ -616,18 +621,6 @@ namespace Assets.Scripts.Util
                         {
                             updateKey(i, p);
                         }
-                    }
-                }
-            }
-            else
-            {
-                UpdateGamePadArray();
-                for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
-                {
-                    for (int p = 0; p < 7; p++)
-                    {
-                        if (gamepad[i, p] != null)
-                            updatePad(i, p);
                     }
                 }
             }

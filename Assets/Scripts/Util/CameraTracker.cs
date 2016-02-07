@@ -16,7 +16,7 @@ namespace Assets.Scripts.Util
             //camera.aspect = Data.AspectRatio;
             //if (Data.AspectRatio == 0)
             //    camera.ResetAspect();
-            player = FindObjectOfType<Player.Player>().transform;
+            player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().transform;
             //transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
         }
 

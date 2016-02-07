@@ -1,5 +1,4 @@
 <Controls>
-  <UsingKeyBoard>False</UsingKeyBoard>
   <Player0>
     <Keyboard_Up>W</Keyboard_Up>
     <Keyboard_Down>S</Keyboard_Down>
@@ -14,6 +13,8 @@
     <Keyboard_Cancel>Backspace</Keyboard_Cancel>
     <Keyboard_Attack>Mouse0</Keyboard_Attack>
     <Keyboard_Jump>Space</Keyboard_Jump>
+    <Keyboard_SwitchLeft>Q</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>E</Keyboard_SwitchRight>
     <Gamepad_Up>Left Stick Up</Gamepad_Up>
     <Gamepad_Down>Left Stick Down</Gamepad_Down>
     <Gamepad_Left>Left Stick Left</Gamepad_Left>
@@ -27,6 +28,8 @@
     <Gamepad_Cancel>B</Gamepad_Cancel>
     <Gamepad_Attack>RB</Gamepad_Attack>
     <Gamepad_Jump>LB</Gamepad_Jump>
+    <Gamepad_SwitchLeft>Left Trigger</Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>Right Trigger</Gamepad_SwitchRight>
   </Player0>
   <Player1>
     <Keyboard_Up>None</Keyboard_Up>
@@ -42,6 +45,8 @@
     <Keyboard_Cancel>None</Keyboard_Cancel>
     <Keyboard_Attack>None</Keyboard_Attack>
     <Keyboard_Jump>None</Keyboard_Jump>
+    <Keyboard_SwitchLeft>None</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>None</Keyboard_SwitchRight>
     <Gamepad_Up>
     </Gamepad_Up>
     <Gamepad_Down>
@@ -68,6 +73,10 @@
     </Gamepad_Attack>
     <Gamepad_Jump>
     </Gamepad_Jump>
+    <Gamepad_SwitchLeft>
+    </Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>
+    </Gamepad_SwitchRight>
   </Player1>
   <Player2>
     <Keyboard_Up>None</Keyboard_Up>
@@ -83,6 +92,8 @@
     <Keyboard_Cancel>None</Keyboard_Cancel>
     <Keyboard_Attack>None</Keyboard_Attack>
     <Keyboard_Jump>None</Keyboard_Jump>
+    <Keyboard_SwitchLeft>None</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>None</Keyboard_SwitchRight>
     <Gamepad_Up>
     </Gamepad_Up>
     <Gamepad_Down>
@@ -109,6 +120,10 @@
     </Gamepad_Attack>
     <Gamepad_Jump>
     </Gamepad_Jump>
+    <Gamepad_SwitchLeft>
+    </Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>
+    </Gamepad_SwitchRight>
   </Player2>
   <Player3>
     <Keyboard_Up>None</Keyboard_Up>
@@ -124,6 +139,8 @@
     <Keyboard_Cancel>None</Keyboard_Cancel>
     <Keyboard_Attack>None</Keyboard_Attack>
     <Keyboard_Jump>None</Keyboard_Jump>
+    <Keyboard_SwitchLeft>None</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>None</Keyboard_SwitchRight>
     <Gamepad_Up>
     </Gamepad_Up>
     <Gamepad_Down>
@@ -150,6 +167,10 @@
     </Gamepad_Attack>
     <Gamepad_Jump>
     </Gamepad_Jump>
+    <Gamepad_SwitchLeft>
+    </Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>
+    </Gamepad_SwitchRight>
   </Player3>
   <Player4>
     <Keyboard_Up>None</Keyboard_Up>
@@ -165,6 +186,8 @@
     <Keyboard_Cancel>None</Keyboard_Cancel>
     <Keyboard_Attack>None</Keyboard_Attack>
     <Keyboard_Jump>None</Keyboard_Jump>
+    <Keyboard_SwitchLeft>None</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>None</Keyboard_SwitchRight>
     <Gamepad_Up>
     </Gamepad_Up>
     <Gamepad_Down>
@@ -191,6 +214,10 @@
     </Gamepad_Attack>
     <Gamepad_Jump>
     </Gamepad_Jump>
+    <Gamepad_SwitchLeft>
+    </Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>
+    </Gamepad_SwitchRight>
   </Player4>
   <Player5>
     <Keyboard_Up>None</Keyboard_Up>
@@ -206,6 +233,8 @@
     <Keyboard_Cancel>None</Keyboard_Cancel>
     <Keyboard_Attack>None</Keyboard_Attack>
     <Keyboard_Jump>None</Keyboard_Jump>
+    <Keyboard_SwitchLeft>None</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>None</Keyboard_SwitchRight>
     <Gamepad_Up>
     </Gamepad_Up>
     <Gamepad_Down>
@@ -232,6 +261,10 @@
     </Gamepad_Attack>
     <Gamepad_Jump>
     </Gamepad_Jump>
+    <Gamepad_SwitchLeft>
+    </Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>
+    </Gamepad_SwitchRight>
   </Player5>
   <Player6>
     <Keyboard_Up>None</Keyboard_Up>
@@ -247,6 +280,8 @@
     <Keyboard_Cancel>None</Keyboard_Cancel>
     <Keyboard_Attack>None</Keyboard_Attack>
     <Keyboard_Jump>None</Keyboard_Jump>
+    <Keyboard_SwitchLeft>None</Keyboard_SwitchLeft>
+    <Keyboard_SwitchRight>None</Keyboard_SwitchRight>
     <Gamepad_Up>
     </Gamepad_Up>
     <Gamepad_Down>
@@ -273,5 +308,9 @@
     </Gamepad_Attack>
     <Gamepad_Jump>
     </Gamepad_Jump>
+    <Gamepad_SwitchLeft>
+    </Gamepad_SwitchLeft>
+    <Gamepad_SwitchRight>
+    </Gamepad_SwitchRight>
   </Player6>
 </Controls>

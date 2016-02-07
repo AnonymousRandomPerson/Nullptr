@@ -6,9 +6,9 @@ namespace Assets.Scripts.Player
 {
     class Player : Entity
     {
-        /// <summary> Reference to the BulletManager for shooting. </summary>
+        /// <summary> The current selected weapon. </summary>
         [SerializeField]
-        private BulletManager bulletManager;
+        private WeaponSelection weapons;
         /// <summary> Reference to gun. </summary>
         [SerializeField]
         private GameObject gun;
@@ -26,10 +26,10 @@ namespace Assets.Scripts.Player
         private Transform front;
         /// <summary> The health for an enemy to start with. </summary>
         [SerializeField]
-        private int health;
+        private int health = 10;
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
-        private float invulerabilityTime;
+        private float invulerabilityTime = 1f;
         /// <summary> Initial movement velocity. </summary>
         [SerializeField]
         private int moveSpeed = 4;
@@ -49,6 +49,10 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private float gravity = 2f;
 
+        /// <summary> Reference to the BulletManager for shooting. </summary>
+        private BulletManager bulletManager;
+        /// <summary> reference to camera for finding screen point</summary>
+        private Camera camera;
         /// <summary> When greater than 0, this enemy is invunerable and takes damage. </summary>
         private float invulerability;
         /// <summary> X part of the velocitiy vector. </summary>
@@ -58,9 +62,9 @@ namespace Assets.Scripts.Player
         /// <summary> When true this enemy's sprite is being rendered. </summary>
         private bool render;
 
-        /// <summary> The current health of this enemy. </summary>
+        /// <summary> The current health of the player. </summary>
         protected int currentHealth;
-        /// <summary> True if the enemy has been hit by something damaging. </summary>
+        /// <summary> True if the player has been hit by something damaging. </summary>
         protected bool hit;
 
         public override void InitData()
@@ -69,6 +73,9 @@ namespace Assets.Scripts.Player
             render = true;
             invulerability = 0f;
             currentHealth = health;
+            bulletManager = FindObjectOfType<BulletManager>();
+            weapons.GetWeapons();
+            camera = FindObjectOfType<Camera>();
         }
 
         public override void RunEntity()
@@ -99,8 +106,12 @@ namespace Assets.Scripts.Player
             TouchingSomething(ref inAir, ref blocked);
             Move(ref inAir);
             Aim();
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.SwitchLeft))
+                weapons.SwitchLeft();
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.SwitchRight))
+                weapons.SwitchRight();
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.Attack))
-                bulletManager.Shoot(Enums.BulletTypes.Player, barrel, CustomInput.Bool(CustomInput.UserInput.LookLeft) ? Enums.Direction.Left : Enums.Direction.Right);
+                bulletManager.Shoot(weapons.GetWeapon(), barrel, transform.localScale.x < 0 ? Enums.Direction.Left : Enums.Direction.Right);
 
         }
 
@@ -155,9 +166,21 @@ namespace Assets.Scripts.Player
         /// <summary> Aims the gun. </summary>
         private void Aim()
         {
-            float up = CustomInput.Bool(CustomInput.UserInput.LookUp) ? CustomInput.Raw(CustomInput.UserInput.LookUp) : CustomInput.Raw(CustomInput.UserInput.LookDown);
-            float right = CustomInput.Bool(CustomInput.UserInput.LookRight) ? CustomInput.Raw(CustomInput.UserInput.LookRight) : CustomInput.Raw(CustomInput.UserInput.LookLeft);
-            if (CustomInput.Bool(CustomInput.UserInput.LookLeft))
+            float up, right;
+            if (CustomInput.UsingPad)
+            {
+                up = CustomInput.Bool(CustomInput.UserInput.LookUp) ? CustomInput.Raw(CustomInput.UserInput.LookUp) : CustomInput.Raw(CustomInput.UserInput.LookDown);
+                right = CustomInput.Bool(CustomInput.UserInput.LookRight) ? CustomInput.Raw(CustomInput.UserInput.LookRight) : CustomInput.Raw(CustomInput.UserInput.LookLeft);
+            }
+            else
+            {
+                Vector3 norm = (new Vector3(CustomInput.MouseX, CustomInput.MouseY, 0) - camera.WorldToScreenPoint(transform.position)).normalized;
+                up = norm.y;
+                right = norm.x;
+                
+            }
+
+            if (right < 0)
                 FaceLeft();
             else
                 FaceRight();
@@ -167,21 +190,21 @@ namespace Assets.Scripts.Player
             }
             else if (up == 0)
             {
-                if (CustomInput.Bool(CustomInput.UserInput.LookLeft))
+                if (right < 0)
                     gun.transform.rotation = Quaternion.Euler(0, 0, 0);
                 else
                     gun.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
             else if (right == 0)
             {
-                if (CustomInput.Bool(CustomInput.UserInput.LookDown))
+                if (up < 0)
                     gun.transform.rotation = Quaternion.Euler(0, 0, 270);
                 else
                     gun.transform.rotation = Quaternion.Euler(0, 0, 90);
             }
             else
             {
-                if (CustomInput.Bool(CustomInput.UserInput.LookLeft))
+                if (right < 0)
                     gun.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan(up / right));
                 else
                     gun.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan(up / right));

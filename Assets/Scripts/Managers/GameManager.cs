@@ -51,6 +51,13 @@ namespace Assets.Scripts.Managers
             state = Enums.GameStates.Intro;
         }
 
+        /// <summary> Change to Intro state. </summary>
+        public static void CutScene()
+        {
+            prevState = state;
+            state = Enums.GameStates.CutScene;
+        }
+
         /// <summary> Gets the current state. </summary>
         public static Enums.GameStates State
         {
@@ -61,6 +68,12 @@ namespace Assets.Scripts.Managers
         public static bool IsRunning
         {
             get { return state == Enums.GameStates.Running; }
+        }
+
+        /// <summary> Returns true if the game is in the Runnning state. </summary>
+        public static bool IsCutScene
+        {
+            get { return state == Enums.GameStates.CutScene; }
         }
 
         /// <summary> Handles Pausing. </summary>

@@ -12,7 +12,8 @@ namespace Assets.Scripts.Managers
         private int type;
         /// <summary> The specific instance of this entity in the manager. </summary>
         private int instance;
-
+        /// <summary> Allows this entity to run during a cutscene. </summary>
+        private bool isCutScene;
         /// <summary> Reference to this entites manager for callbacks on death. </summary>
         protected EntityManager Manager
         {
@@ -38,20 +39,26 @@ namespace Assets.Scripts.Managers
         /// <param name="type"> The type of this entity in the manager. </param>
         /// <param name="instance"> The specific instance of this entity in the manager. </param>
         /// <param name="direction"> The direction this entity is facing at init. </param>
-        internal void Init(Transform loc, EntityManager manager, int type, int instance, Enums.Direction direction)
+        internal void Init(Transform loc, EntityManager manager, int type, int instance, Enums.Direction direction, bool isCutScene)
         {
             transform.position = loc.position;
             transform.localRotation = loc.rotation;
+            if (isCutScene)
+            { 
+                transform.localScale = loc.localScale;
+                gameObject.layer = LayerMask.NameToLayer("CutScene");
+            }
             this.manager = manager;
             this.type = type;
             this.instance = instance;
             this.direction = direction;
+            this.isCutScene = isCutScene;
             InitData();
         }
 
         void Update()
         {
-            if(GameManager.IsRunning)
+            if (GameManager.IsRunning || (isCutScene && GameManager.IsCutScene))
                 RunEntity();
         }
 

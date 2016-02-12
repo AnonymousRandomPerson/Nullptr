@@ -112,7 +112,6 @@ namespace Assets.Scripts.Player
                 weapons.SwitchRight();
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.Attack))
                 bulletManager.Shoot(weapons.GetWeapon(), barrel, transform.localScale.x < 0 ? Enums.Direction.Left : Enums.Direction.Right);
-
         }
 
         /// <summary> Controls player movement. </summary>

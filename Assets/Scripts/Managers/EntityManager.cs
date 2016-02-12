@@ -66,7 +66,31 @@ namespace Assets.Scripts.Managers
                 if(!entities[type][i].active)
                 {
                     entities[type][i].active = true;
-                    entities[type][i].entity.Init(loc, this, type, i, direction);
+                    entities[type][i].entity.Init(loc, this, type, i, direction, false);
+                    entities[type][i].entity.gameObject.SetActive(true);
+                    entities[type][i].callback = callback;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary> Readys an entity if one is available. </summary>
+        /// <param name="type"> The type of entity to aquire. </param>
+        /// <param name="loc"> The location to spawn the entity in. </param>
+        /// <param name="direction"> The direction the entity should initially face. </param>
+        /// <param name="callback"> The object to send a message to upon the aquired entites death. </param>
+        /// <returns> True if an entity was able to be readied. </returns>
+        protected bool AquireEntityCutScene(int type, Transform loc, Enums.Direction direction, Callback callback = null)
+        {
+            if (type >= entities.Length || type < 0)
+                throw new System.IndexOutOfRangeException("Invalid Entity Type. ");
+            for (int i = 0; i < entities[type].Length; i++)
+            {
+                if (!entities[type][i].active)
+                {
+                    entities[type][i].active = true;
+                    entities[type][i].entity.Init(loc, this, type, i, direction, true);
                     entities[type][i].entity.gameObject.SetActive(true);
                     entities[type][i].callback = callback;
                     return true;

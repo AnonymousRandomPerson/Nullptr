@@ -27,7 +27,6 @@ namespace Assets.Scripts.Bullets
 
         public override void RunEntity()
         {
-
             RaycastHit2D hit;
             switch (direction)
             {
@@ -57,6 +56,7 @@ namespace Assets.Scripts.Bullets
                 {
                     hit.collider.gameObject.layer = LayerMask.NameToLayer("Destroyed");
                     hit.collider.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                    hit.collider.enabled = false;
                 }
                 if(hit.collider.gameObject.GetComponent<Managers.Entity>() != null)
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);

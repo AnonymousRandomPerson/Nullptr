@@ -58,6 +58,7 @@ namespace Assets.Scripts.Platforms
             rows[0].transform.position = new Vector3(rows[1].transform.position.x - rowWidth, rows[1].transform.position.y, rows[1].transform.position.z);
             rows[0].gameObject.layer = LayerMask.NameToLayer("Default");
             rows[0].gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            rows[0].gameObject.GetComponent<Collider2D>().enabled = true;
             currentPlayerPosRef.x -= rowWidth;
         }
 
@@ -72,6 +73,7 @@ namespace Assets.Scripts.Platforms
             rows[rows.Length - 1].transform.position = new Vector3(rows[rows.Length - 2].transform.position.x + rowWidth, rows[rows.Length - 2].transform.position.y, rows[rows.Length - 2].transform.position.z);
             rows[rows.Length - 1].gameObject.layer = LayerMask.NameToLayer("Default");
             rows[rows.Length - 1].gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            rows[rows.Length - 1].gameObject.GetComponent<Collider2D>().enabled = true;
             currentPlayerPosRef.x += rowWidth;
         }
 

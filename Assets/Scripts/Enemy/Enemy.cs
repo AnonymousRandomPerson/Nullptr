@@ -92,11 +92,7 @@ namespace Assets.Scripts.Enemy
 
         void OnCollisionEnter2D(Collision2D coll)
         {
-            if (GameManager.IsRunning)
-            {
-                if (coll.gameObject.tag == "Enemy")
-                    Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), coll.gameObject.GetComponent<Collider2D>());
-            }
+            
         }
 
         /// <summary> Returns booleans about whether or not the enemy is touching another collider. </summary>

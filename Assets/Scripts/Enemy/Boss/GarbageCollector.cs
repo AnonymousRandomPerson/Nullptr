@@ -50,15 +50,5 @@ namespace Assets.Scripts.Enemy.Boss
             if (Random.Range(0.0f, 1.0f) < .05f)
                 bulletManager.Shoot(Util.Enums.BulletTypes.Destroyer, barrel, Util.Enums.Direction.Right);
         }
-
-
-        void OnCollisionEnter2D(Collision2D coll)
-        {
-            if (Managers.GameManager.IsRunning)
-            {
-                if (coll.gameObject.tag == "Enemy")
-                    Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), coll.gameObject.GetComponent<Collider2D>());
-            }
-        }
     }
 }

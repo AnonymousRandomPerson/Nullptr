@@ -204,7 +204,7 @@ namespace Assets.Scripts.Player
             else
             {
                 if (right < 0)
-                    gun.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan(up / right));
+                    gun.transform.rotation = Quaternion.Euler(0, 0, -Mathf.Rad2Deg * Mathf.Atan(up / right));
                 else
                     gun.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan(up / right));
             }

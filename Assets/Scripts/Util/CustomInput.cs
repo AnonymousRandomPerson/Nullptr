@@ -595,10 +595,10 @@ namespace Assets.Scripts.Util
 
         void Update()
         {
-            if (Input.anyKey)
-                usingPad = false;
-            else if (AnyPadInput())
+            if (AnyPadInput())
                 usingPad = true;
+            else if (Input.anyKey)
+                usingPad = false;
             if (usingPad)
             {
                 UpdateGamePadArray();

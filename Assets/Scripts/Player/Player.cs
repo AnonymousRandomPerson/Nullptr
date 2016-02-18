@@ -71,8 +71,13 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private float deathHeight = -6;
 
+        /// <summary> The renderer for the player's body. </summary>
+        private SpriteRenderer bodyRenderer;
+        /// <summary> The renderer for the player's gun. </summary>
+        private SpriteRenderer gunRenderer;
+
         /// <summary> The animator for the player sprite. </summary>
-       private Animator animator;
+        private Animator animator;
 
         public override void InitData()
         {
@@ -83,7 +88,9 @@ namespace Assets.Scripts.Player
             bulletManager = FindObjectOfType<BulletManager>();
             weapons.GetWeapons();
             camera = FindObjectOfType<Camera>();
-			animator = GetComponent<Animator>();
+            animator = GetComponent<Animator>();
+            bodyRenderer = GetComponent<SpriteRenderer>();
+            gunRenderer = transform.FindChild("Gun").GetComponent<SpriteRenderer>();
         }
 
         public override void RunEntity()
@@ -129,6 +136,7 @@ namespace Assets.Scripts.Player
 
         /// <summary> Controls player movement. </summary>
         /// <param name="inAir"> Boolean for if the player is currently in the air. </param>
+        /// <param name="groundDistance"> The distance from the player to the ground if the player will hit the ground on the current tick. </param>
         private void Move(ref bool inAir, float groundDistance)
         {
             if (!animator.isInitialized)
@@ -235,7 +243,8 @@ namespace Assets.Scripts.Player
         /// <param name="render"> When true the sprite should be being rendered. </param>
         protected virtual void Render(bool render)
         {
-            GetComponent<SpriteRenderer>().enabled = render;
+            bodyRenderer.enabled = render;
+            gunRenderer.enabled = render;
         }
 
         void OnCollisionEnter2D(Collision2D coll)
@@ -250,6 +259,7 @@ namespace Assets.Scripts.Player
         /// <summary> Returns booleans about whether or not the enemy is touching another collider. </summary>
         /// <param name="inAir"> True if there is no ground currently beneath the enemy. </param>
         /// <param name="blocked"> True if there is something in front of the enemy. </param>
+        /// <param name="groundDistance"> The distance from the player to the ground if the player will hit the ground on the current tick. </param>
         protected void TouchingSomething(ref bool inAir, ref bool blocked, ref float groundDistance)
         {
             RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);

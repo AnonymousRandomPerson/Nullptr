@@ -55,9 +55,9 @@ namespace Assets.Scripts.Player
         private Camera camera;
         /// <summary> When greater than 0, this enemy is invunerable and takes damage. </summary>
         private float invulerability;
-        /// <summary> X part of the velocitiy vector. </summary>
+        /// <summary> X part of the velocity vector. </summary>
         private float xVel;
-        /// <summary> Y part of the velocitiy vector. </summary>
+        /// <summary> Y part of the velocity vector. </summary>
         private float yVel;
         /// <summary> When true this enemy's sprite is being rendered. </summary>
         private bool render;
@@ -66,6 +66,13 @@ namespace Assets.Scripts.Player
         protected int currentHealth;
         /// <summary> True if the player has been hit by something damaging. </summary>
         protected bool hit;
+
+        /// <summary> The height where the player dies if he drops below it. </summary>
+        [SerializeField]
+        private float deathHeight = -6;
+
+        /// <summary> The animator for the player sprite. </summary>
+       private Animator animator;
 
         public override void InitData()
         {
@@ -76,6 +83,7 @@ namespace Assets.Scripts.Player
             bulletManager = FindObjectOfType<BulletManager>();
             weapons.GetWeapons();
             camera = FindObjectOfType<Camera>();
+			animator = GetComponent<Animator>();
         }
 
         public override void RunEntity()
@@ -102,9 +110,14 @@ namespace Assets.Scripts.Player
             }
             //if (currentHealth < 0)
             //    Die();
+            if (transform.position.y < deathHeight)
+            {
+                Die();
+            }
             bool inAir = false, blocked= false;
-            TouchingSomething(ref inAir, ref blocked);
-            Move(ref inAir);
+            float groundDistance = Mathf.Infinity;
+            TouchingSomething(ref inAir, ref blocked, ref groundDistance);
+            Move(ref inAir, groundDistance);
             Aim();
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.SwitchLeft))
                 weapons.SwitchLeft();
@@ -116,26 +129,28 @@ namespace Assets.Scripts.Player
 
         /// <summary> Controls player movement. </summary>
         /// <param name="inAir"> Boolean for if the player is currently in the air. </param>
-        private void Move(ref bool inAir)
+        private void Move(ref bool inAir, float groundDistance)
         {
-
+            if (!animator.isInitialized)
+            {
+                return;
+            }
             if (CustomInput.BoolHeld(CustomInput.UserInput.Left))
             {
                 xVel = -moveSpeed;
-                GetComponent<Animator>().SetBool("Walking", true);
+                animator.SetBool("Walking", true);
             }
             else if (CustomInput.BoolHeld(CustomInput.UserInput.Right))
             {
                 xVel = moveSpeed;
-                GetComponent<Animator>().SetBool("Walking", true);
+                animator.SetBool("Walking", true);
             }
             else
             {
                 xVel = 0;
-                GetComponent<Animator>().SetBool("Walking", false);
+                animator.SetBool("Walking", false);
             }
-
-                if (!inAir && CustomInput.BoolFreshPress(CustomInput.UserInput.Jump))
+            if (!inAir && CustomInput.BoolFreshPress(CustomInput.UserInput.Jump))
             {
                 yVel = jumpSpeed;
                 inAir = true;
@@ -148,7 +163,7 @@ namespace Assets.Scripts.Player
                 else
                     xVel = -maxRunSpeed;
             }
-            transform.Translate(new Vector3(xVel * Time.deltaTime, yVel * Time.deltaTime, 0));
+            transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yVel * Time.deltaTime), 0));
             if (inAir)
             {
                 if (yVel < maxFallSpeed)
@@ -235,9 +250,22 @@ namespace Assets.Scripts.Player
         /// <summary> Returns booleans about whether or not the enemy is touching another collider. </summary>
         /// <param name="inAir"> True if there is no ground currently beneath the enemy. </param>
         /// <param name="blocked"> True if there is something in front of the enemy. </param>
-        protected void TouchingSomething(ref bool inAir, ref bool blocked)
+        protected void TouchingSomething(ref bool inAir, ref bool blocked, ref float groundDistance)
         {
-            inAir = !(Physics2D.Raycast(backFoot.position, -Vector2.up, 0.05f) || Physics2D.Raycast(frontFoot.position, -Vector2.up, 0.05f));
+            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+            inAir = !(backCast || frontCast);
+            if (!inAir)
+            {
+                if (backCast)
+                {
+                    groundDistance = backCast.distance;
+                }
+                if (frontCast)
+                {
+                    groundDistance = Mathf.Min(groundDistance, frontCast.distance);
+                }
+            }
             RaycastHit2D ray;
             if (this.transform.localScale.x > 0)
                 ray = Physics2D.Raycast(front.position, -Vector2.right, 0.05f);
@@ -272,6 +300,12 @@ namespace Assets.Scripts.Player
         protected Vector2 GetForward()
         {
             return new Vector2(-Mathf.Sign(this.transform.localScale.x), 0);
+        }
+
+        internal override void Die()
+        {
+            base.Die();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

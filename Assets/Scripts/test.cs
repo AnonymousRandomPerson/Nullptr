@@ -11,7 +11,7 @@ namespace Assets.Scripts
         {
             if(CustomInput.BoolFreshPress(CustomInput.UserInput.Attack))
             {
-                bulletManager.Shoot(Enums.BulletTypes.Player, barrel, Enums.Direction.Right);
+                bulletManager.Shoot(Enums.BulletTypes.Pistol, barrel, Enums.Direction.Right);
             }
         }
     }

@@ -16,12 +16,12 @@ namespace Assets.Scripts.Enemy
         private Transform front;
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
-        private float invulerabilityTime;
+        protected float invulerabilityTime;
 
         /// <summary> When greater than 0, this enemy is invunerable and doesn't take damage. </summary>
-        private float invulerability;
+        protected float invulerability;
         /// <summary> When true this enemy's sprite is being rendered. </summary>
-        private bool render;
+        protected bool render;
         /// <summary> True if the enemy has been hit by something damaging. </summary>
         protected bool hit;
 

@@ -18,7 +18,7 @@ namespace Assets.Scripts.UI.BossTitle
         [SerializeField]
         private string fullText; //The whole bazinga to type
         [SerializeField]
-        private AudioSource sound; //Sound that is played on each character
+        private Util.SoundPlayer sound; //Sound that is played on each character
         [SerializeField]
         private bool soundEnabled = true; //Determines if a sound plays or not
         [SerializeField]
@@ -56,7 +56,7 @@ namespace Assets.Scripts.UI.BossTitle
             if (soundEnabled && !SILENT_CHARACTERS.Contains(c))
             {
                 sound.Stop();
-                sound.Play();
+                sound.PlaySong(0);
             }
             Text text = character.GetComponent<Text>();
             text.text = "" + c;

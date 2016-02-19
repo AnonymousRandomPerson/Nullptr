@@ -32,6 +32,7 @@ namespace Assets.Scripts.Enemy.Boss
         private int count;
         private float wait;
         private GarbageCollectorStateMachine machine;
+        private GarbageCollectorStateMachine.State state;
 
         public override void InitData()
         {
@@ -54,8 +55,14 @@ namespace Assets.Scripts.Enemy.Boss
                 wait = 0f;
                 platformsAte = 0;
             }
+            GarbageCollectorStateMachine.State temp = state;
             // Get state
-            GarbageCollectorStateMachine.State state = machine.update(animDone, superStart );
+            state = machine.update(animDone, superStart );
+            if(temp != state)
+            {
+                render = true;
+                Render(true);
+            }
 
             // Set up state vars
             if(animDone)
@@ -113,8 +120,11 @@ namespace Assets.Scripts.Enemy.Boss
                 Die();
             }
             transform.Translate(GetForward() * movementSpeed * Time.deltaTime);
-            //if (Random.Range(0.0f, 1.0f) < .05f)
-            //    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, barrel, Util.Enums.Direction.Right);
+            if ((wait -= Time.deltaTime) < 0)
+            {
+                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, barrel, Util.Enums.Direction.Right);
+                wait = 1f;
+            }
         }
 
         void SuperStart()

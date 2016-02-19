@@ -15,10 +15,7 @@ namespace Assets.Scripts.Enemy.Boss
         private Transform skyBarrel;
         /// <summary> Barrel for the gun. </summary>
         [SerializeField]
-        private Transform[] barrels1;
-        /// <summary> Barrel for the gun. </summary>
-        [SerializeField]
-        private Transform[] barrels2;
+        private Transform[] barrels;
         /// <summary> Place to move to during intro. </summary>
         [SerializeField]
         private int startLoc;
@@ -122,7 +119,7 @@ namespace Assets.Scripts.Enemy.Boss
 
         void SuperStart()
         {
-            if (wait > .2f)
+            if (count != 8 && wait > .2f)
                 wait = 0f;
             if (wait == 0f)
             {
@@ -130,7 +127,7 @@ namespace Assets.Scripts.Enemy.Boss
                 count++;
             }
             wait += Time.deltaTime;
-            if(count == 8)
+            if(count == 8 && wait > 1f)
             {
                 wait = 0;
                 count = 0;
@@ -144,20 +141,12 @@ namespace Assets.Scripts.Enemy.Boss
                 wait = 0f;
             if (wait == 0f)
             {
-                if (count == 1)
-                {
-                    foreach (Transform b in barrels2)
-                        bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, b, Util.Enums.Direction.Down);
-                }
-                else
-                {
-                    foreach (Transform b in barrels1)
-                        bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, b, Util.Enums.Direction.Down);
-                }
+                foreach (Transform b in barrels)
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, b, Util.Enums.Direction.Down);
                 count++;
             }
             wait += Time.deltaTime;
-            if (count == 2)
+            if (count == 2 && wait > 1f)
             {
                 wait = 0;
                 count = 0;

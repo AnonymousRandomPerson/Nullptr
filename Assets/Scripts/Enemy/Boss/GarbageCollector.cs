@@ -7,42 +7,56 @@ namespace Assets.Scripts.Enemy.Boss
         /// <summary> How Fast this boss moves. </summary>
         [SerializeField]
         private float movementSpeed;
-        /// <summary> How fast this boss rotates back and forth. </summary>
-        [SerializeField]
-        private float rotationSpeed;
         /// <summary> Barrel for the gun. </summary>
         [SerializeField]
         private Transform barrel;
+        /// <summary> Barrel for the gun. </summary>
+        [SerializeField]
+        private Transform skyBarrel;
+        /// <summary> Barrel for the gun. </summary>
+        [SerializeField]
+        private Transform[] barrels1;
+        /// <summary> Barrel for the gun. </summary>
+        [SerializeField]
+        private Transform[] barrels2;
         /// <summary> Place to move to during intro. </summary>
         [SerializeField]
         private int startLoc;
+        [SerializeField]
+        private SpriteRenderer sprite;
 
-        /// <summary> How much the boss has rotated so far. </summary>
-        private float currentRotation;
-        /// <summary> Saves the current direction of rotation. </summary>
-        private bool rotatingLeft;
         /// <summary> Signals the state machine the current animation is done. </summary>
         private bool animDone;
         /// <summary> Signals the state machine to start the super. </summary>
         private bool superStart;
         /// <summary> Reference to the BulletManager for shooting. </summary>
         private Managers.BulletManager bulletManager;
-
+        private int platformsAte;
+        private int count;
+        private float wait;
         private GarbageCollectorStateMachine machine;
 
         public override void InitData()
         {
             base.InitData();
-            currentRotation = 0f;
             bulletManager = FindObjectOfType<Managers.BulletManager>();
-            rotatingLeft = false;
             animDone = false;
             superStart = false;
+            platformsAte = 0;
+            count = 0;
             machine = new GarbageCollectorStateMachine();
+            wait = 0;
+            FindObjectOfType<Platforms.GarbageFloor>().target = this.gameObject.transform;
         }
 
         public override void RunEntity()
         {
+            if (platformsAte > 9)
+            {
+                superStart = true;
+                wait = 0f;
+                platformsAte = 0;
+            }
             // Get state
             GarbageCollectorStateMachine.State state = machine.update(animDone, superStart );
 
@@ -60,6 +74,11 @@ namespace Assets.Scripts.Enemy.Boss
                 case GarbageCollectorStateMachine.State.SuperStart: SuperStart(); break;
                 case GarbageCollectorStateMachine.State.SuperWait: SuperWait(); break;
             }
+        }
+
+        protected override void Render(bool render)
+        {
+            sprite.enabled = render;
         }
 
         void Intro()
@@ -96,34 +115,65 @@ namespace Assets.Scripts.Enemy.Boss
                 Render(true);
                 Die();
             }
-            if (!Invincible)
-                transform.Translate(GetForward() * movementSpeed * Time.deltaTime);
-            if (rotatingLeft)
-            {
-                transform.Rotate(new Vector3(0, 0, -rotationSpeed));
-                currentRotation -= rotationSpeed;
-            }
-            else
-            {
-                transform.Rotate(new Vector3(0, 0, rotationSpeed));
-                currentRotation += rotationSpeed;
-            }
-            if (currentRotation < -30)
-                rotatingLeft = false;
-            if (currentRotation > 30)
-                rotatingLeft = true;
-            if (Random.Range(0.0f, 1.0f) < .05f)
-                bulletManager.Shoot(Util.Enums.BulletTypes.Destroyer, barrel, Util.Enums.Direction.Right);
+            transform.Translate(GetForward() * movementSpeed * Time.deltaTime);
+            //if (Random.Range(0.0f, 1.0f) < .05f)
+            //    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, barrel, Util.Enums.Direction.Right);
         }
 
         void SuperStart()
         {
-
+            if (wait > .2f)
+                wait = 0f;
+            if (wait == 0f)
+            {
+                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, skyBarrel, Util.Enums.Direction.Right);
+                count++;
+            }
+            wait += Time.deltaTime;
+            if(count == 8)
+            {
+                wait = 0;
+                count = 0;
+                animDone = true;
+            }
         }
 
         void SuperWait()
         {
+            if (wait > 1.5f)
+                wait = 0f;
+            if (wait == 0f)
+            {
+                if (count == 1)
+                {
+                    foreach (Transform b in barrels2)
+                        bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, b, Util.Enums.Direction.Down);
+                }
+                else
+                {
+                    foreach (Transform b in barrels1)
+                        bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, b, Util.Enums.Direction.Down);
+                }
+                count++;
+            }
+            wait += Time.deltaTime;
+            if (count == 2)
+            {
+                wait = 0;
+                count = 0;
+                animDone = true;
+            }
+        }
 
+        void OnCollisionEnter2D(Collision2D coll)
+        {
+            if (Managers.GameManager.IsRunning)
+            {
+                if (coll.gameObject.tag == "DestroyablePlatform")
+                {
+                    platformsAte++;
+                }
+            }
         }
     }
 }

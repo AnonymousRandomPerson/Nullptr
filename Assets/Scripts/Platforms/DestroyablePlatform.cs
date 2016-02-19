@@ -4,31 +4,36 @@ namespace Assets.Scripts.Platforms
 {
     class DestroyablePlatform : MonoBehaviour
     {
+        public float movementSpeed;
+
         internal Vector3 posToGoTo;
         private bool moveUp;
-        private bool destroyed;
 
         void Start()
         {
             moveUp = false;
-            destroyed = false;
         }
 
         void Update()
         {
-
+            if(moveUp)
+                transform.Translate(Vector2.up * movementSpeed * Time.deltaTime);
         }
 
         public void DestroyThis()
         {
-            if (destroyed)
+            if (LayerMask.LayerToName(gameObject.layer) == "Destroyed")
                 GoToPos();
-            moveUp = true;
+            else
+                moveUp = true;
         }
 
         private void GoToPos()
         {
-            destroyed = false;
+            gameObject.layer = LayerMask.NameToLayer("Default");
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            if(GetComponent<Collider2D>() != null)
+                GetComponent<Collider2D>().enabled = true;
             moveUp = false;
             transform.position = posToGoTo;
         }
@@ -39,12 +44,10 @@ namespace Assets.Scripts.Platforms
             {
                 if (coll.gameObject.tag == "Enemy")
                 {
-                    gameObject.layer = LayerMask.NameToLayer("Default");
-                    gameObject.GetComponent<SpriteRenderer>().enabled = true;
-                    destroyed = true;
+                    if (moveUp)
+                        GoToPos();
                 }
             }
         }
-
     }
 }

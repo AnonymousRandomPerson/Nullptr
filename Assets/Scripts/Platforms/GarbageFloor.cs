@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.Platforms
 {
-    class GarbageFloor
+    public class GarbageFloor : MonoBehaviour
     {
         [SerializeField]
         private GameObject wall;
@@ -20,7 +20,7 @@ namespace Assets.Scripts.Platforms
 
 
         /// <summary> The current player position. </summary>
-        private Transform target;
+        public Transform target;
         /// <summary> The current center of the tile field. </summary>
         private Vector3 currentPlayerPosRef;
 
@@ -36,13 +36,8 @@ namespace Assets.Scripts.Platforms
         {
             if (target == null)
                 return;
-            if (Mathf.Abs(target.position.x - currentPlayerPosRef.x) > rowWidth * distanceModifier)
-            {
-                if (target.position.x > currentPlayerPosRef.x)
-                    shiftUp();
-                else
-                    shiftDown();
-            }
+            if (Mathf.Abs(target.transform.position.x - rows[0].transform.position.x) < 1)
+                shiftUp();
             if (Mathf.Abs(target.position.x - wall.transform.position.x) < wallWidth)
                 wall.transform.position = new Vector3(target.transform.position.x + wallWidth, wall.transform.position.y, wall.transform.position.z);
         }
@@ -53,22 +48,6 @@ namespace Assets.Scripts.Platforms
             for (int i = 0; i < rows.Length; i++)
                 rows[i].transform.position = new Vector3(initPosition.x - rowWidth * i, initPosition.y, initPosition.z);
             currentPlayerPosRef = Vector3.zero;
-        }
-
-        /// <summary> Move all Tile field down one row. </summary>
-        private void shiftDown()
-        {
-            GameObject temp = rows[rows.Length - 1];
-            for (int i = rows.Length - 1; i > 0; i--)
-                rows[i] = rows[i - 1];
-            rows[0] = temp;
-            rows[0].transform.position = new Vector3(rows[1].transform.position.x - rowWidth, rows[1].transform.position.y, rows[1].transform.position.z);
-            rows[0].gameObject.layer = LayerMask.NameToLayer("Default");
-            rows[0].gameObject.GetComponent<SpriteRenderer>().enabled = true;
-            Collider2D col = rows[0].gameObject.GetComponent<Collider2D>();
-            if (col != null)
-                col.enabled = true;
-            currentPlayerPosRef.x -= rowWidth;
         }
 
         /// <summary> Move the Tile field up one row. </summary>
@@ -82,11 +61,6 @@ namespace Assets.Scripts.Platforms
             DestroyablePlatform p = rows[rows.Length - 1].GetComponent<DestroyablePlatform>();
             p.posToGoTo = new Vector3(rows[rows.Length - 2].transform.position.x + rowWidth, rows[rows.Length - 2].transform.position.y, rows[rows.Length - 2].transform.position.z);
             p.DestroyThis();
-            rows[rows.Length - 1].gameObject.layer = LayerMask.NameToLayer("Default");
-            rows[rows.Length - 1].gameObject.GetComponent<SpriteRenderer>().enabled = true;
-            Collider2D col = rows[rows.Length - 1].gameObject.GetComponent<Collider2D>();
-            if (col != null)
-                col.enabled = true;
             currentPlayerPosRef.x += rowWidth;
         }
     }

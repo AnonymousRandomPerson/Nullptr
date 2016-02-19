@@ -79,6 +79,12 @@ namespace Assets.Scripts.Enemy
             }
         }
 
+        internal override void Die()
+        {
+            ExplosionManager.instance.SpawnExplosion(0, transform, Util.Enums.Direction.None);   
+            base.Die();
+        }
+
         /// <summary> Turns the sprite for this enemy on or off. </summary>
         /// <param name="render"> When true the sprite should be being rendered. </param>
         protected virtual void Render(bool render)

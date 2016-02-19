@@ -22,7 +22,7 @@ namespace Assets.Scripts.Enemy.Enemies
         public override void InitData()
         {
             base.InitData();
-            player = FindObjectOfType<Player.Player>().gameObject;
+            player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
             bulletManager = FindObjectOfType<Managers.BulletManager>();
             currWait = 0;
             currLifeTime = 0;
@@ -37,7 +37,7 @@ namespace Assets.Scripts.Enemy.Enemies
                 bulletManager.Shoot(Enums.BulletTypes.Enemy, barrel, Enums.Direction.Down);
                 currWait = 0;
             }
-            currLifeTime+= Time.deltaTime;
+            currLifeTime += Time.deltaTime;
             if (currLifeTime > LifeTime)
                 Die();
         }

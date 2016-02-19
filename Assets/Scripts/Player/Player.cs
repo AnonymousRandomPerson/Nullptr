@@ -9,6 +9,7 @@ namespace Assets.Scripts.Player
         /// <summary> The current selected weapon. </summary>
         [SerializeField]
         private WeaponSelection weapons;
+        public string WeaponName { get { return weapons.GetWeapon().ToString(); } }
         /// <summary> Reference to gun. </summary>
         [SerializeField]
         private GameObject gun;
@@ -24,9 +25,6 @@ namespace Assets.Scripts.Player
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
-        /// <summary> The health for an enemy to start with. </summary>
-        [SerializeField]
-        private int health = 10;
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
         private float invulerabilityTime = 1f;
@@ -61,9 +59,6 @@ namespace Assets.Scripts.Player
         private float yVel;
         /// <summary> When true this enemy's sprite is being rendered. </summary>
         private bool render;
-
-        /// <summary> The current health of the player. </summary>
-        protected int currentHealth;
         /// <summary> True if the player has been hit by something damaging. </summary>
         protected bool hit;
 
@@ -72,7 +67,7 @@ namespace Assets.Scripts.Player
             hit = false;
             render = true;
             invulerability = 0f;
-            currentHealth = health;
+            currentHealth = totalHealth;
             bulletManager = FindObjectOfType<BulletManager>();
             weapons.GetWeapons();
             camera = FindObjectOfType<Camera>();
@@ -94,15 +89,14 @@ namespace Assets.Scripts.Player
                 render = !render;
                 Render(render);
                 invulerability -= Time.deltaTime;
-            }
-            else if (!render)
+            } else if (!render)
             {
                 render = true;
                 Render(true);
             }
             //if (currentHealth < 0)
             //    Die();
-            bool inAir = false, blocked= false;
+            bool inAir = false, blocked = false;
             TouchingSomething(ref inAir, ref blocked);
             Move(ref inAir);
             Aim();
@@ -123,19 +117,17 @@ namespace Assets.Scripts.Player
             {
                 xVel = -moveSpeed;
                 GetComponent<Animator>().SetBool("Walking", true);
-            }
-            else if (CustomInput.BoolHeld(CustomInput.UserInput.Right))
+            } else if (CustomInput.BoolHeld(CustomInput.UserInput.Right))
             {
                 xVel = moveSpeed;
                 GetComponent<Animator>().SetBool("Walking", true);
-            }
-            else
+            } else
             {
                 xVel = 0;
                 GetComponent<Animator>().SetBool("Walking", false);
             }
 
-                if (!inAir && CustomInput.BoolFreshPress(CustomInput.UserInput.Jump))
+            if (!inAir && CustomInput.BoolFreshPress(CustomInput.UserInput.Jump))
             {
                 yVel = jumpSpeed;
                 inAir = true;
@@ -157,8 +149,7 @@ namespace Assets.Scripts.Player
                     yVel = maxJumpSpeed;
                 else
                     yVel -= gravity;
-            }
-            else
+            } else
                 yVel = 0;
         }
 
@@ -170,13 +161,12 @@ namespace Assets.Scripts.Player
             {
                 up = CustomInput.Bool(CustomInput.UserInput.LookUp) ? CustomInput.Raw(CustomInput.UserInput.LookUp) : CustomInput.Raw(CustomInput.UserInput.LookDown);
                 right = CustomInput.Bool(CustomInput.UserInput.LookRight) ? CustomInput.Raw(CustomInput.UserInput.LookRight) : CustomInput.Raw(CustomInput.UserInput.LookLeft);
-            }
-            else
+            } else
             {
                 Vector3 norm = (new Vector3(CustomInput.MouseX, CustomInput.MouseY, 0) - camera.WorldToScreenPoint(transform.position)).normalized;
                 up = norm.y;
                 right = norm.x;
-                
+
             }
 
             if (right < 0)
@@ -186,22 +176,19 @@ namespace Assets.Scripts.Player
             if (up == 0 && right == 0)
             {
 
-            }
-            else if (up == 0)
+            } else if (up == 0)
             {
                 if (right < 0)
                     gun.transform.rotation = Quaternion.Euler(0, 0, 0);
                 else
                     gun.transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if (right == 0)
+            } else if (right == 0)
             {
                 if (up < 0)
                     gun.transform.rotation = Quaternion.Euler(0, 0, 270);
                 else
                     gun.transform.rotation = Quaternion.Euler(0, 0, 90);
-            }
-            else
+            } else
             {
                 if (right < 0)
                     gun.transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan(up / right));

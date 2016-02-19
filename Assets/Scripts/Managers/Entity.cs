@@ -6,6 +6,17 @@ namespace Assets.Scripts.Managers
     /// <summary> Parent class for all GameObjects managed by EntityManager. </summary>
     public abstract class Entity : MonoBehaviour
     {
+        [SerializeField]
+        private string entityName;
+        public string Name { get { return entityName; } }
+        /// <summary> The total health of the Entity. </summary>
+        [SerializeField]
+        protected int totalHealth;
+        public int TotalHealth { get { return totalHealth; } }
+        /// <summary> The current health of the Entity. </summary>
+        protected int currentHealth;
+        public int CurrentHealth { get { return currentHealth; } }
+
         /// <summary> Reference to this entites manager for callbacks on death. </summary>
         private EntityManager manager;
         /// <summary> The type of this entity in the manager. </summary>
@@ -29,7 +40,7 @@ namespace Assets.Scripts.Managers
         {
             get { return instance; }
         }
-        
+
         /// <summary> The direction this entity is facing at init. </summary>
         protected Enums.Direction direction;
 
@@ -44,7 +55,7 @@ namespace Assets.Scripts.Managers
             transform.position = loc.position;
             transform.localRotation = loc.rotation;
             if (isCutScene)
-            { 
+            {
                 transform.localScale = loc.localScale;
                 gameObject.layer = LayerMask.NameToLayer("CutScene");
             }

@@ -55,9 +55,9 @@ namespace Assets.Scripts.Bullets
                     hit = (Physics2D.Raycast(rayCastPoint.position, transform.right, raycastLenght, ~rayCastLayer));
                     break;
             }
-            if(hit)
+            if (hit)
             {
-                if(hit.collider.tag == targetTag)
+                if (hit.collider.tag == targetTag)
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
                 Die();
             }

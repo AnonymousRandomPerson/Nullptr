@@ -14,20 +14,14 @@ namespace Assets.Scripts.Enemy
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
-        /// <summary> The health for an enemy to start with. </summary>
-        [SerializeField]
-        private int health; 
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
-        private float invulerabilityTime;
+        protected float invulerabilityTime;
 
         /// <summary> When greater than 0, this enemy is invunerable and doesn't take damage. </summary>
-        private float invulerability;
+        protected float invulerability;
         /// <summary> When true this enemy's sprite is being rendered. </summary>
-        private bool render;
-
-        /// <summary> The current health of this enemy. </summary>
-        protected int currentHealth;
+        protected bool render;
         /// <summary> True if the enemy has been hit by something damaging. </summary>
         protected bool hit;
 
@@ -41,7 +35,7 @@ namespace Assets.Scripts.Enemy
             hit = false;
             render = true;
             invulerability = 0f;
-            currentHealth = health;
+            currentHealth = totalHealth;
             if (direction == Util.Enums.Direction.Left)
                 FaceLeft();
             else
@@ -64,8 +58,7 @@ namespace Assets.Scripts.Enemy
                 render = !render;
                 Render(render);
                 invulerability -= Time.deltaTime;
-            }
-            else if (!render)
+            } else if (!render)
             {
                 render = true;
                 Render(true);
@@ -80,7 +73,16 @@ namespace Assets.Scripts.Enemy
         public override void HitByEntity(Entity col)
         {
             if (col.gameObject.tag == "PlayerBullet")
+            {
                 hit = true;
+                HealthDisplayManager.Instance.SetRightEntity(this);
+            }
+        }
+
+        internal override void Die()
+        {
+            ExplosionManager.instance.SpawnExplosion(0, transform, Util.Enums.Direction.None);   
+            base.Die();
         }
 
         /// <summary> Turns the sprite for this enemy on or off. </summary>

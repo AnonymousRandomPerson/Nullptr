@@ -25,6 +25,8 @@ namespace Assets.Scripts.Enemy
         /// <summary> True if the enemy has been hit by something damaging. </summary>
         protected bool hit;
 
+        protected int damage;
+
         protected bool Invincible
         {
             get { return invulerability > 0; }
@@ -48,10 +50,11 @@ namespace Assets.Scripts.Enemy
             {
                 if (invulerability <= 0)
                 {
-                    currentHealth--;
+                    currentHealth -= damage;
                     invulerability = invulerabilityTime;
                 }
                 hit = false;
+                damage = 0;
             }
             if (invulerability > 0)
             {
@@ -76,6 +79,7 @@ namespace Assets.Scripts.Enemy
             {
                 hit = true;
                 HealthDisplayManager.Instance.SetRightEntity(this);
+                damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
             }
         }
 

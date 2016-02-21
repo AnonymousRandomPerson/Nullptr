@@ -4,8 +4,10 @@ using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.Bullets
 {
-    class DestoyerBullet : Managers.Entity
+    class DestoyerBullet : Managers.Entity, Bullet
     {
+        [SerializeField]
+        private int damage;
         [SerializeField]
         private float speed;
         [SerializeField]
@@ -19,6 +21,11 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private Transform rayCastPoint;
         private float currentLifeTime;
+
+        public int getDamage()
+        {
+            return damage;
+        }
 
         public override void InitData()
         {

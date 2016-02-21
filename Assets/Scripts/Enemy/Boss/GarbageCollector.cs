@@ -98,7 +98,7 @@ namespace Assets.Scripts.Enemy.Boss
             {
                 if (invulerability <= 0)
                 {
-                    currentHealth--;
+                    currentHealth -= damage;
                     invulerability = invulerabilityTime;
                 }
                 hit = false;

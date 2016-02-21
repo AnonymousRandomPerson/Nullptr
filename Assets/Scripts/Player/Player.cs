@@ -73,6 +73,7 @@ namespace Assets.Scripts.Player
 
         /// <summary> The animator for the player sprite. </summary>
         private Animator animator;
+        private int damage;
 
         public override void InitData()
         {
@@ -94,10 +95,11 @@ namespace Assets.Scripts.Player
             {
                 if (invulerability <= 0)
                 {
-                    currentHealth--;
+                    currentHealth-= damage;
                     invulerability = invulerabilityTime;
                 }
                 hit = false;
+                damage = 0;
             }
             if (invulerability > 0)
             {
@@ -225,6 +227,11 @@ namespace Assets.Scripts.Player
         {
             if (col.gameObject.tag == "Enemy")
                 hit = true;
+            else if(col.gameObject.tag == "EnemyBullet")
+            {
+                hit = true;
+                damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+            }
         }
 
         /// <summary> Turns the sprite for this enemy on or off. </summary>

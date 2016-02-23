@@ -111,9 +111,7 @@ namespace Assets.Scripts.Player
                 render = true;
                 Render(true);
             }
-            //if (currentHealth < 0)
-            //    Die();
-            if (transform.position.y < deathHeight)
+            if (currentHealth <= 0 || transform.position.y < deathHeight)
             {
                 Die();
             }

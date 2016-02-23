@@ -38,23 +38,23 @@ namespace Assets.Scripts.Bullets
             switch (direction)
             {
                 case Enums.Direction.Up:
-                    transform.Translate(transform.up * speed * Time.deltaTime);
+                    transform.Translate(transform.up * speed * Time.deltaTime, Space.World);
                     hit = (Physics2D.Raycast(rayCastPoint.position, Vector2.up, raycastLenght, ~rayCastLayer));
                     break;
                 case Enums.Direction.Down:
                     Vector3 directionDown = transform.up;
                     directionDown.y = -directionDown.y;
-                    transform.Translate(directionDown * speed * Time.deltaTime);
+                    transform.Translate(directionDown * speed * Time.deltaTime, Space.World);
                     hit = (Physics2D.Raycast(rayCastPoint.position, -Vector2.up, raycastLenght, ~rayCastLayer));
                     break;
                 case Enums.Direction.Left:
                     Vector3 directionLeft = transform.right;
                     directionLeft.x = -directionLeft.x;
-                    transform.Translate(directionLeft * speed * Time.deltaTime);
+                    transform.Translate(directionLeft * speed * Time.deltaTime, Space.World);
                     hit = (Physics2D.Raycast(rayCastPoint.position, -Vector2.right, raycastLenght, ~rayCastLayer));
                     break;
                 case Enums.Direction.Right:
-                    transform.Translate(Vector2.right * speed * Time.deltaTime);
+                    transform.Translate(transform.right * speed * Time.deltaTime, Space.World);
                     hit = (Physics2D.Raycast(rayCastPoint.position, Vector2.right, raycastLenght, ~rayCastLayer));
                     break;
                 default:

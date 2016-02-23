@@ -11,7 +11,7 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private float speed;
         [SerializeField]
-        private float raycastLenght;
+        private float raycastRadius;
         [SerializeField]
         private string targetTag;
         [SerializeField]
@@ -39,26 +39,26 @@ namespace Assets.Scripts.Bullets
             {
                 case Enums.Direction.Up:
                     transform.Translate(transform.up * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, Vector2.up, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 case Enums.Direction.Down:
                     Vector3 directionDown = transform.up;
                     directionDown.y = -directionDown.y;
                     transform.Translate(directionDown * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, -Vector2.up, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 case Enums.Direction.Left:
                     Vector3 directionLeft = transform.right;
                     directionLeft.x = -directionLeft.x;
                     transform.Translate(directionLeft * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, -Vector2.right, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 case Enums.Direction.Right:
                     transform.Translate(transform.right * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.Raycast(rayCastPoint.position, Vector2.right, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 default:
-                    hit = (Physics2D.Raycast(rayCastPoint.position, transform.right, raycastLenght, ~rayCastLayer));
+                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
             }
             if (hit)

@@ -22,6 +22,9 @@ namespace Assets.Scripts.Player
         /// <summary> Location of the right edge of the collider for use in raycasting to the ground. </summary>
         [SerializeField]
         private Transform frontFoot;
+        /// <summary> Location of the bottom center of the collider for use in raycasting to the ground. </summary>
+        [SerializeField]
+        private Transform center;
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
@@ -166,7 +169,39 @@ namespace Assets.Scripts.Player
                 else
                     xVel = -maxRunSpeed;
             }
+            char slopeSide = 'n';
+            if (xVel != 0 && yVel == 0)
+            {
+                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                if ((backCast ^ frontCast) && !centerCast)
+                {
+                    slopeSide = backCast ? 'b' : 'f';
+                }
+            }
             transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yVel * Time.deltaTime), 0));
+            float slopeOffset = 0;
+            if (slopeSide == 'b')
+            {
+                // Check for going down slopes.
+                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                if (backCast)
+                {
+                    slopeOffset -= backCast.distance;
+                }
+            }
+            else if (slopeSide == 'f')
+            {
+                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                if (frontCast)
+                {
+                    slopeOffset -= frontCast.distance;
+                }
+            }
+            if (slopeOffset != 0) {
+                transform.Translate(Vector3.up * slopeOffset);
+            }
             if (inAir)
             {
                 if (yVel < maxFallSpeed)
@@ -259,7 +294,8 @@ namespace Assets.Scripts.Player
         {
             RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
             RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-            inAir = !(backCast || frontCast);
+            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+            inAir = !(backCast || frontCast || centerCast);
             if (!inAir)
             {
                 if (backCast)
@@ -269,6 +305,10 @@ namespace Assets.Scripts.Player
                 if (frontCast)
                 {
                     groundDistance = Mathf.Min(groundDistance, frontCast.distance);
+                }
+                if (centerCast)
+                {
+                    groundDistance = Mathf.Min(groundDistance, centerCast.distance);
                 }
             }
             RaycastHit2D ray;

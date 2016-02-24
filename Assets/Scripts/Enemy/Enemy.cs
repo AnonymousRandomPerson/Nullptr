@@ -7,13 +7,13 @@ namespace Assets.Scripts.Enemy
     {
         /// <summary> Location of the left edge of the collider for use in raycasting to the ground. </summary>
         [SerializeField]
-        private Transform backFoot;
+        protected Transform backFoot;
         /// <summary> Location of the right edge of the collider for use in raycasting to the ground. </summary>
         [SerializeField]
-        private Transform frontFoot;
+        protected Transform frontFoot;
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
-        private Transform front;
+        protected Transform front;
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
         protected float invulerabilityTime;

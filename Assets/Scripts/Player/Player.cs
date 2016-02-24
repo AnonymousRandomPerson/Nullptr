@@ -277,12 +277,15 @@ namespace Assets.Scripts.Player
             gunRenderer.enabled = render;
         }
 
-        void OnCollisionEnter2D(Collision2D coll)
+        void OnCollisionStay2D(Collision2D coll)
         {
             if (GameManager.IsRunning)
             {
                 if (coll.gameObject.tag == "Enemy")
+                {
                     hit = true;
+                    damage = 1;
+                }
             }
         }
 

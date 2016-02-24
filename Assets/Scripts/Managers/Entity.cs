@@ -53,7 +53,7 @@ namespace Assets.Scripts.Managers
         internal void Init(Transform loc, EntityManager manager, int type, int instance, Enums.Direction direction, bool isCutScene)
         {
             transform.position = loc.position;
-            transform.localRotation = loc.rotation;
+            transform.rotation = loc.rotation;
             if (isCutScene)
             {
                 transform.localScale = loc.localScale;

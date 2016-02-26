@@ -7,14 +7,20 @@ namespace Assets.Scripts.Managers
     {
         public static ExplosionManager instance;
 
-        void Awake()
+        public override void Start()
         {
+            base.Start();
             instance = this;
         }
 
         public bool SpawnExplosion(int type, Transform loc, Enums.Direction direction)
         {
             return AquireEntityCutScene(type, loc, direction);
+        }
+
+        public void OnDestroy()
+        {
+            instance = null;
         }
     }
 }

@@ -20,6 +20,8 @@ namespace Assets.Scripts.Enemy.Boss
         [SerializeField]
         private int startLoc;
         [SerializeField]
+        private Util.Enums.BulletTypes bullet;
+        [SerializeField]
         private SpriteRenderer sprite;
 
         /// <summary> Signals the state machine the current animation is done. </summary>
@@ -122,7 +124,7 @@ namespace Assets.Scripts.Enemy.Boss
             transform.Translate(GetForward() * movementSpeed * Time.deltaTime);
             if ((wait -= Time.deltaTime) < 0)
             {
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, barrel, Util.Enums.Direction.Right);
+                bulletManager.Shoot(bullet, barrel, Util.Enums.Direction.Right);
                 wait = 1f;
             }
         }
@@ -133,7 +135,7 @@ namespace Assets.Scripts.Enemy.Boss
                 wait = 0f;
             if (wait == 0f)
             {
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, skyBarrel, Util.Enums.Direction.Right);
+                bulletManager.Shoot(bullet, skyBarrel, Util.Enums.Direction.Right);
                 count++;
             }
             wait += Time.deltaTime;
@@ -152,7 +154,7 @@ namespace Assets.Scripts.Enemy.Boss
             if (wait == 0f)
             {
                 foreach (Transform b in barrels)
-                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy, b, Util.Enums.Direction.Down);
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, b, Util.Enums.Direction.Down);
                 count++;
             }
             wait += Time.deltaTime;

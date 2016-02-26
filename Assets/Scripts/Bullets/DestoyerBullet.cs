@@ -39,28 +39,22 @@ namespace Assets.Scripts.Bullets
             {
                 case Enums.Direction.Up:
                     transform.Translate(transform.up * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 case Enums.Direction.Down:
                     Vector3 directionDown = transform.up;
                     directionDown.y = -directionDown.y;
                     transform.Translate(directionDown * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 case Enums.Direction.Left:
                     Vector3 directionLeft = transform.right;
                     directionLeft.x = -directionLeft.x;
                     transform.Translate(directionLeft * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
                 case Enums.Direction.Right:
                     transform.Translate(transform.right * speed * Time.deltaTime, Space.World);
-                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
-                    break;
-                default:
-                    hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
                     break;
             }
+            hit = (Physics2D.CircleCast(transform.position, raycastRadius, Vector2.zero, 0, ~rayCastLayer));
             if (hit)
             {
                 if (hit.collider.tag == targetTag)

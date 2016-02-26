@@ -55,14 +55,12 @@ namespace Assets.Scripts.Enemy.Enemies
             }
             else
             {
-                Vector2 forward = GetForward();
-                RaycastHit2D hit = Physics2D.Raycast(front.position, forward, speed * Time.deltaTime, ~(1 << 8 | 1 << 10 | 1 << 12));
-                if (hit)
-                {
-                    // Turn around if a wall is hit.
-                    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                bool inAir = false, blocked = false;
+                TouchingSomething(ref inAir, ref blocked);
+                if (blocked) {
+                    Turn();
                 }
-                transform.Translate(forward * speed * Time.deltaTime);
+                transform.Translate(GetForward() * speed * Time.deltaTime);
             }
         }
 

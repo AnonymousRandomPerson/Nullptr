@@ -11,36 +11,56 @@ namespace Assets.Scripts.UI.BossTitle
     class TextEchoShaker : MonoBehaviour
     {
         [SerializeField]
-        private GameObject primaryCharacterHolder; //Holds the CharacterHolder who is in front and not meant to move
+        private GameObject characterHolderPrefab;
         [SerializeField]
-        private GameObject[] backgroundCharacterHolders; //Holds the background CharacterHolders part of the echo effect
+        private int backgroundCount = 5;
+        [SerializeField]
+        private string message;
+        public string Message { set { message = value; } }
 
-        const float DAMPENING = 3; //Dampening will decrease the distance background CharacterHolders appears from the primary one
-        const float RANGE = 2; //Range affects the randomness of the background CharacterHolders appearing
+        GameObject primary;
+        GameObject[] secondaries;
 
+        const float DAMPENING = 4f; //Dampening will decrease the distance background CharacterHolders appears from the primary one
+        const float RANGE = 20; //Range affects the randomness of the background CharacterHolders appearing
+        Vector3 initialPosition;
         Vector3[] initialPositions; //Store original positions of the BackgroundCharacterHolders so they don't run away
 
         void Start()
         {
-            initialPositions = new Vector3[backgroundCharacterHolders.Length];
-            for (int i = 0; i < backgroundCharacterHolders.Length; i++)
+            primary = Instantiate(characterHolderPrefab);
+            primary.GetComponent<TextWriter>().FullText = message;
+            initialPosition = primary.transform.transform.localPosition;
+            initialPositions = new Vector3[backgroundCount];
+            secondaries = new GameObject[backgroundCount];
+            for (int i = 0; i < initialPositions.Length; i++)
             {
-                initialPositions[i] = backgroundCharacterHolders[i].transform.localPosition;
+                secondaries[i] = Instantiate(characterHolderPrefab);
+                TextWriter t = secondaries[i].GetComponent<TextWriter>();
+                t.SoundEnabled = false;
+                t.FullText = message;
+                t.CharacterAlpha = Random.Range(.1f, .5f);
+                initialPositions[i] = secondaries[i].transform.localPosition;
+                t.gameObject.transform.parent = gameObject.transform;
             }
+            primary.gameObject.transform.parent = gameObject.transform;
         }
 
         void Update()
         {
-            if (primaryCharacterHolder != null)
+            if (primary != null)
             {
-                for (int i = 0; i < backgroundCharacterHolders.Length; i++)
+                for (int i = 0; i < secondaries.Length; i++)
                 {
                     Vector3 initial = initialPositions[i];
                     float x = initial.x;
                     float y = initial.y;
                     float z = initial.z;
-                    backgroundCharacterHolders[i].transform.localPosition = new Vector3(x + Mathf.Sin(Random.Range(-RANGE, RANGE)) / DAMPENING, y + Mathf.Sin(Random.Range(-RANGE, RANGE)) / DAMPENING, z);
+                    secondaries[i].transform.localPosition = new Vector3(x + Mathf.Sin(Random.Range(-RANGE, RANGE)) / DAMPENING, y + Mathf.Sin(Random.Range(-RANGE, RANGE)) / DAMPENING, z);
                 }
+                primary.transform.localPosition = new Vector3(initialPosition.x + Mathf.Sin(Random.Range(-RANGE, RANGE) / 1000),
+                                                              initialPosition.y + Mathf.Sin(Random.Range(-RANGE, RANGE) / 1000),
+                                                              initialPosition.z);
             } else {
                 Destroy(this.gameObject);
             }

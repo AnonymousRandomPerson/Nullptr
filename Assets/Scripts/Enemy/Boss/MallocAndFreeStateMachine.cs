@@ -67,7 +67,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             if (animDone)
                 return State.Move;
-            return State.GoToGround;
+            return State.GoToAir;
         }
 
         private State Wait(bool animDone, bool hit, bool sigWaitForAttack)

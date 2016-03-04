@@ -199,8 +199,6 @@ namespace Assets.Scripts.Player
                 {
                     xVel = 0;
                 }
-                Debug.Log(ray.collider);
-                Debug.Log(xVel);
             }
             
             char slopeSide = 'n';

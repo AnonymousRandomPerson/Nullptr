@@ -8,7 +8,7 @@ namespace Assets.Scripts.Bullets
         public static MallocManager instance;
         public ArrayList list;
 
-        public void Start()
+        public void Init()
         {
             instance = this;
             list = new ArrayList();

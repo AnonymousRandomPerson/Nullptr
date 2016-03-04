@@ -32,16 +32,18 @@ namespace Assets.Scripts.Enemy.Boss
         private SpriteRenderer body;
         [SerializeField]
         private Rigidbody2D rgby2d;
+        [SerializeField]
+        private bool goFirst;
 
         private bool animDone;
         private bool done;
         private bool doOnce;
         private bool jump;
-        private bool goFirst;
         private bool waitOnPartner;
         private bool sigWaitForAttack;
         private bool sigDone;
         private bool sigYourTurn;
+        private bool stage1;
         private float wait;
         /// <summary> Reference to the BulletManager for shooting. </summary>
         private Managers.BulletManager bulletManager;
@@ -51,11 +53,6 @@ namespace Assets.Scripts.Enemy.Boss
         private MallocAndFree partner;
         /// <summary> The direction to travel in.</summary>
         private bool moveDirection;
-
-        public bool GoFirst
-        {
-            set { goFirst = value; }
-        }
 
         public MallocAndFree Partner
         {
@@ -72,26 +69,27 @@ namespace Assets.Scripts.Enemy.Boss
         }
         private bool SigYourTurn
         {
-            set { SigYourTurn = value; }
+            set { sigYourTurn = value; }
         }
 
         public override void InitData()
         {
             base.InitData();
             bulletManager = FindObjectOfType<Managers.BulletManager>();
-            animDone = false;
+            animDone = true;
             done = false;
             doOnce = false;
             jump = false;
-            goFirst = false;
             waitOnPartner = false;
             sigWaitForAttack = false;
             sigDone = false;
             sigYourTurn = false;
+            stage1 = true;
             wait = 0;
+            render = true;
             machine = new MallocAndFreeStateMachine();
-            FindObjectOfType<Platforms.GarbageFloor>().target = this.gameObject.transform;
             player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
+            face.enabled = false;
         }
 
         public override void RunEntity()
@@ -101,7 +99,7 @@ namespace Assets.Scripts.Enemy.Boss
             state = machine.update(currentHealth, 5, done, goFirst, hit && invulerability <= 0, waitOnPartner, sigWaitForAttack, sigDone, sigYourTurn);
             if (temp != state)
             {
-                if (player.transform.position.x < transform.position.x)
+                if (player.transform.position.x > transform.position.x)
                     FaceLeft();
                 else
                     FaceRight();
@@ -110,15 +108,13 @@ namespace Assets.Scripts.Enemy.Boss
                 done = false;
                 doOnce = false;
                 jump = false;
-                goFirst = false;
                 waitOnPartner = false;
                 sigWaitForAttack = false;
                 sigDone = false;
                 sigYourTurn = false;
                 wait = 0;
-                hit = false;
-                if (state == MallocAndFreeStateMachine.State.AirAttack)
-                    partner.SigWaitForAttack = true;
+                //if (state == MallocAndFreeStateMachine.State.AirAttack)
+                //    partner.SigWaitForAttack = true;
             }
             if (invulerability > 0)
             {
@@ -173,6 +169,7 @@ namespace Assets.Scripts.Enemy.Boss
         void GoToGround()
         {
             rgby2d.gravityScale = 1;
+            face.enabled = true;
             bool inAir = true, b = false;
             TouchingSomething(ref inAir, ref b);
             if (!inAir)
@@ -182,6 +179,9 @@ namespace Assets.Scripts.Enemy.Boss
         void GoToAir()
         {
             rgby2d.gravityScale = 0;
+            rgby2d.velocity = Vector2.zero;
+            face.enabled = false;
+            partner.SigYourTurn = true;
             if (transform.position.y < hoverHeight)
                 transform.Translate(Vector2.up * 5 * Time.deltaTime);
             else
@@ -216,7 +216,7 @@ namespace Assets.Scripts.Enemy.Boss
         void GroundAttack()
         {
             if (isMalloc)
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[0], Util.Enums.Direction.Right);
+                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[0], transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
             else
                 bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel[0], Util.Enums.Direction.None);
             done = true;
@@ -224,6 +224,9 @@ namespace Assets.Scripts.Enemy.Boss
 
         void Move()
         {
+            face.enabled = false;
+            if (transform.position.y < hoverHeight)
+                transform.Translate(Vector2.up * 5 * Time.deltaTime);
             if (transform.position.x < pointA.x || transform.position.x > pointB.x)
                 moveDirection = !moveDirection;
             if (moveDirection)
@@ -234,7 +237,7 @@ namespace Assets.Scripts.Enemy.Boss
                 directionLeft.x = -directionLeft.x;
                 transform.Translate(directionLeft * Time.deltaTime * 2.5f);
             }
-            if ((wait += Time.deltaTime) > waitTime)
+            if ((wait += Time.deltaTime) > waitTime * 3)
                 done = true;
         }
 
@@ -249,7 +252,7 @@ namespace Assets.Scripts.Enemy.Boss
             }
             else
                 for (int i = 0; i < barrel.Length; i++)
-                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[i], Util.Enums.Direction.None);
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel[i], Util.Enums.Direction.None);
             done = true;
         }
         
@@ -271,13 +274,22 @@ namespace Assets.Scripts.Enemy.Boss
                 invulerability = invulerabilityTime;
             }
             hit = false;
+            if (currentHealth <= 0)
+            {
+                Render(true);
+                if (stage1)
+                    stage1 = false;
+                else
+                    Die();
+            }
+            done = true;
         }
 
         void FixedUpdate()
         {
             if(jump)
             {
-                rgby2d.AddForce(new Vector2(1, 1) * jumpForce, ForceMode2D.Impulse);
+                rgby2d.AddForce(new Vector2(transform.localScale.x * .75f, 1) * jumpForce, ForceMode2D.Impulse);
                 jump = false;
             }
         }
@@ -286,7 +298,6 @@ namespace Assets.Scripts.Enemy.Boss
         {
             if (Managers.GameManager.IsRunning)
             {
-                
             }
         }
     }

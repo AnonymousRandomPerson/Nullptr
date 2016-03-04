@@ -15,7 +15,7 @@ namespace Assets.Scripts.Bullets
 
         public override void InitData()
         {
-            if(MallocManager.instance.GetMallocs().Count > 0)
+            if(MallocManager.instance != null && MallocManager.instance.GetMallocs().Count > 0)
                 ((Malloc)MallocManager.instance.GetMallocs()[0]).Explode();
             Die();
         }

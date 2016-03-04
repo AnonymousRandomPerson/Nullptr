@@ -39,7 +39,10 @@ namespace Assets.Scripts.Bullets
         {
             currentLifeTime = 0;
             if (MallocManager.instance == null)
+            {
                 malManager = Instantiate(mallocManager).GetComponent<MallocManager>();
+                malManager.Init();
+            }
             else
                 malManager = MallocManager.instance;
             malManager.AddMalloc(this);

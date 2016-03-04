@@ -32,7 +32,6 @@ namespace Assets.Scripts.Bullets
         public void OnDestroy()
         {
             instance = null;
-            list.Clear();
         }
     }
 }

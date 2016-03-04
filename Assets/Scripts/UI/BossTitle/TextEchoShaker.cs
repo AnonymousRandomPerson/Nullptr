@@ -41,9 +41,9 @@ namespace Assets.Scripts.UI.BossTitle
                 t.FullText = message;
                 t.CharacterAlpha = Random.Range(.1f, .5f);
                 initialPositions[i] = secondaries[i].transform.localPosition;
-                t.gameObject.transform.parent = gameObject.transform;
+                t.gameObject.transform.SetParent(gameObject.transform);
             }
-            primary.gameObject.transform.parent = gameObject.transform;
+            primary.gameObject.transform.SetParent(gameObject.transform);
         }
 
         void Update()

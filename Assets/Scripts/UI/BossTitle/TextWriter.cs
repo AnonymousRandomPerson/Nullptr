@@ -19,7 +19,7 @@ namespace Assets.Scripts.UI.BossTitle
         private string fullText; //The whole bazinga to type
         public string FullText { set { fullText = value; } }
         [SerializeField]
-        private AudioSource sound; //Sound that is played on each character
+        private Util.SoundPlayer sound; //Sound that is played on each character
         [SerializeField]
         private bool soundEnabled = true; //Determines if a sound plays or not
         public bool SoundEnabled { set { soundEnabled = value; } }
@@ -59,8 +59,8 @@ namespace Assets.Scripts.UI.BossTitle
                 //Parent(CreateCharacter(charsToWrite[i]), characterHolder);
                 if (soundEnabled && !SILENT_CHARACTERS.Contains(charsToWrite[i]))
                 {
-                    //sound.Stop();
-                    sound.Play();
+                    sound.Stop();
+                    sound.PlaySong(0);
                 }
                 characters[i].color = new Color(255, 255, 255, characterAlpha);
             }

@@ -9,7 +9,7 @@ namespace Assets.Scripts.Enemy.Boss
             Intro,
             GoToGround, GoToAir,
             Wait, Step, Jump, GroundAttack, Move, AirAttack,
-            Stage2, Super,
+            Stage2, 
             Hit
         }
 
@@ -22,21 +22,20 @@ namespace Assets.Scripts.Enemy.Boss
             stage = 0;
         }
 
-        public State update(int health, int limit, bool animDone, bool goFirst, bool hit, bool waitOnPartner, bool sigWaitForAttack, bool sigDone, bool sigYourTurn, bool sigDoSuper)
+        public State update(int health, int limit, bool animDone, bool goFirst, bool hit, bool waitOnPartner, bool sigWaitForAttack, bool sigDone, bool sigYourTurn)
         {
             switch (currState)
             {
                 case State.Intro: currState = Intro(animDone, goFirst); break;
                 case State.GoToGround: currState = GotoGround(animDone); break;
                 case State.GoToAir: currState = GoToAir(animDone); break;
-                case State.Wait: currState = Wait(animDone, hit, sigWaitForAttack, sigDoSuper); break;
+                case State.Wait: currState = Wait(animDone, hit, sigWaitForAttack); break;
                 case State.Step: currState = Step(animDone); break;
                 case State.Jump: currState = Jump(animDone); break;
                 case State.GroundAttack: currState = GroundAttack(animDone); break;
                 case State.Move: currState = Move(animDone, sigYourTurn); break;
                 case State.AirAttack: currState = AirAttack(animDone); break;
                 case State.Stage2: currState = Stage2(waitOnPartner); break;
-                case State.Super: currState = Super(animDone); break;
                 case State.Hit: currState = Hit(health, limit, animDone); break;
             }
             return currState;
@@ -71,12 +70,10 @@ namespace Assets.Scripts.Enemy.Boss
             return State.GoToGround;
         }
 
-        private State Wait(bool animDone, bool hit, bool sigWaitForAttack, bool sigDoSuper)
+        private State Wait(bool animDone, bool hit, bool sigWaitForAttack)
         {
             if (hit)
                 return State.Hit;
-            if (stage == 1 && sigDoSuper)
-                return State.Super;
             if(animDone && !sigWaitForAttack)
             {
                 float r = Random.Range(0f, 1f);
@@ -84,8 +81,6 @@ namespace Assets.Scripts.Enemy.Boss
                     return State.GroundAttack;
                 if (r < .60f)
                     return State.Jump;
-                if (stage == 1 && r < .80f)
-                    return State.Super;
                 return State.Step;
             }
             return State.Wait;
@@ -138,13 +133,6 @@ namespace Assets.Scripts.Enemy.Boss
             if (waitOnPartner)
                 return State.Stage2;
             return State.GoToGround;
-        }
-
-        private State Super(bool animDone)
-        {
-            if (animDone)
-                return State.Wait;
-            return State.Super;
         }
 
         private State Hit(int health, int limit, bool animDone)

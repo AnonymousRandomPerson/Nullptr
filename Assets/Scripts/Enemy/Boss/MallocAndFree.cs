@@ -19,7 +19,7 @@ namespace Assets.Scripts.Enemy.Boss
         private float jumpForce;
         /// <summary> Barrel for the gun. </summary>
         [SerializeField]
-        private Transform barrel;
+        private Transform[] barrel;
         [SerializeField]
         private Vector3 pointA;
         [SerializeField]
@@ -42,7 +42,6 @@ namespace Assets.Scripts.Enemy.Boss
         private bool sigWaitForAttack;
         private bool sigDone;
         private bool sigYourTurn;
-        private bool sigDoSuper;
         private float wait;
         /// <summary> Reference to the BulletManager for shooting. </summary>
         private Managers.BulletManager bulletManager;
@@ -75,10 +74,6 @@ namespace Assets.Scripts.Enemy.Boss
         {
             set { SigYourTurn = value; }
         }
-        private bool SigDoSuper
-        {
-            set { sigDoSuper = value; }
-        }
 
         public override void InitData()
         {
@@ -93,7 +88,6 @@ namespace Assets.Scripts.Enemy.Boss
             sigWaitForAttack = false;
             sigDone = false;
             sigYourTurn = false;
-            sigDoSuper = false;
             wait = 0;
             machine = new MallocAndFreeStateMachine();
             FindObjectOfType<Platforms.GarbageFloor>().target = this.gameObject.transform;
@@ -104,7 +98,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             MallocAndFreeStateMachine.State temp = state;
             // Get state
-            state = machine.update(currentHealth, 5, done, goFirst, hit, waitOnPartner, sigWaitForAttack, sigDone, sigYourTurn, sigDoSuper);
+            state = machine.update(currentHealth, 5, done, goFirst, hit && invulerability <= 0, waitOnPartner, sigWaitForAttack, sigDone, sigYourTurn);
             if (temp != state)
             {
                 if (player.transform.position.x < transform.position.x)
@@ -121,13 +115,22 @@ namespace Assets.Scripts.Enemy.Boss
                 sigWaitForAttack = false;
                 sigDone = false;
                 sigYourTurn = false;
-                sigDoSuper = false;
                 wait = 0;
                 hit = false;
                 if (state == MallocAndFreeStateMachine.State.AirAttack)
                     partner.SigWaitForAttack = true;
             }
-
+            if (invulerability > 0)
+            {
+                render = !render;
+                Render(render);
+                invulerability -= Time.deltaTime;
+            }
+            else if (!render)
+            {
+                render = true;
+                Render(true);
+            }
             // Run state
             switch (state)
             {
@@ -141,7 +144,6 @@ namespace Assets.Scripts.Enemy.Boss
                 case MallocAndFreeStateMachine.State.Move: Move(); break;
                 case MallocAndFreeStateMachine.State.AirAttack: AirAttack(); break;
                 case MallocAndFreeStateMachine.State.Stage2: Stage2(); break;
-                case MallocAndFreeStateMachine.State.Super: Super(); break;
                 case MallocAndFreeStateMachine.State.Hit: Hit(); break;
             }
         }
@@ -214,9 +216,9 @@ namespace Assets.Scripts.Enemy.Boss
         void GroundAttack()
         {
             if (isMalloc)
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel, Util.Enums.Direction.Right);
+                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[0], Util.Enums.Direction.Right);
             else
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel, Util.Enums.Direction.None);
+                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel[0], Util.Enums.Direction.None);
             done = true;
         }
 
@@ -239,10 +241,36 @@ namespace Assets.Scripts.Enemy.Boss
         void AirAttack()
         {
             if (isMalloc)
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel, Util.Enums.Direction.Right);
+            {
+                for (int i = 0; i < barrel.Length / 2; i++)
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[i], Util.Enums.Direction.Right);
+                for (int i = barrel.Length / 2; i < barrel.Length; i++)
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[i], Util.Enums.Direction.Left);
+            }
             else
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel, Util.Enums.Direction.None);
+                for (int i = 0; i < barrel.Length; i++)
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[i], Util.Enums.Direction.None);
             done = true;
+        }
+        
+        void Stage2()
+        {
+            if (sigYourTurn)
+                waitOnPartner = false;
+            else
+                waitOnPartner = true;
+            partner.sigYourTurn = true;
+            currentHealth = totalHealth/2;
+        }
+
+        void Hit()
+        {
+            if (invulerability <= 0)
+            {
+                currentHealth -= damage;
+                invulerability = invulerabilityTime;
+            }
+            hit = false;
         }
 
         void FixedUpdate()

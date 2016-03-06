@@ -226,8 +226,11 @@ namespace Assets.Scripts.Player
         public override void HitByEntity(Entity col)
         {
             if (col.gameObject.tag == "Enemy")
+            {
                 hit = true;
-            else if(col.gameObject.tag == "EnemyBullet")
+                damage = 1;
+            }
+            else if (col.gameObject.tag == "EnemyBullet")
             {
                 hit = true;
                 damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
@@ -247,7 +250,15 @@ namespace Assets.Scripts.Player
             if (GameManager.IsRunning)
             {
                 if (coll.gameObject.tag == "Enemy")
+                {
                     hit = true;
+                    damage = 1;
+                }
+                else if (coll.gameObject.tag == "EnemyBullet")
+                {
+                    hit = true;
+                    damage = coll.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                }
             }
         }
 

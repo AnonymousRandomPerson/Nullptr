@@ -17,15 +17,20 @@ namespace Assets.Scripts.UI.BossTitle
         private float secondsPerCharacter = .5f;
         [SerializeField]
         private string fullText; //The whole bazinga to type
+        public string FullText { set { fullText = value; } }
         [SerializeField]
         private Util.SoundPlayer sound; //Sound that is played on each character
         [SerializeField]
         private bool soundEnabled = true; //Determines if a sound plays or not
+        public bool SoundEnabled { set { soundEnabled = value; } }
         [SerializeField]
         private GameObject characterPrefab; //The specific characterPrefab we want to create
         [SerializeField]
-        private float characterAlpha = 1; //Alpha of the characterPrefab
+        private GameObject characterHolder;
 
+        [SerializeField]
+        private float characterAlpha = 1; //Alpha of the characterPrefab
+        public float CharacterAlpha { set { characterAlpha = value; } }
         static readonly char[] SILENT_CHARACTERS = { '_', ' ', '-' }; //When displaying these characters, don't make a sound
 
         // Use this for initialization
@@ -36,15 +41,28 @@ namespace Assets.Scripts.UI.BossTitle
 
         IEnumerator WriteText()
         {
-            char[] chars = fullText.ToCharArray();
-            for (int i = 0; i < chars.Length; i++)
+            char[] charsToWrite = fullText.ToCharArray();
+            Text[] characters = new Text[charsToWrite.Length];
+            for (int i = 0; i < charsToWrite.Length; i++)
+            {
+                characters[i] = CreateCharacter(charsToWrite[i]).GetComponent<Text>();
+                characters[i].color = Color.clear;
+                Parent(characters[i].gameObject, characterHolder);
+            }
+            for (int i = 0; i < charsToWrite.Length; i++)
             {
                 float timer = 0;
-                while (i != 0 && (timer += Time.deltaTime) < secondsPerCharacter)
+                while ((timer += Time.deltaTime) < secondsPerCharacter)
                 {
                     yield return null;
                 }
-                Parent(CreateCharacter(fullText[i]), gameObject);
+                //Parent(CreateCharacter(charsToWrite[i]), characterHolder);
+                if (soundEnabled && !SILENT_CHARACTERS.Contains(charsToWrite[i]))
+                {
+                    sound.Stop();
+                    sound.PlaySong(0);
+                }
+                characters[i].color = new Color(255, 255, 255, characterAlpha);
             }
             Destroy(this.gameObject, lingerDuration);
             yield break;
@@ -53,11 +71,10 @@ namespace Assets.Scripts.UI.BossTitle
         GameObject CreateCharacter(char c)
         {
             GameObject character = (GameObject)Instantiate(characterPrefab);
-            if (soundEnabled && !SILENT_CHARACTERS.Contains(c))
-            {
-                sound.Stop();
-                sound.PlaySong(0);
-            }
+            //if (soundEnabled && !SILENT_CHARACTERS.Contains(c)) {
+            //    sound.Stop();
+            //    sound.Play();
+            //}
             Text text = character.GetComponent<Text>();
             text.text = "" + c;
             text.color = new Color(text.color.r, text.color.g, text.color.b, characterAlpha);

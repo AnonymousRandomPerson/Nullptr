@@ -22,6 +22,9 @@ namespace Assets.Scripts.Player
         /// <summary> Location of the right edge of the collider for use in raycasting to the ground. </summary>
         [SerializeField]
         private Transform frontFoot;
+        /// <summary> Location of the bottom center of the collider for use in raycasting to the ground. </summary>
+        [SerializeField]
+        private Transform center;
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
@@ -62,6 +65,9 @@ namespace Assets.Scripts.Player
         /// <summary> True if the player has been hit by something damaging. </summary>
         protected bool hit;
 
+        /// <summary> The distance from the center to the collider's side. </summary>
+        private Vector3 colliderSideOffset;
+
         /// <summary> The height where the player dies if he drops below it. </summary>
         [SerializeField]
         private float deathHeight = -6;
@@ -87,6 +93,7 @@ namespace Assets.Scripts.Player
             animator = GetComponent<Animator>();
             bodyRenderer = GetComponent<SpriteRenderer>();
             gunRenderer = transform.FindChild("Gun").GetComponent<SpriteRenderer>();
+            colliderSideOffset = front.localPosition;
         }
 
         public override void RunEntity()
@@ -115,9 +122,9 @@ namespace Assets.Scripts.Player
             {
                 Die();
             }
-            bool inAir = false, blocked= false;
+            bool inAir = false;
             float groundDistance = Mathf.Infinity;
-            TouchingSomething(ref inAir, ref blocked, ref groundDistance);
+            TouchingSomething(ref inAir, ref groundDistance);
             Move(ref inAir, groundDistance);
             Aim();
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.SwitchLeft))
@@ -166,7 +173,69 @@ namespace Assets.Scripts.Player
                 else
                     xVel = -maxRunSpeed;
             }
+
+            if (xVel != 0)
+            {
+                bool blocked = false;
+                RaycastHit2D ray;
+                if (xVel > 0)
+                {
+                    ray = Physics2D.Raycast(transform.position + colliderSideOffset, Vector2.right, xVel * Time.deltaTime, ~(1 << 10));
+                }
+                else
+                {
+                    Vector2 sidePosition = new Vector2(transform.position.x - colliderSideOffset.x, transform.position.y + colliderSideOffset.y);
+                    ray = Physics2D.Raycast(sidePosition, -Vector2.right, -xVel * Time.deltaTime, ~(1 << 10));
+                }
+                if (!ray || ray.collider == null)
+                {
+                    blocked = false;
+                }
+                else
+                {
+                    blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged");
+                }
+                if (blocked)
+                {
+                    xVel = 0;
+                }
+                Debug.Log(ray.collider);
+                Debug.Log(xVel);
+            }
+            
+            char slopeSide = 'n';
+            if (xVel != 0 && yVel == 0)
+            {
+                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                if ((backCast ^ frontCast) && !centerCast)
+                {
+                    slopeSide = backCast ? 'b' : 'f';
+                }
+            }
             transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yVel * Time.deltaTime), 0));
+            float slopeOffset = 0;
+            if (slopeSide == 'b')
+            {
+                // Check for going down slopes.
+                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                if (backCast)
+                {
+                    slopeOffset -= backCast.distance;
+                }
+            }
+            else if (slopeSide == 'f')
+            {
+                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                if (frontCast)
+                {
+                    slopeOffset -= frontCast.distance;
+                }
+            }
+            if (slopeOffset != 0) {
+                transform.Translate(Vector3.up * slopeOffset);
+            }
             if (inAir)
             {
                 if (yVel < maxFallSpeed)
@@ -226,8 +295,11 @@ namespace Assets.Scripts.Player
         public override void HitByEntity(Entity col)
         {
             if (col.gameObject.tag == "Enemy")
+            {
                 hit = true;
-            else if(col.gameObject.tag == "EnemyBullet")
+                damage = 1;
+            }
+            else if (col.gameObject.tag == "EnemyBullet")
             {
                 hit = true;
                 damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
@@ -242,24 +314,32 @@ namespace Assets.Scripts.Player
             gunRenderer.enabled = render;
         }
 
-        void OnCollisionEnter2D(Collision2D coll)
+        void OnCollisionStay2D(Collision2D coll)
         {
             if (GameManager.IsRunning)
             {
                 if (coll.gameObject.tag == "Enemy")
+                {
                     hit = true;
+                    damage = 1;
+                }
+                else if (coll.gameObject.tag == "EnemyBullet")
+                {
+                    hit = true;
+                    damage = coll.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                }
             }
         }
 
         /// <summary> Returns booleans about whether or not the enemy is touching another collider. </summary>
         /// <param name="inAir"> True if there is no ground currently beneath the enemy. </param>
-        /// <param name="blocked"> True if there is something in front of the enemy. </param>
         /// <param name="groundDistance"> The distance from the player to the ground if the player will hit the ground on the current tick. </param>
-        protected void TouchingSomething(ref bool inAir, ref bool blocked, ref float groundDistance)
+        protected void TouchingSomething(ref bool inAir, ref float groundDistance)
         {
             RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
             RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-            inAir = !(backCast || frontCast);
+            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+            inAir = !(backCast || frontCast || centerCast);
             if (!inAir)
             {
                 if (backCast)
@@ -270,16 +350,11 @@ namespace Assets.Scripts.Player
                 {
                     groundDistance = Mathf.Min(groundDistance, frontCast.distance);
                 }
+                if (centerCast)
+                {
+                    groundDistance = Mathf.Min(groundDistance, centerCast.distance);
+                }
             }
-            RaycastHit2D ray;
-            if (this.transform.localScale.x > 0)
-                ray = Physics2D.Raycast(front.position, -Vector2.right, 0.05f);
-            else
-                ray = Physics2D.Raycast(front.position, Vector2.right, 0.05f);
-            if (!ray || ray.collider == null)
-                blocked = false;
-            else
-                blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged");
         }
 
         /// <summary> Switches the player to face left. </summary>

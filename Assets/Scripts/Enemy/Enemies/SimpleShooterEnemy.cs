@@ -13,6 +13,8 @@ namespace Assets.Scripts.Enemy.Enemies
         private Transform barrel;
         [SerializeField]
         private float LifeTime;
+        [SerializeField]
+        private Enums.BulletTypes bullet;
 
         private float currWait;
         private float currLifeTime;
@@ -34,7 +36,7 @@ namespace Assets.Scripts.Enemy.Enemies
             transform.Translate(GetForward() * speed * Time.deltaTime);
             if ((currWait += Time.deltaTime) > wait)
             {
-                bulletManager.Shoot(Enums.BulletTypes.Enemy, barrel, Enums.Direction.Down);
+                bulletManager.Shoot(bullet, barrel, Enums.Direction.Down);
                 currWait = 0;
             }
             currLifeTime += Time.deltaTime;

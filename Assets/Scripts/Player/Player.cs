@@ -199,8 +199,6 @@ namespace Assets.Scripts.Player
                 {
                     xVel = 0;
                 }
-                Debug.Log(ray.collider);
-                Debug.Log(xVel);
             }
             
             char slopeSide = 'n';
@@ -326,7 +324,7 @@ namespace Assets.Scripts.Player
                 else if (coll.gameObject.tag == "EnemyBullet")
                 {
                     hit = true;
-                    damage = coll.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                    damage = coll.gameObject.GetComponentInParent<Bullets.Bullet>().getDamage();
                 }
             }
         }

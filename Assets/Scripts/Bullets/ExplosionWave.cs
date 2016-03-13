@@ -14,13 +14,10 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private string targetTag;
         [SerializeField]
-        private float lifeTime;
-        [SerializeField]
         private LayerMask rayCastLayer;
         [SerializeField]
         private Transform rayCastPoint;
-
-        private float currentLifeTime;
+        
         private float currentRaycastRadius;
         private float currentSizeX;
         private float currentSizeY;
@@ -35,7 +32,6 @@ namespace Assets.Scripts.Bullets
 
         public override void InitData()
         {
-            currentLifeTime = 0;
             currentRaycastRadius = 0;
             currentSizeX = 0;
             currentSizeY = 0;
@@ -47,23 +43,22 @@ namespace Assets.Scripts.Bullets
 
         public override void RunEntity()
         {
-            float growSpeed = 2.0f;
             if (currentSizeX < finalSizeX)
             {
-                currentRaycastRadius += growSpeed * Time.deltaTime;
-                currentSizeX += growSpeed * Time.deltaTime;
-                currentSizeY += growSpeed * Time.deltaTime;
+                currentRaycastRadius = .65f * (currentSizeX / finalSizeX);
+                Debug.DrawRay(this.transform.position, Vector3.right * currentRaycastRadius, Color.red);
+                currentSizeX += speed * Time.deltaTime;
+                currentSizeY += speed * Time.deltaTime;
                 transform.localScale = new Vector3(currentSizeX, currentSizeY, transform.localScale.z);
             }
+            else
+                Die();
             RaycastHit2D hit = (Physics2D.CircleCast(transform.position, currentRaycastRadius, Vector2.zero, 0, ~rayCastLayer));
             if (hit)
             {
                 if (hit.collider.tag == targetTag)
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
-                Die();
             }
-            if ((currentLifeTime += Time.deltaTime) > lifeTime)
-                Die();
         }
 
         public override void HitByEntity(Entity col)

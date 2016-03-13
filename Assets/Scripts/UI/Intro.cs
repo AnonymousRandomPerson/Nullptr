@@ -32,6 +32,9 @@ namespace Assets.Scripts.UI
             kirbyButton.SetActive(true);
             Managers.GameManager.Run();
             introSongs.Stop();
+            introSongs.loop = true;
+            introSongs.loopSong = 1;
+            introSongs.PlaySong(2);
         }
 
         public void Play()

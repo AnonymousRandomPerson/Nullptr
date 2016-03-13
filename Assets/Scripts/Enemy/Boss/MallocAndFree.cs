@@ -202,7 +202,7 @@ namespace Assets.Scripts.Enemy.Boss
 
         void Jump()
         {
-            if(!doOnce)
+            if (!doOnce)
             {
                 jump = true;
                 doOnce = true;
@@ -215,10 +215,8 @@ namespace Assets.Scripts.Enemy.Boss
 
         void GroundAttack()
         {
-            if (isMalloc)
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[0], transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
-            else
-                bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel[0], Util.Enums.Direction.None);
+            bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
+                transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
             done = true;
         }
 
@@ -252,10 +250,10 @@ namespace Assets.Scripts.Enemy.Boss
             }
             else
                 for (int i = 0; i < barrel.Length; i++)
-                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy2, barrel[i], Util.Enums.Direction.None);
+                    bulletManager.Shoot(Util.Enums.BulletTypes.Enemy3, barrel[i], Util.Enums.Direction.None);
             done = true;
         }
-        
+
         void Stage2()
         {
             if (sigYourTurn)
@@ -263,7 +261,7 @@ namespace Assets.Scripts.Enemy.Boss
             else
                 waitOnPartner = true;
             partner.sigYourTurn = true;
-            currentHealth = totalHealth/2;
+            currentHealth = totalHealth / 2;
         }
 
         void Hit()
@@ -277,19 +275,20 @@ namespace Assets.Scripts.Enemy.Boss
             if (currentHealth <= 0)
             {
                 Render(true);
-                if (stage1)
-                    stage1 = false;
-                else
-                    Die();
+                partner.sigYourTurn = true;
+                //if (stage1)
+                //    stage1 = false;
+                //else
+                Die();
             }
             done = true;
         }
 
         void FixedUpdate()
         {
-            if(jump)
+            if (jump)
             {
-                rgby2d.AddForce(new Vector2(transform.localScale.x * .75f, 1) * jumpForce, ForceMode2D.Impulse);
+                rgby2d.AddForce(new Vector2(transform.localScale.x * .65f, 1) * jumpForce, ForceMode2D.Impulse);
                 jump = false;
             }
         }

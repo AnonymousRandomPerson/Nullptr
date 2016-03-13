@@ -29,6 +29,7 @@ namespace Assets.Scripts.Bullets
         private float currentLifeTime;
         private MallocManager malManager;
         private bool done;
+        private bool dying;
 
         public int getDamage()
         {
@@ -47,6 +48,7 @@ namespace Assets.Scripts.Bullets
                 malManager = MallocManager.instance;
             malManager.AddMalloc(this);
             done = false;
+            dying = false;
         }
 
         public override void RunEntity()
@@ -57,7 +59,7 @@ namespace Assets.Scripts.Bullets
                 if (hit.collider.tag == targetTag)
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
             }
-            if ((currentLifeTime += Time.deltaTime) > lifeTime)
+            if (!dying && (currentLifeTime += Time.deltaTime) > lifeTime)
                 Die();
         }
 
@@ -97,10 +99,16 @@ namespace Assets.Scripts.Bullets
             Die();
         }
 
+        internal void Dying()
+        {
+            dying = true;
+        }
+
         internal override void Die()
         {
-            ExplosionManager.instance.SpawnExplosion(0, transform, Util.Enums.Direction.None);
-            malManager.RemoveMalloc(this);
+            ExplosionManager.instance.SpawnExplosion(explosion, transform, Enums.Direction.None);
+            if(!dying)
+                malManager.RemoveMalloc(this);
             base.Die();
         }
     }

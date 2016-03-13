@@ -21,12 +21,14 @@ namespace Assets.Scripts.Enemy
         /// <summary> Reference to EnemyManager to spawn things. </summary>
         private EnemyManager manager;
         private bool spawned, waitForCutScene;
+        private int count;
 
         void Start()
         {
             manager = FindObjectOfType<EnemyManager>();
             spawned = false;
             waitForCutScene = false;
+            count = 0;
         }
 
         void Update()
@@ -56,6 +58,12 @@ namespace Assets.Scripts.Enemy
 
         public void entityDied(Entity entity)
         {
+            if(mf)
+            {
+                count++;
+                if (count < 2)
+                    return;
+            }
             WinText.SetActive(true);
             GameManager.Intro();
             waitForCutScene = true;

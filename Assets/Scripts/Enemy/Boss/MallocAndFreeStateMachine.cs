@@ -77,7 +77,7 @@ namespace Assets.Scripts.Enemy.Boss
             if(animDone && !sigWaitForAttack)
             {
                 float r = Random.Range(0f, 1f);
-                if (r < .30f)
+                if (r < .40f)
                     return State.GroundAttack;
                 if (r < .60f)
                     return State.Jump;
@@ -140,7 +140,12 @@ namespace Assets.Scripts.Enemy.Boss
             if (animDone)
             {
                 if (health == 0)
-                    return State.Stage2;
+                {
+                    if (stage == 1)
+                        return State.Hit;
+                    else
+                        return State.Stage2;
+                }
                 if (health % limit == 0)
                     return State.GoToAir;
                 return State.Wait;

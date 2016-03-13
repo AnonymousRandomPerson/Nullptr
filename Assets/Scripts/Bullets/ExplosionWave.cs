@@ -45,7 +45,7 @@ namespace Assets.Scripts.Bullets
         {
             if (currentSizeX < finalSizeX)
             {
-                currentRaycastRadius = .65f * (currentSizeX / finalSizeX);
+                currentRaycastRadius = (currentSizeX / finalSizeX);
                 Debug.DrawRay(this.transform.position, Vector3.right * currentRaycastRadius, Color.red);
                 currentSizeX += speed * Time.deltaTime;
                 currentSizeY += speed * Time.deltaTime;

@@ -114,7 +114,7 @@ namespace Assets.Scripts.Enemy.Boss
             if (animDone)
             {
                 float r = Random.Range(0f, 1f);
-                if (r < .30f)
+                if (r < .20f)
                     return State.AirAttack;
             }
             return State.Move;

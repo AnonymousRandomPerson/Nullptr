@@ -25,11 +25,11 @@ namespace Assets.Scripts.Bullets
                 mal = ((Malloc)MallocManager.instance.GetMallocs()[0]);
                 mal.Dying();
                 MallocManager.instance.RemoveMalloc(mal);
+                start = transform.position;
+                percent = 0f;
             }
             else
                 Die();
-            start = transform.position;
-            percent = 0f;
         }
 
         public override void RunEntity()

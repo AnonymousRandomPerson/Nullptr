@@ -249,8 +249,10 @@ namespace Assets.Scripts.Enemy.Boss
                     bulletManager.Shoot(Util.Enums.BulletTypes.Enemy1, barrel[i], Util.Enums.Direction.Left);
             }
             else
+            {
                 for (int i = 0; i < barrel.Length; i++)
                     bulletManager.Shoot(Util.Enums.BulletTypes.Enemy3, barrel[i], Util.Enums.Direction.None);
+            }
             done = true;
         }
 
@@ -288,7 +290,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             if (jump)
             {
-                rgby2d.AddForce(new Vector2(transform.localScale.x * .65f, 1) * jumpForce, ForceMode2D.Impulse);
+                rgby2d.AddForce(new Vector2(transform.localScale.x * .70f, 1) * jumpForce, ForceMode2D.Impulse);
                 jump = false;
             }
         }

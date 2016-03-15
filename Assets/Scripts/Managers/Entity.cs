@@ -25,6 +25,7 @@ namespace Assets.Scripts.Managers
         private int instance;
         /// <summary> Allows this entity to run during a cutscene. </summary>
         private bool isCutScene;
+
         /// <summary> Reference to this entites manager for callbacks on death. </summary>
         protected EntityManager Manager
         {
@@ -86,7 +87,8 @@ namespace Assets.Scripts.Managers
         /// <summary> Handles the death of an entity. </summary>
         internal virtual void Die()
         {
-            manager.ReleaseEntity(type, instance);
+            if (!manager.ReleaseEntity(type, instance))
+                Debug.Log("Error Double free for " + gameObject.name + ": " + type + " " + instance);
         }
     }
 }

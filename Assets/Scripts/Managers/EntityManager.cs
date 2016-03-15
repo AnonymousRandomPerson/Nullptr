@@ -66,9 +66,9 @@ namespace Assets.Scripts.Managers
                 if(!entities[type][i].active)
                 {
                     entities[type][i].active = true;
-                    entities[type][i].entity.Init(loc, this, type, i, direction, false);
                     entities[type][i].entity.gameObject.SetActive(true);
                     entities[type][i].callback = callback;
+                    entities[type][i].entity.Init(loc, this, type, i, direction, false);
                     return true;
                 }
             }
@@ -90,9 +90,9 @@ namespace Assets.Scripts.Managers
                 if (!entities[type][i].active)
                 {
                     entities[type][i].active = true;
-                    entities[type][i].entity.Init(loc, this, type, i, direction, true);
                     entities[type][i].entity.gameObject.SetActive(true);
                     entities[type][i].callback = callback;
+                    entities[type][i].entity.Init(loc, this, type, i, direction, true);
                     return true;
                 }
             }
@@ -111,9 +111,9 @@ namespace Assets.Scripts.Managers
                 throw new System.IndexOutOfRangeException("Invalid Entity instance. ");
             if(entities[type][instance].active)
             {
-                entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
                 entities[type][instance].entity.gameObject.SetActive(false);
-                if(entities[type][instance].callback != null)
+                entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
+                if (entities[type][instance].callback != null)
                 {
                     entities[type][instance].callback.entityDied(entities[type][instance].entity);
                     entities[type][instance].callback = null;

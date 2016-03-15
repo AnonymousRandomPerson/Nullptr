@@ -13,6 +13,9 @@ namespace Assets.Scripts.Player
         /// <summary> Reference to gun. </summary>
         [SerializeField]
         private GameObject gun;
+        /// <summary> Reference to the rigidbody. </summary>
+        [SerializeField]
+        private Rigidbody2D rgby;
         /// <summary> Reference to gun. </summary>
         [SerializeField]
         private Transform barrel;
@@ -146,6 +149,7 @@ namespace Assets.Scripts.Player
             {
                 return;
             }
+            rgby.velocity = Vector2.zero;
             if (CustomInput.BoolHeld(CustomInput.UserInput.Left))
             {
                 xVel = -moveSpeed;

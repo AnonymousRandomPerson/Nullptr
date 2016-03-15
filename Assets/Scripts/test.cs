@@ -5,17 +5,14 @@ namespace Assets.Scripts
 {
     class test : MonoBehaviour
     {
+        public Managers.ExplosionManager mngr;
+
         void Update()
         {
-            Vector2 directionLeft = transform.right;
-            directionLeft.x = -directionLeft.x;
-            Vector2 vectLeft = Vector2.right;
-            vectLeft.x = -vectLeft.x;
-            transform.Translate(transform.right * Time.deltaTime, Space.World);
-            Debug.DrawRay(transform.position, transform.right, Color.blue);
-            Debug.DrawRay(transform.position, directionLeft, Color.red);
-            Debug.DrawRay(transform.position, Vector2.right, Color.green);
-            Debug.DrawRay(transform.position, vectLeft, Color.yellow);
+            if (Input.GetKeyUp(KeyCode.T))
+                mngr.SpawnExplosion(1, this.transform, Enums.Direction.None);
+            if (Input.GetKeyUp(KeyCode.P))
+                mngr.SpawnExplosion(2, this.transform, Enums.Direction.None);
         }
     }
 }

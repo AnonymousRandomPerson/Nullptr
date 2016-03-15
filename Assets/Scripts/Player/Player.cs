@@ -28,6 +28,8 @@ namespace Assets.Scripts.Player
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
+        /// <summary> The layers to ignore when raycasting (Destroyed and Player). </summary>
+        private const int LAYERMASK = ~(1 << 9 & 1 << 10);
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
         private float invulerabilityTime = 1f;
@@ -180,12 +182,12 @@ namespace Assets.Scripts.Player
                 RaycastHit2D ray;
                 if (xVel > 0)
                 {
-                    ray = Physics2D.Raycast(transform.position + colliderSideOffset, Vector2.right, xVel * Time.deltaTime, ~(1 << 10));
+                    ray = Physics2D.Raycast(transform.position + colliderSideOffset, Vector2.right, xVel * Time.deltaTime, LAYERMASK);
                 }
                 else
                 {
                     Vector2 sidePosition = new Vector2(transform.position.x - colliderSideOffset.x, transform.position.y + colliderSideOffset.y);
-                    ray = Physics2D.Raycast(sidePosition, -Vector2.right, -xVel * Time.deltaTime, ~(1 << 10));
+                    ray = Physics2D.Raycast(sidePosition, -Vector2.right, -xVel * Time.deltaTime, LAYERMASK);
                 }
                 if (!ray || ray.collider == null)
                 {
@@ -204,9 +206,9 @@ namespace Assets.Scripts.Player
             char slopeSide = 'n';
             if (xVel != 0 && yVel == 0)
             {
-                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-                RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+                RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
                 if ((backCast ^ frontCast) && !centerCast)
                 {
                     slopeSide = backCast ? 'b' : 'f';
@@ -217,7 +219,7 @@ namespace Assets.Scripts.Player
             if (slopeSide == 'b')
             {
                 // Check for going down slopes.
-                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
                 if (backCast)
                 {
                     slopeOffset -= backCast.distance;
@@ -225,7 +227,7 @@ namespace Assets.Scripts.Player
             }
             else if (slopeSide == 'f')
             {
-                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
                 if (frontCast)
                 {
                     slopeOffset -= frontCast.distance;
@@ -334,9 +336,9 @@ namespace Assets.Scripts.Player
         /// <param name="groundDistance"> The distance from the player to the ground if the player will hit the ground on the current tick. </param>
         protected void TouchingSomething(ref bool inAir, ref float groundDistance)
         {
-            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
             inAir = !(backCast || frontCast || centerCast);
             if (!inAir)
             {

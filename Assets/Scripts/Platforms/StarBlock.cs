@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Managers;
+using Assets.Scripts.Util;
 
 namespace Assets.Scripts.Platforms
 {
     /// <summary> A block that can be destroyed by destroyer bullet or a bomb block. </summary>
-    public class StarBlock : MonoBehaviour {
+    class StarBlock : MonoBehaviour {
 
         /// <summary> The delay before destroying the block with a bomb block. </summary>
         [SerializeField]
@@ -21,10 +23,11 @@ namespace Assets.Scripts.Platforms
                 destroyTimer -= Time.deltaTime;
                 if (destroyTimer < 0)
                 {
-                    //TODO Spawn explosion.
+                    ExplosionManager.instance.SpawnExplosion(3, transform, Enums.Direction.None);
                     gameObject.layer = LayerMask.NameToLayer("Destroyed");
                     gameObject.GetComponent<SpriteRenderer>().enabled = false;
                     gameObject.GetComponent<Collider2D>().enabled = false;
+                    countdown = false;
                 }
             }
     	}

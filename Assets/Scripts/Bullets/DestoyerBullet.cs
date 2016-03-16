@@ -17,7 +17,8 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private float lifeTime;
         [SerializeField]
-        private LayerMask rayCastLayer;
+        private LayerMask[] rayCastLayers;
+        private int rayCastLayer;
         [SerializeField]
         private Transform rayCastPoint;
         private float currentLifeTime;
@@ -30,6 +31,10 @@ namespace Assets.Scripts.Bullets
         public override void InitData()
         {
             currentLifeTime = 0;
+            foreach (LayerMask layerMask in rayCastLayers)
+            {
+                rayCastLayer = rayCastLayer | layerMask.value;
+            }
         }
 
         public override void RunEntity()

@@ -12,7 +12,7 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private float raycastRadius;
         [SerializeField]
-        private string targetTag;
+        private string[] targetTags;
         [SerializeField]
         private LayerMask rayCastLayer;
         [SerializeField]
@@ -56,8 +56,14 @@ namespace Assets.Scripts.Bullets
             RaycastHit2D hit = (Physics2D.CircleCast(transform.position, currentRaycastRadius, Vector2.zero, 0, ~rayCastLayer));
             if (hit)
             {
-                if (hit.collider.tag == targetTag)
-                    hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
+                foreach (string targetTag in targetTags)
+                {
+                    if (hit.collider.tag == targetTag)
+                    {
+                        hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
+                        break;
+                    }
+                }
             }
         }
 

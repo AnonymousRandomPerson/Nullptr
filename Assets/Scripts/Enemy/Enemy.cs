@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Bullets;
 using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.Enemy
@@ -77,10 +78,27 @@ namespace Assets.Scripts.Enemy
         {
             if (col.gameObject.tag == "PlayerBullet")
             {
-                hit = true;
-                HealthDisplayManager.Instance.SetRightEntity(this);
-                damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                SetHit(col.gameObject.GetComponent<Bullets.Bullet>().getDamage());
             }
+            else if (col.gameObject.layer == 8)
+            {
+                ExplosionWave explosion = col.gameObject.GetComponent<ExplosionWave>();
+                if (explosion != null)
+                {
+                    SetHit(explosion.getDamage());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Damages the enemy.
+        /// </summary>
+        /// <param name="newDamage">The damage to deal to the enemy.</param>
+        private void SetHit(int newDamage)
+        {
+            hit = true;
+            HealthDisplayManager.Instance.SetRightEntity(this);
+            damage = newDamage;
         }
 
         internal override void Die()
@@ -115,7 +133,7 @@ namespace Assets.Scripts.Enemy
             if (!ray || ray.collider == null)
                 blocked = false;
             else
-                blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged");
+                blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged") || ray.collider.tag.Equals("DestroyablePlatform");
         }
 
         /// <summary> Switches the enemy to face left. </summary>

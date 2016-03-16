@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Managers;
+using Assets.Scripts.Util;
 
 namespace Assets.Scripts.Platforms
 {
@@ -6,7 +8,7 @@ namespace Assets.Scripts.Platforms
     /// A block that explodes when destroyed with a destroyer bullet.
     /// Can be linked to other blocks to destroy them too.
     /// </summary>
-    public class BombBlock : MonoBehaviour, Destroyable {
+    class BombBlock : MonoBehaviour, Destroyable {
 
         /// <summary> The blocks that will be blown up alongside the bomb block. </summary>
         public StarBlock[] chainedBlocks;
@@ -16,7 +18,7 @@ namespace Assets.Scripts.Platforms
         /// </summary>
         public void Destroy()
         {
-            //TODO Spawn explosion.
+            ExplosionManager.instance.SpawnExplosion(3, transform, Enums.Direction.None);
             foreach (StarBlock block in chainedBlocks) {
                 if (block.enabled)
                 {

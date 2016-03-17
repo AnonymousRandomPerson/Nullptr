@@ -15,6 +15,8 @@ namespace Assets.Scripts.Enemy
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
+        /// <summary> The layers to ignore when raycasting (Bullets, Destroyed, Enemy). </summary>
+        private const int LAYERMASK = ~(1 << 8 | 1 << 9 | 1 << 12);
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
         protected float invulerabilityTime;
@@ -124,12 +126,12 @@ namespace Assets.Scripts.Enemy
         /// <param name="blocked"> True if there is something in front of the enemy. </param>
         protected void TouchingSomething(ref bool inAir, ref bool blocked)
         {
-            inAir = !(Physics2D.Raycast(backFoot.position, -Vector2.up, 0.05f) || Physics2D.Raycast(frontFoot.position, -Vector2.up, 0.05f));
+            inAir = !(Physics2D.Raycast(backFoot.position, -Vector2.up, 0.05f, LAYERMASK) || Physics2D.Raycast(frontFoot.position, -Vector2.up, 0.05f, LAYERMASK));
             RaycastHit2D ray;
             if (this.transform.localScale.x > 0)
-                ray = Physics2D.Raycast(front.position, -Vector2.right, 0.05f);
+                ray = Physics2D.Raycast(front.position, -Vector2.right, 0.05f, LAYERMASK);
             else
-                ray = Physics2D.Raycast(front.position, Vector2.right, 0.05f);
+                ray = Physics2D.Raycast(front.position, Vector2.right, 0.05f, LAYERMASK);
             if (!ray || ray.collider == null)
                 blocked = false;
             else

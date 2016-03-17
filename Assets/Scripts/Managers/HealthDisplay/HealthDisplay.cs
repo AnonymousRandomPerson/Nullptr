@@ -21,7 +21,7 @@ namespace Assets.Scripts.Managers
 
         void Update()
         {
-            if (Entity == null || Entity.CurrentHealth == 0)
+            if (Entity == null || Entity.CurrentHealth <= 0)
             {
                 this.gameObject.SetActive(false);
             } else

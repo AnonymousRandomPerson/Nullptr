@@ -62,6 +62,10 @@ namespace Assets.Scripts.Enemy.Enemies
                     SetAttackTimer();
                     beam = null;
                 }
+                if (beam != null)
+                {
+                    beam.transform.position = wand.position;
+                }
             }
             else
             {

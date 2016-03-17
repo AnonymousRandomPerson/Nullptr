@@ -200,7 +200,8 @@ namespace Assets.Scripts.Player
                 }
                 else
                 {
-                    blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged");
+                    // Default layer.
+                    blocked = ray.collider.gameObject.layer == 0;
                 }
                 if (blocked)
                 {

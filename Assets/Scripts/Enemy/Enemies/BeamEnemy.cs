@@ -27,6 +27,9 @@ namespace Assets.Scripts.Enemy.Enemies
         [SerializeField]
         private Transform wand;
 
+        /// <summary>
+        /// Method to allow custom data initialization.
+        /// </summary>
         public override void InitData()
         {
             base.InitData();
@@ -34,6 +37,9 @@ namespace Assets.Scripts.Enemy.Enemies
             SetAttackTimer();
         }
 
+        /// <summary>
+        /// Entity Update Method. Replaces Update().
+        /// </summary>
         public override void RunEntity()
         {
             base.RunEntity();

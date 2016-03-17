@@ -5,11 +5,14 @@ using Assets.Scripts.Util;
 namespace Assets.Scripts.Platforms
 {
     /// <summary> A block that can be destroyed by destroyer bullet or a bomb block. </summary>
-    class StarBlock : MonoBehaviour {
+    class StarBlock : MonoBehaviour
+    {
 
-        /// <summary> The delay before destroying the block with a bomb block. </summary>
+        /// <summary> The time to wait before destroying the block with a bomb block. </summary>
         [SerializeField]
-        [Tooltip("The delay before destroying the block with a bomb block.")]
+        [Tooltip("The time to wait before destroying the block with a bomb block.")]
+        private int time;
+        /// <summary> The delay before destroying the block with a bomb block. </summary>
         private float destroyTimer;
         /// <summary> Whether the block is on a timer to be destroyed by a bomb block. </summary>
         private bool countdown;
@@ -18,15 +21,19 @@ namespace Assets.Scripts.Platforms
         /// Ticks the timer for destroying the block with a bomb.
         /// </summary>
     	private void Update () {
-            if (countdown)
+            if (countdown && gameObject.activeSelf)
             {
                 destroyTimer -= Time.deltaTime;
                 if (destroyTimer < 0)
                 {
-                    ExplosionManager.instance.SpawnExplosion(3, transform, Enums.Direction.None);
-                    gameObject.layer = LayerMask.NameToLayer("Destroyed");
-                    gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                    gameObject.GetComponent<Collider2D>().enabled = false;
+                    SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
+                    if (renderer.enabled)
+                    {
+                        ExplosionManager.instance.SpawnExplosion(3, transform, Enums.Direction.None);
+                        gameObject.layer = LayerMask.NameToLayer("Destroyed");
+                        renderer.enabled = false;
+                        gameObject.GetComponent<Collider2D>().enabled = false;
+                    }
                     countdown = false;
                 }
             }
@@ -35,9 +42,11 @@ namespace Assets.Scripts.Platforms
         /// <summary>
         /// Starts the countdown timer for destroying the block.
         /// </summary>
-        internal void StartCountdown()
+        /// <param name="timeInterval">The time multiplier for breaking the block.</param>
+        internal void StartCountdown(float timeInterval)
         {
             countdown = true;
+            destroyTimer = timeInterval * time;
         }
     }
 }

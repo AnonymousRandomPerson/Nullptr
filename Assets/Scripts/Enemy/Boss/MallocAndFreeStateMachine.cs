@@ -148,7 +148,10 @@ namespace Assets.Scripts.Enemy.Boss
                 }
                 if (health % limit == 0)
                     return State.GoToAir;
-                return State.Wait;
+                float r = Random.Range(0f, 1f);
+                if (r < .40f)
+                    return State.GroundAttack;
+                return State.Jump;
             }
             return State.Hit;
         }

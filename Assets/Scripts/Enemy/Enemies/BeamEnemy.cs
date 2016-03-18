@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Managers;
 using Assets.Scripts.Util;
 
 namespace Assets.Scripts.Enemy.Enemies
@@ -18,12 +19,17 @@ namespace Assets.Scripts.Enemy.Enemies
         private float attackTimer;
         /// <summary> The time when the enemy started attacking. </summary>
         private float attackStartTime;
+        /// <summary> The beam currently being shot by the enemy. </summary>
+        private Entity beam;
         /// <summary> The bullet manager in the scene. </summary>
         private Managers.BulletManager bulletManager;
         /// <summary> The position where the beam will originate from. </summary>
         [SerializeField]
         private Transform wand;
 
+        /// <summary>
+        /// Method to allow custom data initialization.
+        /// </summary>
         public override void InitData()
         {
             base.InitData();
@@ -31,6 +37,9 @@ namespace Assets.Scripts.Enemy.Enemies
             SetAttackTimer();
         }
 
+        /// <summary>
+        /// Entity Update Method. Replaces Update().
+        /// </summary>
         public override void RunEntity()
         {
             base.RunEntity();
@@ -44,13 +53,18 @@ namespace Assets.Scripts.Enemy.Enemies
                 {
                     // Create a beam.
                     Enums.Direction direction = transform.localScale.x > 0 ? Enums.Direction.Left : Enums.Direction.Right;
-                    bulletManager.Shoot(Enums.BulletTypes.Beam, wand, direction);
+                    bulletManager.Shoot(Enums.BulletTypes.Beam, wand, direction, ref beam);
                     attackStartTime = attackTimer;
                 }
                 else if (attackTimer < attackStartTime - 1)
                 {
                     // Resume walking.
                     SetAttackTimer();
+                    beam = null;
+                }
+                if (beam != null)
+                {
+                    beam.transform.position = wand.position;
                 }
             }
             else
@@ -71,6 +85,18 @@ namespace Assets.Scripts.Enemy.Enemies
         {
             attackStartTime = 0;
             attackTimer = attackDelay + Random.Range(-1f, 1f);
+        }
+
+        /// <summary>
+        /// Handles the death of an entity.
+        /// </summary>
+        internal override void Die()
+        {
+            if (beam != null && beam.gameObject.activeSelf)
+            {
+                beam.Die();
+            }
+            base.Die();
         }
     }
 }

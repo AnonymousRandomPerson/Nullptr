@@ -21,7 +21,8 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private float lifeTime;
         [SerializeField]
-        private LayerMask rayCastLayer;
+        private LayerMask[] rayCastLayers;
+        private int rayCastLayer;
         [SerializeField]
         private Transform rayCastPoint;
         [SerializeField]
@@ -49,6 +50,10 @@ namespace Assets.Scripts.Bullets
             malManager.AddMalloc(this);
             done = false;
             dying = false;
+            foreach (LayerMask layerMask in rayCastLayers)
+            {
+                rayCastLayer = rayCastLayer | layerMask.value;
+            }
         }
 
         public override void RunEntity()

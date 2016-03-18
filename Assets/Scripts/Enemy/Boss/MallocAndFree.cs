@@ -33,6 +33,8 @@ namespace Assets.Scripts.Enemy.Boss
         [SerializeField]
         private Rigidbody2D rgby2d;
         [SerializeField]
+        private Animator anim;
+        [SerializeField]
         private bool goFirst;
 
         private bool animDone;
@@ -76,7 +78,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             base.InitData();
             bulletManager = FindObjectOfType<Managers.BulletManager>();
-            animDone = true;
+            animDone = false;
             done = false;
             doOnce = false;
             jump = false;
@@ -113,6 +115,12 @@ namespace Assets.Scripts.Enemy.Boss
                 sigDone = false;
                 sigYourTurn = false;
                 wait = 0;
+                anim.SetBool("walk", false);
+                anim.SetBool("hurt", false);
+                anim.SetBool("attack", false);
+                anim.SetBool("jump", false);
+                anim.SetBool("idle", false);
+                animDone = false;
                 //if (state == MallocAndFreeStateMachine.State.AirAttack)
                 //    partner.SigWaitForAttack = true;
             }
@@ -190,12 +198,22 @@ namespace Assets.Scripts.Enemy.Boss
 
         void Wait()
         {
+            if (!doOnce)
+            {
+                anim.SetBool("idle", true);
+                doOnce = true;
+            }
             if ((wait += Time.deltaTime) > waitTime)
                 done = true;
         }
 
         void Step()
         {
+            if (!doOnce)
+            {
+                anim.SetBool("walk", true);
+                doOnce = true;
+            }
             if (animDone)
                 done = true;
         }
@@ -205,6 +223,7 @@ namespace Assets.Scripts.Enemy.Boss
             if (!doOnce)
             {
                 jump = true;
+                anim.SetBool("jump", true);
                 doOnce = true;
             }
             bool inAir = true, b = false;
@@ -214,10 +233,24 @@ namespace Assets.Scripts.Enemy.Boss
         }
 
         void GroundAttack()
-        {
-            bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
-                transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
-            done = true;
+        { 
+            if (!doOnce)
+            {
+                anim.SetBool("attack", true);
+                bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
+                    transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
+                bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
+                    transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
+                bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
+                    transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
+                bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
+                    transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
+                bulletManager.Shoot(isMalloc ? Util.Enums.BulletTypes.Enemy1 : Util.Enums.BulletTypes.Enemy2, barrel[0],
+                    transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
+                doOnce = true;
+            }
+            if (animDone)
+                done = true;
         }
 
         void Move()
@@ -268,6 +301,11 @@ namespace Assets.Scripts.Enemy.Boss
 
         void Hit()
         {
+            if (!doOnce)
+            {
+                anim.SetBool("hurt", true);
+                doOnce = true;
+            }
             if (invulerability <= 0)
             {
                 currentHealth -= damage;
@@ -283,7 +321,8 @@ namespace Assets.Scripts.Enemy.Boss
                 //else
                 Die();
             }
-            done = true;
+            if (animDone)
+                done = true;
         }
 
         void FixedUpdate()
@@ -299,6 +338,8 @@ namespace Assets.Scripts.Enemy.Boss
         {
             if (Managers.GameManager.IsRunning)
             {
+                if (coll.gameObject.tag == "EnemyMalloc")
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), coll.collider);
             }
         }
     }

@@ -71,7 +71,8 @@ namespace Assets.Scripts.Enemy.Enemies
             {
                 bool inAir = false, blocked = false;
                 TouchingSomething(ref inAir, ref blocked);
-                if (blocked) {
+                if (blocked)
+                {
                     Turn();
                 }
                 transform.Translate(GetForward() * speed * Time.deltaTime);

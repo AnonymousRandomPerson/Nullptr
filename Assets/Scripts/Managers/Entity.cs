@@ -7,7 +7,7 @@ namespace Assets.Scripts.Managers
     public abstract class Entity : MonoBehaviour
     {
         [SerializeField]
-        private string entityName;
+        protected string entityName;
         public string Name { get { return entityName; } }
         /// <summary> The total health of the Entity. </summary>
         [SerializeField]

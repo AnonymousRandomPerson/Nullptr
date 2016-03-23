@@ -69,9 +69,12 @@ namespace Assets.Scripts.Enemy.Enemies
             if (offsetMagnitude < sightRange && offsetMagnitude > Mathf.Abs(gun.transform.position.x - transform.position.x))
             {
                 // Fire at the player if in range.
-                if (shootTimer > currentBullets)
+                if (shootTimer > currentBullets * 0.5f)
                 {
                     Enums.Direction direction = xOffset > 0 ? Enums.Direction.Right : Enums.Direction.Left;
+                    float gunXOffset = player.transform.position.x - gun.position.x;
+                    float gunYOffset = player.transform.position.y - gun.position.y;
+                    gun.transform.rotation = Quaternion.Euler(0, 0, -Mathf.Rad2Deg * Mathf.Atan(gunYOffset / gunXOffset));
                     bulletManager.Shoot(Enums.BulletTypes.Enemy1, gun, direction);
                     if (++currentBullets >= bulletsPerRound)
                     {

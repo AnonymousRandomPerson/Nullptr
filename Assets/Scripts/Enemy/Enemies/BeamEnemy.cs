@@ -11,9 +11,11 @@ namespace Assets.Scripts.Enemy.Enemies
     {
         /// <summary> The movement speed of the enemy. </summary>
         [SerializeField]
+        [Tooltip("The movement speed of the enemy.")]
         private float speed;
         /// <summary> The delay between enemy attacks. </summary>
         [SerializeField]
+        [Tooltip("The delay between enemy attacks.")]
         private float attackDelay;
         /// <summary> Timer until the enemy attacks. </summary>
         private float attackTimer;
@@ -22,9 +24,10 @@ namespace Assets.Scripts.Enemy.Enemies
         /// <summary> The beam currently being shot by the enemy. </summary>
         private Entity beam;
         /// <summary> The bullet manager in the scene. </summary>
-        private Managers.BulletManager bulletManager;
+        private BulletManager bulletManager;
         /// <summary> The position where the beam will originate from. </summary>
         [SerializeField]
+        [Tooltip("The position where the beam will originate from.")]
         private Transform wand;
 
         /// <summary>
@@ -33,7 +36,10 @@ namespace Assets.Scripts.Enemy.Enemies
         public override void InitData()
         {
             base.InitData();
-            bulletManager = FindObjectOfType<Managers.BulletManager>();
+            if (bulletManager == null)
+            {
+                bulletManager = FindObjectOfType<BulletManager>();
+            }
             SetAttackTimer();
         }
 

@@ -4,15 +4,10 @@ using Assets.Scripts.Managers;
 namespace Assets.Scripts.Enemy.Enemies
 {
     /// <summary>
-    /// Variable power enemy that is idle until approached or shot.
+    /// An enemy that wanders randomly until the player gets close, then chases the player.
     /// Runs away when low on health.
     /// </summary>
-    class EmberFox : Enemy {
-
-        /// <summary> The base name of the enemy. Will be suffixed by a version number upon initialization. </summary>
-        private string baseName = "";
-        /// <summary> The base health of the 1.0.0 version of the enemy. </summary>
-        private int baseHealth = -1;
+    class EmberFox : VersionEnemy {
 
         /// <summary> The maximum movement speed of the enemy. </summary>
         [SerializeField]
@@ -50,27 +45,14 @@ namespace Assets.Scripts.Enemy.Enemies
         public override void InitData()
         {
             base.InitData();
-            if (baseName == "")
-            {
-                baseName = entityName;
-            }
-            if (baseHealth == -1)
-            {
-                baseHealth = totalHealth;
-            }
             if (player == null)
             {
-                player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
+                player = FindObjectOfType<PlayerManager>().GetPlayer().gameObject;
             }
 
             currentSpeed = 0;
             chasing = false;
             wanderTimer = 0;
-
-            int version = Random.Range(0, 10);
-            totalHealth = baseHealth + version;
-            currentHealth = totalHealth;
-            entityName = baseName + " 1." + version + ".0";
         }
 
         /// <summary>

@@ -19,6 +19,8 @@ namespace Assets.Scripts.Bullets
         private float lifeTime;
         /// <summary> The amount of time left for the beam to exist. </summary>
         private float currentLifeTime;
+        [SerializeField]
+        private Util.SoundPlayer sound;
 
         /// <summary>
         /// Method to allow custom data initialization.
@@ -32,6 +34,7 @@ namespace Assets.Scripts.Bullets
             }
             transform.localScale = scale;
             currentLifeTime = lifeTime;
+            sound.PlaySong(0);
         }
 
         /// <summary>

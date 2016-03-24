@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Bullets;
 using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.Enemy
@@ -14,6 +15,8 @@ namespace Assets.Scripts.Enemy
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
+        /// <summary> The layers to ignore when raycasting (Bullets, Destroyed, Enemy). </summary>
+        private const int LAYERMASK = ~(1 << 8 | 1 << 9 | 1 << 12);
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
         protected float invulerabilityTime;
@@ -27,9 +30,22 @@ namespace Assets.Scripts.Enemy
 
         protected int damage;
 
+        /// <summary> The amount of damage the enemy deals to the player when colliding with it. </summary>
+        [SerializeField]
+        [Tooltip("The amount of damage the enemy deals to the player when colliding with it.")]
+        protected int collideDamage = 1;
+
         protected bool Invincible
         {
             get { return invulerability > 0; }
+        }
+
+        /// <summary>
+        /// The amount of damage the enemy deals to the player when colliding with it.
+        /// </summary>
+        public int CollideDamage
+        {
+            get { return collideDamage; }
         }
 
         public override void InitData()
@@ -66,7 +82,7 @@ namespace Assets.Scripts.Enemy
                 render = true;
                 Render(true);
             }
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 || transform.position.y < -6)
             {
                 Render(true);
                 Die();
@@ -77,10 +93,27 @@ namespace Assets.Scripts.Enemy
         {
             if (col.gameObject.tag == "PlayerBullet")
             {
-                hit = true;
-                HealthDisplayManager.Instance.SetRightEntity(this);
-                damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                SetHit(col.gameObject.GetComponent<Bullets.Bullet>().getDamage());
             }
+            else if (col.gameObject.layer == 8)
+            {
+                ExplosionWave explosion = col.gameObject.GetComponent<ExplosionWave>();
+                if (explosion != null)
+                {
+                    SetHit(explosion.getDamage());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Damages the enemy.
+        /// </summary>
+        /// <param name="newDamage">The damage to deal to the enemy.</param>
+        private void SetHit(int newDamage)
+        {
+            hit = true;
+            HealthDisplayManager.Instance.SetRightEntity(this);
+            damage = newDamage;
         }
 
         internal override void Die()
@@ -106,16 +139,16 @@ namespace Assets.Scripts.Enemy
         /// <param name="blocked"> True if there is something in front of the enemy. </param>
         protected void TouchingSomething(ref bool inAir, ref bool blocked)
         {
-            inAir = !(Physics2D.Raycast(backFoot.position, -Vector2.up, 0.05f) || Physics2D.Raycast(frontFoot.position, -Vector2.up, 0.05f));
+            inAir = !(Physics2D.Raycast(backFoot.position, -Vector2.up, 0.05f, LAYERMASK) || Physics2D.Raycast(frontFoot.position, -Vector2.up, 0.05f, LAYERMASK));
             RaycastHit2D ray;
             if (this.transform.localScale.x > 0)
-                ray = Physics2D.Raycast(front.position, -Vector2.right, 0.05f);
+                ray = Physics2D.Raycast(front.position, -Vector2.right, 0.05f, LAYERMASK);
             else
-                ray = Physics2D.Raycast(front.position, Vector2.right, 0.05f);
+                ray = Physics2D.Raycast(front.position, Vector2.right, 0.05f, LAYERMASK);
             if (!ray || ray.collider == null)
                 blocked = false;
             else
-                blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged");
+                blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged") || ray.collider.tag.Equals("DestroyablePlatform");
         }
 
         /// <summary> Switches the enemy to face left. </summary>

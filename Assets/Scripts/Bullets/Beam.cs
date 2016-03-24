@@ -11,13 +11,20 @@ namespace Assets.Scripts.Bullets
     {
         /// <summary> The amount of damage dealt by the beam. </summary>
         [SerializeField]
+        [Tooltip("The amount of damage dealt by the beam.")]
         private int damage;
         /// <summary> The life time of the beam. </summary>
         [SerializeField]
+        [Tooltip("The life time of the beam.")]
         private float lifeTime;
         /// <summary> The amount of time left for the beam to exist. </summary>
         private float currentLifeTime;
+        [SerializeField]
+        private Util.SoundPlayer sound;
 
+        /// <summary>
+        /// Method to allow custom data initialization.
+        /// </summary>
         public override void InitData()
         {
             transform.rotation = Quaternion.identity;
@@ -27,13 +34,21 @@ namespace Assets.Scripts.Bullets
             }
             transform.localScale = scale;
             currentLifeTime = lifeTime;
+            sound.PlaySong(0);
         }
 
+        /// <summary>
+        /// Gets the damage dealt by the beam.
+        /// </summary>
+        /// <returns>The damage dealt by the beam.</returns>
         public int getDamage()
         {
             return damage;
         }
 
+        /// <summary>
+        /// Entity Update Method. Replaces Update().
+        /// </summary>
         public override void RunEntity()
         {
             if ((currentLifeTime -= Time.deltaTime) < 0)
@@ -50,23 +65,10 @@ namespace Assets.Scripts.Bullets
             }
         }
 
-        public void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.tag == "Player")
-            {
-                other.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
-            }
-        }
-
-        public void OnCollisionEnter2D(Collision2D collision)
-        {
-            Debug.Log(collision.collider.tag);
-            if (collision.collider.tag == "Player")
-            {
-                collision.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
-            }
-        }
-
+        /// <summary>
+        /// Called when a collision is detected by another entity.
+        /// </summary>
+        /// <param name="col">The entity colliding with this one.</param>
         public override void HitByEntity(Entity col)
         {
         }

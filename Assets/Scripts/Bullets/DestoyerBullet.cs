@@ -17,10 +17,13 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private float lifeTime;
         [SerializeField]
-        private LayerMask rayCastLayer;
+        private LayerMask[] rayCastLayers;
+        private int rayCastLayer;
         [SerializeField]
         private Transform rayCastPoint;
         private float currentLifeTime;
+        [SerializeField]
+        private Util.SoundPlayer sound;
 
         public int getDamage()
         {
@@ -30,6 +33,11 @@ namespace Assets.Scripts.Bullets
         public override void InitData()
         {
             currentLifeTime = 0;
+            foreach (LayerMask layerMask in rayCastLayers)
+            {
+                rayCastLayer = rayCastLayer | layerMask.value;
+            }
+            sound.PlaySong(0);
         }
 
         public override void RunEntity()
@@ -61,6 +69,13 @@ namespace Assets.Scripts.Bullets
                 {
                     hit.collider.gameObject.layer = LayerMask.NameToLayer("Destroyed");
                     hit.collider.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+
+                    Platforms.Destroyable destroyable = hit.collider.gameObject.GetComponent<Platforms.Destroyable>();
+                    if (destroyable != null)
+                    {
+                        destroyable.Destroy();
+                    }
+
                     hit.collider.enabled = false;
                 }
                 if(hit.collider.gameObject.GetComponent<Managers.Entity>() != null)

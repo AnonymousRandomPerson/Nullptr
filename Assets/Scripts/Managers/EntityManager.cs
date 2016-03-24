@@ -59,6 +59,19 @@ namespace Assets.Scripts.Managers
         /// <returns> True if an entity was able to be readied. </returns>
         protected bool AquireEntity(int type, Transform loc, Enums.Direction direction, Callback callback = null) 
         {
+            Entity entity = null;
+            return AquireEntity(type, loc, direction, ref entity, callback);
+        }
+
+        /// <summary> Readies an entity if one is available. </summary>
+        /// <param name="type"> The type of entity to acquire. </param>
+        /// <param name="loc"> The location to spawn the entity in. </param>
+        /// <param name="direction"> The direction the entity should initially face. </param>
+        /// <param name="entity"> Will contain the entity that is acquired. </param> 
+        /// <param name="callback"> The object to send a message to upon the aquired entites death. </param>
+        /// <returns> True if an entity was able to be readied. </returns>
+        protected bool AquireEntity(int type, Transform loc, Enums.Direction direction, ref Entity entity, Callback callback = null) 
+        {
             if (type >= entities.Length || type < 0)
                 throw new System.IndexOutOfRangeException("Invalid Entity Type. ");
             for(int i = 0; i < entities[type].Length; i++)
@@ -66,9 +79,10 @@ namespace Assets.Scripts.Managers
                 if(!entities[type][i].active)
                 {
                     entities[type][i].active = true;
-                    entities[type][i].entity.Init(loc, this, type, i, direction, false);
                     entities[type][i].entity.gameObject.SetActive(true);
                     entities[type][i].callback = callback;
+                    entities[type][i].entity.Init(loc, this, type, i, direction, false);
+                    entity = entities[type][i].entity;
                     return true;
                 }
             }
@@ -90,9 +104,9 @@ namespace Assets.Scripts.Managers
                 if (!entities[type][i].active)
                 {
                     entities[type][i].active = true;
-                    entities[type][i].entity.Init(loc, this, type, i, direction, true);
                     entities[type][i].entity.gameObject.SetActive(true);
                     entities[type][i].callback = callback;
+                    entities[type][i].entity.Init(loc, this, type, i, direction, true);
                     return true;
                 }
             }
@@ -111,9 +125,9 @@ namespace Assets.Scripts.Managers
                 throw new System.IndexOutOfRangeException("Invalid Entity instance. ");
             if(entities[type][instance].active)
             {
-                entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
                 entities[type][instance].entity.gameObject.SetActive(false);
-                if(entities[type][instance].callback != null)
+                entities[type][instance].entity.transform.position = INIT_OBJECT_SPAWN;
+                if (entities[type][instance].callback != null)
                 {
                     entities[type][instance].callback.entityDied(entities[type][instance].entity);
                     entities[type][instance].callback = null;

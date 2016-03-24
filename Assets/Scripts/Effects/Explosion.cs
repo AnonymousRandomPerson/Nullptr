@@ -1,14 +1,19 @@
-﻿using Assets.Scripts.Managers;
+﻿using UnityEngine;
+using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.Effects
 {
     class Explosion : Entity
     {
+        [SerializeField]
+        private Util.SoundPlayer sound;
+
         private bool animDone;
 
         public override void InitData()
         {
             animDone = false;
+            sound.PlaySong(0);
         }
 
         public override void RunEntity()

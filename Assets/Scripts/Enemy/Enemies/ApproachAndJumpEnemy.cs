@@ -10,63 +10,72 @@ namespace Assets.Scripts.Enemy.Enemies
         private float speed;
 
         // This much distance, or below, then jump. Check only x-axis distance.
-        [SerializeField]
-        private float spaceToJump;
+        private float spaceToJump = 7;
 
         //Jump vector
-        private Vector2 jumpVec = new Vector2(-40, 60);
+        private Vector2 jumpVec = new Vector2(-7, 7);
 
         //location of player, to know when to jump
         private Transform playerLocTrans;
 
         //How many seconds from jump until explode
-        [SerializeField]
-        private float timeToExplode = 2;
+        private float timeToExplode = 1f;
 
         //Counts down to explode
-        private float explodeTimer;
+        private float explodeTimer = 1000;
 
         //In air or not
-        private bool inAir;
+		private bool inAir = false;
 
         //RigidBody, to be used for applying jump vector
         Rigidbody2D rBody;
+
+		//When to start counting down for explosion
+		bool startCounting = false;
+
+		bool first = true;
 
         public override void InitData()
         {
             base.InitData();
             playerLocTrans = FindObjectOfType<Managers.PlayerManager>().GetPlayer().transform;
-			Debug.Log ("Got player transform as " + playerLocTrans);
             rBody = GetComponent<Rigidbody2D>();
         }
 
         public override void RunEntity()
         {
+			if (first) {
+				InitData ();
+				first = false;
+			}
+
             base.RunEntity();
             if (!inAir)
             {
-                transform.Translate(GetForward() * speed * Time.deltaTime);
+                transform.Translate(-1 * GetForward() * speed * Time.deltaTime);
             }
 
-            if ((explodeTimer -= Time.deltaTime) <= 0)
+			if (startCounting && (explodeTimer -= Time.deltaTime) <= 0)
             {
-                Debug.Log("Destroyed");
-                //Create explosion with value 2 to hurt player
-				//for now use 0
-				ExplosionManager.instance.SpawnExplosion(2, transform, Enums.Direction.None);
-				Debug.Log("I HAVE EXPLODED");
-                Destroy(this);
+				Debug.Log ("Explosion Spawned");
+				ExplosionManager.instance.SpawnExplosion(1, transform, Enums.Direction.None);
+				Die ();
             }
         }
 
         void FixedUpdate()
         {
+			if (first) {
+				InitData ();
+				first = false;
+			}
             if (Mathf.Abs(playerLocTrans.position.x - ((Vector2)transform.position).x) <= spaceToJump
                 && !inAir)
             {
                 inAir = true;
                 rBody.AddForce(jumpVec, ForceMode2D.Impulse);
                 explodeTimer = timeToExplode;
+				startCounting = true;
             }
         }
     }

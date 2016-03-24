@@ -8,7 +8,7 @@ namespace Assets.Scripts.Bullets
         public static MallocManager instance;
         public ArrayList list;
 
-        public void Start()
+        public void Init()
         {
             instance = this;
             list = new ArrayList();
@@ -32,7 +32,6 @@ namespace Assets.Scripts.Bullets
         public void OnDestroy()
         {
             instance = null;
-            list.Clear();
         }
     }
 }

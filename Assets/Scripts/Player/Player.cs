@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Bullets;
+using Assets.Scripts.Enemy;
 using Assets.Scripts.Managers;
 using Assets.Scripts.Util;
 
@@ -13,6 +15,9 @@ namespace Assets.Scripts.Player
         /// <summary> Reference to gun. </summary>
         [SerializeField]
         private GameObject gun;
+        /// <summary> Reference to the rigidbody. </summary>
+        [SerializeField]
+        private Rigidbody2D rgby;
         /// <summary> Reference to gun. </summary>
         [SerializeField]
         private Transform barrel;
@@ -28,6 +33,8 @@ namespace Assets.Scripts.Player
         /// <summary> The front side of the collider for raycasting to detect something in the way. </summary>
         [SerializeField]
         private Transform front;
+        /// <summary> The layers to ignore when raycasting (Bullets, Destroyed, Player). </summary>
+        private const int LAYERMASK = ~(1 << 8 | 1 << 9 | 1 << 10);
         /// <summary> How long the enemy is invunerable after being hit. </summary>
         [SerializeField]
         private float invulerabilityTime = 1f;
@@ -53,7 +60,7 @@ namespace Assets.Scripts.Player
         /// <summary> Reference to the BulletManager for shooting. </summary>
         private BulletManager bulletManager;
         /// <summary> reference to camera for finding screen point</summary>
-        private Camera camera;
+        new private Camera camera;
         /// <summary> When greater than 0, this enemy is invunerable and takes damage. </summary>
         private float invulerability;
         /// <summary> X part of the velocity vector. </summary>
@@ -70,6 +77,7 @@ namespace Assets.Scripts.Player
 
         /// <summary> The height where the player dies if he drops below it. </summary>
         [SerializeField]
+        [Tooltip("The height where the player dies if he drops below it.")]
         private float deathHeight = -6;
 
         /// <summary> The renderer for the player's body. </summary>
@@ -144,6 +152,7 @@ namespace Assets.Scripts.Player
             {
                 return;
             }
+            rgby.velocity = Vector2.zero;
             if (CustomInput.BoolHeld(CustomInput.UserInput.Left))
             {
                 xVel = -moveSpeed;
@@ -180,12 +189,12 @@ namespace Assets.Scripts.Player
                 RaycastHit2D ray;
                 if (xVel > 0)
                 {
-                    ray = Physics2D.Raycast(transform.position + colliderSideOffset, Vector2.right, xVel * Time.deltaTime, ~(1 << 10));
+                    ray = Physics2D.Raycast(transform.position + colliderSideOffset, Vector2.right, xVel * Time.deltaTime, LAYERMASK);
                 }
                 else
                 {
                     Vector2 sidePosition = new Vector2(transform.position.x - colliderSideOffset.x, transform.position.y + colliderSideOffset.y);
-                    ray = Physics2D.Raycast(sidePosition, -Vector2.right, -xVel * Time.deltaTime, ~(1 << 10));
+                    ray = Physics2D.Raycast(sidePosition, -Vector2.right, -xVel * Time.deltaTime, LAYERMASK);
                 }
                 if (!ray || ray.collider == null)
                 {
@@ -193,33 +202,38 @@ namespace Assets.Scripts.Player
                 }
                 else
                 {
-                    blocked = ray.collider.tag.Equals("Ground") || ray.collider.tag.Equals("Untagged");
+                    // Default layer.
+                    blocked = ray.collider.gameObject.layer == 0;
                 }
                 if (blocked)
                 {
                     xVel = 0;
                 }
-                Debug.Log(ray.collider);
-                Debug.Log(xVel);
             }
             
             char slopeSide = 'n';
-            if (xVel != 0 && yVel == 0)
+            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            if ((backCast ^ frontCast) && !centerCast)
             {
-                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-                RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-                if ((backCast ^ frontCast) && !centerCast)
-                {
-                    slopeSide = backCast ? 'b' : 'f';
-                }
+                slopeSide = backCast ? 'b' : 'f';
             }
             transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yVel * Time.deltaTime), 0));
+            if (!inAir && slopeSide == 'n' && groundDistance < Mathf.Infinity)
+            {
+                // Place the player back on the floor after leaving a slope.
+                transform.Translate(Vector3.down * groundDistance);
+            }
+            if (xVel == 0 || yVel != 0)
+            {
+                slopeSide = 'n';
+            }
             float slopeOffset = 0;
             if (slopeSide == 'b')
             {
                 // Check for going down slopes.
-                RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
                 if (backCast)
                 {
                     slopeOffset -= backCast.distance;
@@ -227,7 +241,7 @@ namespace Assets.Scripts.Player
             }
             else if (slopeSide == 'f')
             {
-                RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+                frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
                 if (frontCast)
                 {
                     slopeOffset -= frontCast.distance;
@@ -244,8 +258,9 @@ namespace Assets.Scripts.Player
                     yVel = maxJumpSpeed;
                 else
                     yVel -= gravity;
-            } else
+            } else {
                 yVel = 0;
+            }
         }
 
         /// <summary> Aims the gun. </summary>
@@ -296,13 +311,11 @@ namespace Assets.Scripts.Player
         {
             if (col.gameObject.tag == "Enemy")
             {
-                hit = true;
-                damage = 1;
+                SetHit(col.gameObject.GetComponent<Enemy.Enemy>().CollideDamage);
             }
             else if (col.gameObject.tag == "EnemyBullet")
             {
-                hit = true;
-                damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                SetHit(col.gameObject.GetComponent<Bullet>().getDamage());
             }
         }
 
@@ -320,15 +333,23 @@ namespace Assets.Scripts.Player
             {
                 if (coll.gameObject.tag == "Enemy")
                 {
-                    hit = true;
-                    damage = 1;
+                    SetHit(coll.gameObject.GetComponent<Enemy.Enemy>().CollideDamage);
                 }
                 else if (coll.gameObject.tag == "EnemyBullet")
                 {
-                    hit = true;
-                    damage = coll.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                    SetHit(coll.gameObject.GetComponent<Bullet>().getDamage());
                 }
             }
+        }
+
+        /// <summary>
+        /// Damages the player.
+        /// </summary>
+        /// <param name="newDamage">The damage to deal to the player.</param>
+        private void SetHit(int newDamage)
+        {
+            hit = true;
+            damage = newDamage;
         }
 
         /// <summary> Returns booleans about whether or not the enemy is touching another collider. </summary>
@@ -336,9 +357,9 @@ namespace Assets.Scripts.Player
         /// <param name="groundDistance"> The distance from the player to the ground if the player will hit the ground on the current tick. </param>
         protected void TouchingSomething(ref bool inAir, ref float groundDistance)
         {
-            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
-            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime);
+            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
             inAir = !(backCast || frontCast || centerCast);
             if (!inAir)
             {

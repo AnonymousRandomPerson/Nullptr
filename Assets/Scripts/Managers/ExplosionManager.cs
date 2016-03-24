@@ -15,7 +15,7 @@ namespace Assets.Scripts.Managers
 
         public bool SpawnExplosion(int type, Transform loc, Enums.Direction direction)
         {
-            return AquireEntityCutScene(type, loc, direction);
+            return AquireEntity(type, loc, direction);
         }
 
         public void OnDestroy()

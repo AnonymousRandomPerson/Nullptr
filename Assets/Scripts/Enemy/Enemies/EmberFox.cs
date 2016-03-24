@@ -53,6 +53,7 @@ namespace Assets.Scripts.Enemy.Enemies
             currentSpeed = 0;
             chasing = false;
             wanderTimer = 0;
+            transform.rotation = Quaternion.identity;
         }
 
         /// <summary>

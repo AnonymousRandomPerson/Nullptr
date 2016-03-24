@@ -67,7 +67,7 @@ namespace Assets.Scripts.Bullets
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
                 Die();
             }
-            if ((currentLifeTime += Time.deltaTime) > lifeTime)
+            else if ((currentLifeTime += Time.deltaTime) > lifeTime)
                 Die();
         }
 

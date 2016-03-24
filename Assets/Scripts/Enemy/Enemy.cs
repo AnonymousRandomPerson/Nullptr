@@ -30,9 +30,22 @@ namespace Assets.Scripts.Enemy
 
         protected int damage;
 
+        /// <summary> The amount of damage the enemy deals to the player when colliding with it. </summary>
+        [SerializeField]
+        [Tooltip("The amount of damage the enemy deals to the player when colliding with it.")]
+        protected int collideDamage = 1;
+
         protected bool Invincible
         {
             get { return invulerability > 0; }
+        }
+
+        /// <summary>
+        /// The amount of damage the enemy deals to the player when colliding with it.
+        /// </summary>
+        public int CollideDamage
+        {
+            get { return collideDamage; }
         }
 
         public override void InitData()
@@ -69,7 +82,7 @@ namespace Assets.Scripts.Enemy
                 render = true;
                 Render(true);
             }
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 || transform.position.y < -6)
             {
                 Render(true);
                 Die();

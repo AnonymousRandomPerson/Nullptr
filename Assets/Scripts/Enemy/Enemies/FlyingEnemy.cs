@@ -29,7 +29,10 @@ namespace Assets.Scripts.Enemy.Enemies
         public override void InitData()
         {
             base.InitData();
-            player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
+            if (player == null)
+            {
+                player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
+            }
         }
 
         /// <summary>

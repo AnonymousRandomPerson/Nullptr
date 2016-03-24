@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Bullets;
+using Assets.Scripts.Enemy;
 using Assets.Scripts.Managers;
 using Assets.Scripts.Util;
 
@@ -76,6 +77,7 @@ namespace Assets.Scripts.Player
 
         /// <summary> The height where the player dies if he drops below it. </summary>
         [SerializeField]
+        [Tooltip("The height where the player dies if he drops below it.")]
         private float deathHeight = -6;
 
         /// <summary> The renderer for the player's body. </summary>
@@ -309,13 +311,11 @@ namespace Assets.Scripts.Player
         {
             if (col.gameObject.tag == "Enemy")
             {
-                hit = true;
-                damage = 1;
+                SetHit(col.gameObject.GetComponent<Enemy.Enemy>().CollideDamage);
             }
             else if (col.gameObject.tag == "EnemyBullet")
             {
-                hit = true;
-                damage = col.gameObject.GetComponent<Bullets.Bullet>().getDamage();
+                SetHit(col.gameObject.GetComponent<Bullet>().getDamage());
             }
         }
 
@@ -333,19 +333,11 @@ namespace Assets.Scripts.Player
             {
                 if (coll.gameObject.tag == "Enemy")
                 {
-                    SetHit(1);
+                    SetHit(coll.gameObject.GetComponent<Enemy.Enemy>().CollideDamage);
                 }
                 else if (coll.gameObject.tag == "EnemyBullet")
                 {
-                    SetHit(coll.gameObject.GetComponentInParent<Bullets.Bullet>().getDamage());
-                }
-                else if (coll.gameObject.layer == 8)
-                {
-                    ExplosionWave explosion = coll.gameObject.GetComponent<ExplosionWave>();
-                    if (explosion != null)
-                    {
-                        SetHit(explosion.getDamage());
-                    }
+                    SetHit(coll.gameObject.GetComponent<Bullet>().getDamage());
                 }
             }
         }

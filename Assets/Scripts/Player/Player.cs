@@ -333,11 +333,11 @@ namespace Assets.Scripts.Player
             {
                 if (coll.gameObject.tag == "Enemy")
                 {
-                    SetHit(coll.gameObject.GetComponentInParent<Enemy.Enemy>().CollideDamage);
+                    SetHit(coll.gameObject.GetComponent<Enemy.Enemy>().CollideDamage);
                 }
                 else if (coll.gameObject.tag == "EnemyBullet")
                 {
-                    SetHit(coll.gameObject.GetComponentInParent<Bullet>().getDamage());
+                    SetHit(coll.gameObject.GetComponent<Bullet>().getDamage());
                 }
             }
         }

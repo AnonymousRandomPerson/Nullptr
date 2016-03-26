@@ -17,7 +17,9 @@ namespace Assets.Scripts.Bullets
         private LayerMask rayCastLayer;
         [SerializeField]
         private Transform rayCastPoint;
-        
+        [SerializeField]
+        private Util.SoundPlayer sound;
+
         private float currentRaycastRadius;
         private float currentSizeX;
         private float currentSizeY;
@@ -39,6 +41,7 @@ namespace Assets.Scripts.Bullets
             finalSizeY = transform.localScale.y;
             transform.localScale = Vector3.zero;
             transform.localScale = new Vector3(currentSizeX, currentSizeY, transform.localScale.z);
+            sound.PlaySong(0);
         }
 
         public override void RunEntity()

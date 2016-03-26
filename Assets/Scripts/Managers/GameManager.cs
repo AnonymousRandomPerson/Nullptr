@@ -110,7 +110,7 @@ namespace Assets.Scripts.Managers
         /// <summary> Handles SFX volume. </summary>
         public static float SFXVol
         {
-            get { return musicVol; }
+            get { return sfxVol; }
             set
             {
                 sfxVol = value;

@@ -121,6 +121,7 @@ namespace Assets.Scripts.Enemy.Boss
                 anim.SetBool("jump", false);
                 anim.SetBool("idle", false);
                 animDone = false;
+                hit = false;
                 //if (state == MallocAndFreeStateMachine.State.AirAttack)
                 //    partner.SigWaitForAttack = true;
             }
@@ -154,7 +155,7 @@ namespace Assets.Scripts.Enemy.Boss
 
         public void AnimStep()
         {
-            transform.Translate(Vector2.right * .2f);
+            transform.Translate(-Vector2.right * .2f);
         }
 
         public void AnimDone()

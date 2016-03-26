@@ -15,14 +15,14 @@ namespace Assets.Scripts.Util
 
         void Start()
 		{
-            if (playOnLoad)
-                PlaySong(0);
             if (dontDestroy)
                 DontDestroyOnLoad(this.gameObject);
             if (SFX)
                 audio.volume = Managers.GameManager.SFXVol;
             else
                 audio.volume = Managers.GameManager.MusicVol;
+            if (playOnLoad)
+                PlaySong(0);
         }
 
         void Update()

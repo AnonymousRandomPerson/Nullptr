@@ -22,6 +22,8 @@ namespace Assets.Scripts.Bullets
         [SerializeField]
         private Transform rayCastPoint;
         private float currentLifeTime;
+        [SerializeField]
+        private Util.SoundPlayer sound;
 
         public int getDamage()
         {
@@ -35,6 +37,7 @@ namespace Assets.Scripts.Bullets
             {
                 rayCastLayer = rayCastLayer | layerMask.value;
             }
+            sound.PlaySong(0);
         }
 
         public override void RunEntity()

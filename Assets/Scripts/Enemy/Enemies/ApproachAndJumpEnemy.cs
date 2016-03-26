@@ -33,8 +33,6 @@ namespace Assets.Scripts.Enemy.Enemies
 		//When to start counting down for explosion
 		bool startCounting = false;
 
-		bool first = true;
-
         public override void InitData()
         {
             base.InitData();
@@ -44,11 +42,6 @@ namespace Assets.Scripts.Enemy.Enemies
 
         public override void RunEntity()
         {
-			if (first) {
-				InitData ();
-				first = false;
-			}
-
             base.RunEntity();
             if (!inAir)
             {
@@ -64,10 +57,6 @@ namespace Assets.Scripts.Enemy.Enemies
 
         void FixedUpdate()
         {
-			if (first) {
-				InitData ();
-				first = false;
-			}
             if (Mathf.Abs(playerLocTrans.position.x - ((Vector2)transform.position).x) <= spaceToJump
                 && !inAir)
             {

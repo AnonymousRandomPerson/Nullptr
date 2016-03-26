@@ -57,7 +57,6 @@ namespace Assets.Scripts.Enemy.Enemies
 
 			if (startCounting && (explodeTimer -= Time.deltaTime) <= 0)
             {
-				Debug.Log ("Explosion Spawned");
 				ExplosionManager.instance.SpawnExplosion(1, transform, Enums.Direction.None);
 				Die ();
             }

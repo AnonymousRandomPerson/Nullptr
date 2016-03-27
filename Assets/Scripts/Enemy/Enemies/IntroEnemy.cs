@@ -9,13 +9,10 @@ namespace Assets.Scripts.Enemy.Enemies
 
         void OnTriggerEnter2D(Collider2D coll)
         {
-            Debug.Log("A");
             if (Managers.GameManager.IsRunning)
             {
-                Debug.Log("B");
                 if (coll.gameObject.tag == "PlayerBullet")
                 {
-                    Debug.Log("C");
                     if (cutscene != null)
                         cutscene.SetActive(true);
                 }

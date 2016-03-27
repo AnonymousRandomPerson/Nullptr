@@ -42,7 +42,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             base.InitData();
             bulletManager = FindObjectOfType<Managers.BulletManager>();
-            animDone = false;
+            animDone = true;
             done = false;
             doOnce = false;
             jump = false;
@@ -74,7 +74,7 @@ namespace Assets.Scripts.Enemy.Boss
                 //anim.SetBool("attack", false);
                 //anim.SetBool("jump", false);
                 //anim.SetBool("idle", false);
-                animDone = false;
+                animDone = true;
                 hit = false;
                 //if (state == MallocAndFreeStateMachine.State.AirAttack)
                 //    partner.SigWaitForAttack = true;
@@ -155,7 +155,7 @@ namespace Assets.Scripts.Enemy.Boss
             }
             bool inAir = true, b = false;
             TouchingSomething(ref inAir, ref b);
-            if (!inAir && animDone)
+            if (!inAir && animDone && rgby2d.velocity.y == 0)
                 done = true;
         }
 

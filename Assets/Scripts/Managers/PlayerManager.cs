@@ -8,6 +8,8 @@ namespace Assets.Scripts.Managers
         [SerializeField]
         private Transform spawnPoint;
 
+        public GameObject deathHandler;
+
         private Player.Player player;
              
         public override void Start()
@@ -15,7 +17,7 @@ namespace Assets.Scripts.Managers
             if (player == null)
             {
                 base.Start();
-                AquireEntity(0, spawnPoint, Enums.Direction.Right);
+                AquireEntity(0, spawnPoint, Enums.Direction.Right, deathHandler.GetComponent<Callback>());
                 player = FindObjectOfType<Player.Player>();
             }
         }

@@ -436,7 +436,6 @@ namespace Assets.Scripts.Player
         internal override void Die()
         {
             base.Die();
-            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

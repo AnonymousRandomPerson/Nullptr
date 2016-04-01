@@ -9,7 +9,7 @@
     <Keyboard_LookLeft>None</Keyboard_LookLeft>
     <Keyboard_LookRight>None</Keyboard_LookRight>
     <Keyboard_Pause>Escape</Keyboard_Pause>
-    <Keyboard_Accept>KeypadEnter</Keyboard_Accept>
+    <Keyboard_Accept>Return</Keyboard_Accept>
     <Keyboard_Cancel>Backspace</Keyboard_Cancel>
     <Keyboard_Attack>Mouse0</Keyboard_Attack>
     <Keyboard_Jump>Space</Keyboard_Jump>

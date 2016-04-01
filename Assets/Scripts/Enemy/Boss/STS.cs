@@ -55,8 +55,10 @@ namespace Assets.Scripts.Enemy.Boss
         public override void RunEntity()
         {
             STSStateMachine.State temp = state;
+            bool inAir = true, b = false;
+            TouchingSomething(ref inAir, ref b);
             // Get state
-            state = machine.update(currentHealth, done, hit && invulerability <= 0);
+            state = machine.update(currentHealth, done, hit && invulerability <= 0, !inAir && animDone && rgby2d.velocity.y == 0);
             if (temp != state)
             {
                 if (player.transform.position.x > transform.position.x)

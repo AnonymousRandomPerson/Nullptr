@@ -9,7 +9,7 @@ namespace Assets.Scripts.UI
 
         void Start()
         {
-            Managers.GameManager.Intro();
+            Managers.GameManager.Menu();
             introSongs.loop = true;
             introSongs.loopSong = 0;
             introSongs.PlaySong(0);

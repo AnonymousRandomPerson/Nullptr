@@ -20,7 +20,7 @@ namespace Assets.Scripts.Enemy.Boss
             stage = 0;
         }
 
-        public State update(int health, bool animDone, bool hit)
+        public State update(int health, bool animDone, bool hit, bool onGround)
         {
             switch (currState)
             {
@@ -29,7 +29,7 @@ namespace Assets.Scripts.Enemy.Boss
                 case State.Step: currState = Step(animDone); break;
                 case State.Jump: currState = Jump(animDone); break;
                 case State.GroundAttack: currState = GroundAttack(animDone); break;
-                case State.Hit: currState = Hit(health, animDone); break;
+                case State.Hit: currState = Hit(health, animDone, onGround); break;
             }
             return currState;
         }
@@ -81,12 +81,12 @@ namespace Assets.Scripts.Enemy.Boss
             return State.GroundAttack;
         }
 
-        private State Hit(int health, bool animDone)
+        private State Hit(int health, bool animDone, bool onGround)
         {
             if (animDone)
             {
                 float r = Random.Range(0f, 1f);
-                if (r < .40f)
+                if (!onGround || r < .40f)
                     return State.GroundAttack;
                 return State.Jump;
             }

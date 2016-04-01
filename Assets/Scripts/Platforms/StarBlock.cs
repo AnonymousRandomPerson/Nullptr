@@ -20,7 +20,10 @@ namespace Assets.Scripts.Platforms
     	/// <summary>
         /// Ticks the timer for destroying the block with a bomb.
         /// </summary>
-    	private void Update () {
+    	private void Update ()
+        {
+            if (!Managers.GameManager.IsRunning)
+                return;
             if (countdown && gameObject.activeSelf)
             {
                 destroyTimer -= Time.deltaTime;

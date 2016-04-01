@@ -16,7 +16,9 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
-            if(moveUp)
+            if (!Managers.GameManager.IsRunning)
+                return;
+            if (moveUp)
                 transform.Translate(Vector2.up * movementSpeed * Time.deltaTime);
         }
 

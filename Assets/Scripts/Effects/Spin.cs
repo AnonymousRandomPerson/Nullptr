@@ -15,6 +15,8 @@ namespace Assets.Scripts.Effects
 
         void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             if (spinDirection)
             {
                 polarity = 1;

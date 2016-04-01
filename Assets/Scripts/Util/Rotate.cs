@@ -14,6 +14,8 @@ namespace Assets.Scripts.Util
 
         void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             if (rotatingLeft)
             {
                 transform.Rotate(new Vector3(0, 0, -rotationSpeed));

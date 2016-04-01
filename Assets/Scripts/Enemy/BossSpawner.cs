@@ -33,6 +33,8 @@ namespace Assets.Scripts.Enemy
 
         void Update()
         {
+            if (!GameManager.IsRunning)
+                return;
             if(!spawned && (timeForName -= Time.deltaTime) < 0)
             {
                 for(int i = 0; i < SpawnPoints.Length; i++)
@@ -65,7 +67,7 @@ namespace Assets.Scripts.Enemy
                     return;
             }
             WinText.SetActive(true);
-            GameManager.Intro();
+            GameManager.Menu();
             waitForCutScene = true;
         }
     }

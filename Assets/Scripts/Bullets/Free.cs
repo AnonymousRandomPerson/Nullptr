@@ -65,7 +65,17 @@ namespace Assets.Scripts.Bullets
             if (hit)
             {
                 if (hit.collider.tag == targetTag)
+                {
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
+                }
+                else
+                {
+                    Malloc malloc = hit.collider.GetComponent<Malloc>();
+                    if (malloc != null)
+                    {
+                        malloc.Die();
+                    }
+                }
             }
             if ((currentLifeTime += Time.deltaTime) > lifeTime)
                 Die();

@@ -19,12 +19,15 @@ namespace Assets.Scripts.Platforms
 
         void OnTriggerEnter2D (Collider2D col)
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             applyForce(col);
         }
 
         void OnTriggerStay2D (Collider2D col)
         {
-			
+            if (!Managers.GameManager.IsRunning)
+                return;
             applyForce(col);
         }
     }

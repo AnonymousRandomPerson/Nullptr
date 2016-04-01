@@ -38,6 +38,8 @@ namespace Assets.Scripts.Effects
         /// </summary>
     	private void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             transform.localScale = initScale * (1 + pulseSize * Mathf.Sin(pulseTimer / pulseTime));
             pulseTimer += Time.deltaTime;
     	}

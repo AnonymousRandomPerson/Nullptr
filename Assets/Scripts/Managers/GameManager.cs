@@ -46,10 +46,10 @@ namespace Assets.Scripts.Managers
         }
 
         /// <summary> Change to Intro state. </summary>
-        public static void Intro()
+        public static void Menu()
         {
             prevState = state;
-            state = Enums.GameStates.Intro;
+            state = Enums.GameStates.Menu;
         }
 
         /// <summary> Change to Intro state. </summary>

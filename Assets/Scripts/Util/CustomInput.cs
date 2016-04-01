@@ -55,7 +55,7 @@ namespace Assets.Scripts.Util
             keyboard[(int)UserInput.Left, 0] = KeyCode.A;
             keyboard[(int)UserInput.Right, 0] = KeyCode.D;
             keyboard[(int)UserInput.Pause, 0] = KeyCode.Escape;
-            keyboard[(int)UserInput.Accept, 0] = KeyCode.KeypadEnter;
+            keyboard[(int)UserInput.Accept, 0] = KeyCode.Return;
             keyboard[(int)UserInput.Cancel, 0] = KeyCode.Backspace;
             keyboard[(int)UserInput.Attack, 0] = KeyCode.Mouse0;
             keyboard[(int)UserInput.Jump, 0] = KeyCode.Space;

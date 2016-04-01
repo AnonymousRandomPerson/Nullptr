@@ -53,7 +53,9 @@ namespace Assets.Scripts.Enemy
 
         void Update()
         {
-            if(currentEnemy < enemiesToSpawn.Length && GameManager.IsRunning && (target.transform.position.x > leftBound.position.x && target.transform.position.x < rightBound.position.x))
+            if (!Managers.GameManager.IsRunning)
+                return;
+            if (currentEnemy < enemiesToSpawn.Length && GameManager.IsRunning && (target.transform.position.x > leftBound.position.x && target.transform.position.x < rightBound.position.x))
             {
                 if(numOfEnemies < enemiesToSpawn.Length && (timeWaited += Time.deltaTime) > SpawnWaitTime)
                 {

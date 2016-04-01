@@ -34,6 +34,8 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             if (target == null)
                 return;
             if (Mathf.Abs(target.transform.position.x - rows[0].transform.position.x) < 1)

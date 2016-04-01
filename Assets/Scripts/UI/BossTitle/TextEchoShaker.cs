@@ -48,6 +48,8 @@ namespace Assets.Scripts.UI.BossTitle
 
         void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             if (primary != null)
             {
                 for (int i = 0; i < secondaries.Length; i++)

@@ -21,6 +21,8 @@ namespace Assets.Scripts.Effects
     	/// <summary> Randomly rotates and scales the object every few frames. </summary>
     	private void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             changeTimer -= Time.deltaTime;
             if (changeTimer < 0)
             {

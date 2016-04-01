@@ -31,6 +31,8 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
+            if (!Managers.GameManager.IsRunning)
+                return;
             if (Mathf.Abs(player.position.x - currentPlayerPosRef.x) > rowWidth * distanceModifier)
             {
                 if (player.position.x > currentPlayerPosRef.x)

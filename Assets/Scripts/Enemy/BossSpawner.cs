@@ -33,6 +33,8 @@ namespace Assets.Scripts.Enemy
 
         void Update()
         {
+            if (!GameManager.IsRunning)
+                return;
             if(!spawned && (timeForName -= Time.deltaTime) < 0)
             {
                 for(int i = 0; i < SpawnPoints.Length; i++)

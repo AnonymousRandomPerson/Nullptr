@@ -89,6 +89,9 @@ namespace Assets.Scripts.Player
         private Animator animator;
         private int damage;
 
+        /// <summary> The height of the player. </summary>
+        private float height;
+
         public override void InitData()
         {
             hit = false;
@@ -102,6 +105,7 @@ namespace Assets.Scripts.Player
             bodyRenderer = GetComponent<SpriteRenderer>();
             gunRenderer = transform.FindChild("Gun").GetComponent<SpriteRenderer>();
             colliderSideOffset = front.localPosition;
+            height = GetComponent<BoxCollider2D>().bounds.extents.y * 2;
         }
 
         public override void RunEntity()
@@ -212,14 +216,40 @@ namespace Assets.Scripts.Player
             }
             
             char slopeSide = 'n';
-            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
-            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
-            RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+            float maxFallTick = -maxFallSpeed * Time.deltaTime;
+            RaycastHit2D backCast = Physics2D.Raycast(backFoot.position, Vector2.down, maxFallTick, LAYERMASK);
+            RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, Vector2.down, maxFallTick, LAYERMASK);
+            RaycastHit2D centerCast = Physics2D.Raycast(center.position, Vector2.down, maxFallTick, LAYERMASK);
             if ((backCast ^ frontCast) && !centerCast)
             {
                 slopeSide = backCast ? 'b' : 'f';
             }
-            transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yVel * Time.deltaTime), 0));
+            float yTick = yVel * Time.deltaTime;
+            float headDistance = 0;
+            if (yVel > 0) {
+                // Check for hitting the ceiling when traveling up.
+                Vector3 heightVector = Vector2.up * height;
+                RaycastHit2D upBackCast = Physics2D.Raycast(backFoot.position + heightVector, Vector2.up, yTick, LAYERMASK);
+                RaycastHit2D upFrontCast = Physics2D.Raycast(frontFoot.position + heightVector, Vector2.up, yTick, LAYERMASK);
+                RaycastHit2D upCenterCast = Physics2D.Raycast(center.position + heightVector, Vector2.up, yTick, LAYERMASK);
+                if (upBackCast)
+                {
+                    headDistance = Mathf.Max(headDistance, upBackCast.distance);
+                }
+                if (upFrontCast)
+                {
+                    headDistance =  Mathf.Max(headDistance, upFrontCast.distance);
+                }
+                if (upCenterCast)
+                {
+                    headDistance =  Mathf.Max(headDistance, upCenterCast.distance);
+                }
+            }
+            if (headDistance > 0 && yTick > headDistance) {
+                yTick = headDistance;
+                yVel = 0;
+            }
+            transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yTick), 0));
             if (!inAir && slopeSide == 'n' && groundDistance < Mathf.Infinity)
             {
                 // Place the player back on the floor after leaving a slope.
@@ -233,7 +263,7 @@ namespace Assets.Scripts.Player
             if (slopeSide == 'b')
             {
                 // Check for going down slopes.
-                backCast = Physics2D.Raycast(backFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+                backCast = Physics2D.Raycast(backFoot.position, Vector2.down, maxFallTick, LAYERMASK);
                 if (backCast)
                 {
                     slopeOffset -= backCast.distance;
@@ -241,7 +271,7 @@ namespace Assets.Scripts.Player
             }
             else if (slopeSide == 'f')
             {
-                frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, LAYERMASK);
+                frontCast = Physics2D.Raycast(frontFoot.position, Vector2.down, maxFallTick, LAYERMASK);
                 if (frontCast)
                 {
                     slopeOffset -= frontCast.distance;
@@ -352,7 +382,7 @@ namespace Assets.Scripts.Player
             damage = newDamage;
         }
 
-        /// <summary> Returns booleans about whether or not the enemy is touching another collider. </summary>
+        /// <summary> Returns booleans about whether or not the player is touching another collider. </summary>
         /// <param name="inAir"> True if there is no ground currently beneath the enemy. </param>
         /// <param name="groundDistance"> The distance from the player to the ground if the player will hit the ground on the current tick. </param>
         protected void TouchingSomething(ref bool inAir, ref float groundDistance)

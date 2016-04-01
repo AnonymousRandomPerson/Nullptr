@@ -12,14 +12,11 @@ namespace Assets.Scripts.Enemy.Enemies
         // This much distance, or below, then jump. Check only x-axis distance.
         private float spaceToJump = 7;
 
-        //Jump vector
-        private Vector2 jumpVec = new Vector2(-7, 7);
-
         //location of player, to know when to jump
         private Transform playerLocTrans;
 
         //How many seconds from jump until explode
-        private float timeToExplode = 1f;
+        private float timeToExplode = 1.5f;
 
         //Counts down to explode
         private float explodeTimer = 1000;
@@ -38,6 +35,9 @@ namespace Assets.Scripts.Enemy.Enemies
             base.InitData();
             playerLocTrans = FindObjectOfType<Managers.PlayerManager>().GetPlayer().transform;
             rBody = GetComponent<Rigidbody2D>();
+            explodeTimer = timeToExplode;
+            startCounting = false;
+            inAir = false;
         }
 
         public override void RunEntity()
@@ -45,14 +45,22 @@ namespace Assets.Scripts.Enemy.Enemies
             base.RunEntity();
             if (!inAir)
             {
-                transform.Translate(-1 * GetForward() * speed * Time.deltaTime);
+                transform.Translate(GetForward() * speed * Time.deltaTime);
             }
 
 			if (startCounting && (explodeTimer -= Time.deltaTime) <= 0)
             {
-				ExplosionManager.instance.SpawnExplosion(1, transform, Enums.Direction.None);
-				Die ();
+                Explode();
             }
+        }
+
+        /// <summary>
+        /// Causes the enemy to explode.
+        /// </summary>
+        private void Explode()
+        {
+            ExplosionManager.instance.SpawnExplosion(1, transform, Enums.Direction.None);
+            Die ();
         }
 
         void FixedUpdate()
@@ -61,9 +69,20 @@ namespace Assets.Scripts.Enemy.Enemies
                 && !inAir)
             {
                 inAir = true;
-                rBody.AddForce(jumpVec, ForceMode2D.Impulse);
-                explodeTimer = timeToExplode;
+                rBody.AddForce(new Vector2(GetForward().x * spaceToJump, spaceToJump), ForceMode2D.Impulse);
 				startCounting = true;
+            }
+        }
+
+        /// <summary>
+        /// Explodes when the enemy hits the player.
+        /// </summary>
+        /// <param name="collision">The collision that the enemy was involved in.</param>
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.collider.tag == "Player")
+            {
+                Explode();
             }
         }
     }

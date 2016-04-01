@@ -9,7 +9,7 @@ namespace Assets.Scripts.Managers
 
         public void entityDied(Entity entity)
         {
-            Managers.GameManager.Intro();
+            Managers.GameManager.Menu();
             Error.SetActive(true);
             introSongs.loop = true;
             introSongs.loopSong = 2;

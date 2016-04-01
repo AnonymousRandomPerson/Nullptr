@@ -65,7 +65,7 @@ namespace Assets.Scripts.Enemy
                     return;
             }
             WinText.SetActive(true);
-            GameManager.Intro();
+            GameManager.Menu();
             waitForCutScene = true;
         }
     }

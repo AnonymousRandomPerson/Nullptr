@@ -104,6 +104,7 @@ namespace Assets.Scripts.UI
                     currentPage++;
                     if (currentPage >= pages.Length)
                     {
+                        text.text = "";
                         GameManager.Run();
                         canvas.SetActive(false);
                         Destroy(this.gameObject);

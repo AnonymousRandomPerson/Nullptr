@@ -3,11 +3,10 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.UI.ActivatedTextBox {
     public class TextBox : MonoBehaviour {
-
         [SerializeField]
         private Image image;
         [SerializeField]
         private Text text;
-
+        public string Text { set { text.text = value; } }
     }
 }

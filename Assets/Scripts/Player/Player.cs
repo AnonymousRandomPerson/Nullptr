@@ -81,6 +81,19 @@ namespace Assets.Scripts.Player
         [Tooltip("The height where the player dies if he drops below it.")]
         private float deathHeight = -6;
 
+		/// <summary>
+		/// To prevent a bullet from being shot every frame.
+		/// Starts greater than limit because ideally, player
+		/// Shouldn't have to wait for first bullet
+		/// to shoot
+		/// </summary>
+		private float bulletHeldDownTimer = 0.4f;
+
+		/// <summary>
+		/// How much time between shooting bullets when 
+		/// </summary>
+		private float bulletHeldDownTimerLimit = 0.3f;
+
         /// <summary> The renderer for the player's body. </summary>
         private SpriteRenderer bodyRenderer;
         /// <summary> The renderer for the player's gun. </summary>
@@ -144,8 +157,15 @@ namespace Assets.Scripts.Player
                 weapons.SwitchLeft();
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.SwitchRight))
                 weapons.SwitchRight();
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Attack))
-                bulletManager.Shoot(weapons.GetWeapon(), barrel, transform.localScale.x < 0 ? Enums.Direction.Left : Enums.Direction.Right);
+			if (CustomInput.BoolHeld (CustomInput.UserInput.Attack)) {
+				bulletHeldDownTimer += Time.deltaTime;
+				if (bulletHeldDownTimer >= bulletHeldDownTimerLimit) {
+					bulletManager.Shoot (weapons.GetWeapon (), barrel, transform.localScale.x < 0 ? Enums.Direction.Left : Enums.Direction.Right);
+					bulletHeldDownTimer = 0f;
+				}
+			} else {
+				bulletHeldDownTimer = bulletHeldDownTimerLimit + 0.1f;
+			}
         }
 
         /// <summary> Controls player movement. </summary>

@@ -93,6 +93,22 @@ namespace Assets.Scripts.Managers
             }
         }
 
+        /// <summary> Handles Pausing. </summary>
+        public static bool Dead
+        {
+            get { return state == Enums.GameStates.Dead; }
+            set
+            {
+                if (value && state != Enums.GameStates.Dead)
+                {
+                    prevState = state;
+                    state = Enums.GameStates.Dead;
+                }
+                else
+                    state = prevState;
+            }
+        }
+
         /// <summary> Handles Music volume. </summary>
         public static float MusicVol
         {

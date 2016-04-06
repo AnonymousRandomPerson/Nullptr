@@ -6,9 +6,14 @@ namespace Assets.Scripts.Managers
     /// <summary> Parent class for all GameObjects managed by EntityManager. </summary>
     public abstract class Entity : MonoBehaviour
     {
+        /// <summary> Automaitcally triggers death for resetting from checkpoints. </summary>
+        public static bool Reset = false;
+
         [SerializeField]
         protected string entityName;
+
         public string Name { get { return entityName; } }
+
         /// <summary> The total health of the Entity. </summary>
         [SerializeField]
         protected int totalHealth;
@@ -71,7 +76,12 @@ namespace Assets.Scripts.Managers
         void Update()
         {
             if (GameManager.IsRunning || (isCutScene && GameManager.IsCutScene))
-                RunEntity();
+            {
+                if (Reset)
+                    Die();
+                else
+                    RunEntity();
+            }
         }
 
         /// <summary> Method to allow custom data initialization. </summary>

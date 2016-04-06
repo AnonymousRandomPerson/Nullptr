@@ -21,7 +21,7 @@ namespace Assets.Scripts.UI
 
         void Update()
         {
-            if (Managers.GameManager.State == Util.Enums.GameStates.Menu)
+            if (Managers.GameManager.State == Util.Enums.GameStates.Paused)
             {
                 if (EventSystem.current.currentSelectedGameObject == null)
                     EventSystem.current.SetSelectedGameObject(resume);
@@ -41,11 +41,11 @@ namespace Assets.Scripts.UI
                     Navigator.CallSubmit();
                 }
             }
-            else
+            else if(Managers.GameManager.IsRunning)
             {
                 if (Util.CustomInput.BoolFreshPress(Util.CustomInput.UserInput.Pause))
                 {
-                    Managers.GameManager.Menu();
+                    Managers.GameManager.Pause = true;
                     canvas.SetActive(true);
                 }
             }
@@ -53,13 +53,13 @@ namespace Assets.Scripts.UI
 
         public void Resume()
         {
-            Managers.GameManager.Run();
+            Managers.GameManager.Pause = false;
             canvas.SetActive(false);
         }
 
         public void Quit()
         {
-            Managers.GameManager.Menu();
+            Managers.GameManager.Run();
             UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
         }
     }

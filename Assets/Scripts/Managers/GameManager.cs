@@ -29,7 +29,7 @@ namespace Assets.Scripts.Managers
                 prevState = Enums.GameStates.Running;
                 musicVol = .5f;
                 sfxVol = .5f;
-                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol, Enums.BulletTypes.Destroyer, Enums.BulletTypes.Malloc, Enums.BulletTypes.Free };
+                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol, Enums.BulletTypes.Destroyer, Enums.BulletTypes.Malloc, Enums.BulletTypes.Free, Enums.BulletTypes.Launcher };
                 //weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
             }
             else if (this != instance)
@@ -93,6 +93,22 @@ namespace Assets.Scripts.Managers
             }
         }
 
+        /// <summary> Handles Pausing. </summary>
+        public static bool Dead
+        {
+            get { return state == Enums.GameStates.Dead; }
+            set
+            {
+                if (value && state != Enums.GameStates.Dead)
+                {
+                    prevState = state;
+                    state = Enums.GameStates.Dead;
+                }
+                else
+                    state = prevState;
+            }
+        }
+
         /// <summary> Handles Music volume. </summary>
         public static float MusicVol
         {
@@ -131,6 +147,11 @@ namespace Assets.Scripts.Managers
         /// <param name="bullet"> The bullet type to add. </param>
         public void AddWeapon(Enums.BulletTypes bullet)
         {
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                if (bullet == weapons[i])
+                    return;
+            }
             Enums.BulletTypes[] temp = new Enums.BulletTypes[weapons.Length + 1];
             for (int i = 0; i < weapons.Length; i++)
                 temp[i] = weapons[i];

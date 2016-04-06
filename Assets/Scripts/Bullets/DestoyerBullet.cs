@@ -78,17 +78,16 @@ namespace Assets.Scripts.Bullets
 
                     hit.collider.enabled = false;
                 }
-                if(hit.collider.gameObject.GetComponent<Managers.Entity>() != null)
+                if (hit.collider.gameObject.GetComponent<Managers.Entity>() != null)
                     hit.collider.gameObject.GetComponent<Managers.Entity>().HitByEntity(this);
                 Die();
             }
-            if ((currentLifeTime += Time.deltaTime) > lifeTime)
+            else if ((currentLifeTime += Time.deltaTime) > lifeTime)
                 Die();
         }
 
         public override void HitByEntity(Entity col)
         {
-            Die();
         }
     }
 }

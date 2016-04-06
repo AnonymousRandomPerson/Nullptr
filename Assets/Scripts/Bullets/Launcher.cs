@@ -4,10 +4,12 @@ using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.Bullets
 {
-    public class BasicBullet : Managers.Entity, Bullet
+    class Launcher : Managers.Entity, Bullet
     {
         [SerializeField]
         private int damage;
+        [SerializeField]
+        private int explosion;
         [SerializeField]
         private float speed;
         [SerializeField]
@@ -76,6 +78,12 @@ namespace Assets.Scripts.Bullets
 
         public override void HitByEntity(Entity col)
         {
+        }
+
+        internal override void Die()
+        {
+            ExplosionManager.instance.SpawnExplosion(explosion, transform, Enums.Direction.None);
+            base.Die();
         }
     }
 }

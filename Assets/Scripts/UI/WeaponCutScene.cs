@@ -17,11 +17,15 @@ namespace Assets.Scripts.UI
         [SerializeField]
         private Managers.BulletManager bulletManager;
         [SerializeField]
-        private Util.Enums.BulletTypes DemoBullet;
+        private Util.Enums.BulletTypes ShootBullet;
+        [SerializeField]
+        private Util.Enums.BulletTypes AddBullet;
         [SerializeField]
         private int numberToShoot;
         [SerializeField]
         private string levelToLoad;
+        [SerializeField]
+        private bool load;
 
         private float wait;
         private int count;
@@ -32,7 +36,7 @@ namespace Assets.Scripts.UI
             wait = 0f;
             count = 0;
             Managers.GameManager.CutScene();
-            Managers.GameManager.instance.AddWeapon(DemoBullet);
+            Managers.GameManager.instance.AddWeapon(AddBullet);
             gameObject.transform.position = new Vector3(FindObjectOfType<Camera>().transform.position.x, 0, -5);
         }
 
@@ -51,9 +55,9 @@ namespace Assets.Scripts.UI
                 {
                     wait = 0;
                     count++;
-                    bulletManager.Shoot(DemoBullet, barrel, Util.Enums.Direction.Right, true);
+                    bulletManager.Shoot(ShootBullet, barrel, Util.Enums.Direction.Right, true);
                 }
-                if(count >= numberToShoot && (wait += Time.deltaTime) > timeBeforeLoad)
+                if(load && count >= numberToShoot && (wait += Time.deltaTime) > timeBeforeLoad)
                     UnityEngine.SceneManagement.SceneManager.LoadScene(levelToLoad);
             }
         }        

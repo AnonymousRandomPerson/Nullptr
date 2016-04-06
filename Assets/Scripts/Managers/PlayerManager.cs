@@ -28,5 +28,10 @@ namespace Assets.Scripts.Managers
                 Start();
             return player;
         }
+
+        public void spawnAt(Transform spawnPoint)
+        {
+            AquireEntity(0, spawnPoint, Enums.Direction.Right, deathHandler.GetComponent<Callback>());
+        }
     }
 }

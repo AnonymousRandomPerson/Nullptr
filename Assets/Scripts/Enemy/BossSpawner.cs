@@ -14,7 +14,7 @@ namespace Assets.Scripts.Enemy
         [SerializeField]
         private float cutSceneWait;
         [SerializeField]
-        private GameObject cutScene;
+        private GameObject[] cutScene;
         [SerializeField]
         private bool mf;
 
@@ -33,6 +33,16 @@ namespace Assets.Scripts.Enemy
 
         void Update()
         {
+            if (waitForCutScene)
+            {
+                if ((cutSceneWait -= Time.deltaTime) < 0)
+                {
+                    WinText.SetActive(false);
+                    foreach(GameObject g in cutScene)
+                        g.SetActive(true);
+                    waitForCutScene = false;
+                }
+            }
             if (!GameManager.IsRunning)
                 return;
             if(!spawned && (timeForName -= Time.deltaTime) < 0)
@@ -47,15 +57,6 @@ namespace Assets.Scripts.Enemy
                 }
                 spawned = true;
             }
-            if (waitForCutScene)
-            {
-                if ((cutSceneWait -= Time.deltaTime) < 0)
-                {
-                    WinText.SetActive(false);
-                    cutScene.SetActive(true);
-                    waitForCutScene = false;
-                }
-            }
         }
 
         public void entityDied(Entity entity)
@@ -67,7 +68,7 @@ namespace Assets.Scripts.Enemy
                     return;
             }
             WinText.SetActive(true);
-            GameManager.Menu();
+            GameManager.CutScene();
             waitForCutScene = true;
         }
     }

@@ -61,10 +61,7 @@ namespace Assets.Scripts.Managers
             transform.position = loc.position;
             transform.rotation = loc.rotation;
             if (isCutScene)
-            {
                 transform.localScale = loc.localScale;
-                gameObject.layer = LayerMask.NameToLayer("CutScene");
-            }
             this.manager = manager;
             this.type = type;
             this.instance = instance;

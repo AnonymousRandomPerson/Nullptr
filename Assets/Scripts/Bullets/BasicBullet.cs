@@ -76,7 +76,6 @@ namespace Assets.Scripts.Bullets
 
         public override void HitByEntity(Entity col)
         {
-            Die();
         }
     }
 }

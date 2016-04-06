@@ -147,6 +147,11 @@ namespace Assets.Scripts.Managers
         /// <param name="bullet"> The bullet type to add. </param>
         public void AddWeapon(Enums.BulletTypes bullet)
         {
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                if (bullet == weapons[i])
+                    return;
+            }
             Enums.BulletTypes[] temp = new Enums.BulletTypes[weapons.Length + 1];
             for (int i = 0; i < weapons.Length; i++)
                 temp[i] = weapons[i];

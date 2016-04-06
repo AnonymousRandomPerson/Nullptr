@@ -62,6 +62,7 @@ namespace Assets.Scripts.UI
         public void GoToMain()
         {
             inMain = true;
+            inCredits = false;
             mainParent.SetActive(true);
             levelsParent.SetActive(false);
             settingsParent.SetActive(false);
@@ -81,7 +82,8 @@ namespace Assets.Scripts.UI
 
         public void GoToCredits()
         {
-            inMain = false;
+            inMain = true;
+            inCredits = true;
             mainParent.SetActive(false);
             levelsParent.SetActive(false);
             settingsParent.SetActive(false);

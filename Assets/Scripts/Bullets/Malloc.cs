@@ -111,7 +111,7 @@ namespace Assets.Scripts.Bullets
 
         internal override void Die()
         {
-            ExplosionManager.instance.SpawnExplosion(explosion, transform, Enums.Direction.None);
+            ExplosionManager.instance.SpawnExplosion(explosion, transform, Enums.Direction.None, GameManager.IsCutScene);
             if(!dying)
                 malManager.RemoveMalloc(this);
             base.Die();

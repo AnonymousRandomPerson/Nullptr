@@ -13,8 +13,12 @@ namespace Assets.Scripts.Managers
             instance = this;
         }
 
-        public bool SpawnExplosion(int type, Transform loc, Enums.Direction direction)
+        public bool SpawnExplosion(int type, Transform loc, Enums.Direction direction, bool isCutScene = false)
         {
+            if (isCutScene)
+            {
+                return AquireEntityCutScene(4, loc, direction);
+            }
             return AquireEntity(type, loc, direction);
         }
 

@@ -117,6 +117,7 @@ namespace Assets.Scripts.Enemy.Boss
         protected override void Render(bool render)
         {
             body.enabled = render;
+            barrel.parent.GetComponent<SpriteRenderer>().enabled = render;
         }
 
         void Intro()

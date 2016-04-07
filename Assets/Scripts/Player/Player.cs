@@ -271,7 +271,7 @@ namespace Assets.Scripts.Player
                 yVel = 0;
             }
             transform.Translate(new Vector3(xVel * Time.deltaTime, Mathf.Max(-groundDistance, yTick), 0));
-            if (!inAir && slopeSide == 'n' && groundDistance < Mathf.Infinity)
+            if (!inAir && slopeSide == 'n' && groundDistance < Mathf.Infinity && yTick == 0)
             {
                 // Place the player back on the floor after leaving a slope.
                 transform.Translate(Vector3.down * groundDistance);
@@ -303,12 +303,11 @@ namespace Assets.Scripts.Player
             }
             if (inAir)
             {
+                yVel -= gravity * Time.deltaTime;
                 if (yVel < maxFallSpeed)
                     yVel = maxFallSpeed;
                 else if (yVel > maxJumpSpeed)
                     yVel = maxJumpSpeed;
-                else
-                    yVel -= gravity;
             } else {
                 yVel = 0;
             }
@@ -412,20 +411,17 @@ namespace Assets.Scripts.Player
             RaycastHit2D frontCast = Physics2D.Raycast(frontFoot.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, ~raycastLayers);
             RaycastHit2D centerCast = Physics2D.Raycast(center.position, -Vector2.up, -maxFallSpeed * Time.deltaTime, ~raycastLayers);
             inAir = !(backCast || frontCast);
-            if (!inAir)
+            if (backCast)
             {
-                if (backCast)
-                {
-                    groundDistance = backCast.distance;
-                }
-                if (frontCast)
-                {
-                    groundDistance = Mathf.Min(groundDistance, frontCast.distance);
-                }
-                if (centerCast)
-                {
-                    groundDistance = Mathf.Min(groundDistance, centerCast.distance);
-                }
+                groundDistance = backCast.distance;
+            }
+            if (frontCast)
+            {
+                groundDistance = Mathf.Min(groundDistance, frontCast.distance);
+            }
+            if (centerCast)
+            {
+                groundDistance = Mathf.Min(groundDistance, centerCast.distance);
             }
         }
 

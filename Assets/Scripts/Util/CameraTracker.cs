@@ -20,7 +20,7 @@ namespace Assets.Scripts.Util
             //transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
         }
 
-        void Update()
+        void LateUpdate()
         {
             if (!Managers.GameManager.IsRunning)
                 return;

@@ -128,7 +128,8 @@ namespace Assets.Scripts.Player
             {
                 if (invulerability <= 0)
                 {
-                    currentHealth-= damage;
+                    animator.SetBool("Hurt", true);
+                    currentHealth -= damage;
                     invulerability = invulerabilityTime;
                 }
                 hit = false;
@@ -144,6 +145,8 @@ namespace Assets.Scripts.Player
                 render = true;
                 Render(true);
             }
+            else
+                animator.SetBool("Hurt", false);
             if (currentHealth <= 0 || transform.position.y < deathHeight)
             {
                 Die();
@@ -166,6 +169,14 @@ namespace Assets.Scripts.Player
 			} else {
 				bulletHeldDownTimer = bulletHeldDownTimerLimit + 0.1f;
 			}
+        }
+
+        public void AnimStep()
+        {
+        }
+
+        public void AnimDone()
+        {
         }
 
         /// <summary> Controls player movement. </summary>
@@ -303,12 +314,15 @@ namespace Assets.Scripts.Player
             }
             if (inAir)
             {
+                animator.SetBool("Jump", true);
                 yVel -= gravity * Time.deltaTime;
                 if (yVel < maxFallSpeed)
                     yVel = maxFallSpeed;
                 else if (yVel > maxJumpSpeed)
                     yVel = maxJumpSpeed;
-            } else {
+            } else
+            {
+                animator.SetBool("Jump", false);
                 yVel = 0;
             }
         }

@@ -57,8 +57,11 @@ namespace Assets.Scripts.UI
                     count++;
                     bulletManager.Shoot(ShootBullet, barrel, Util.Enums.Direction.Right, true);
                 }
-                if(load && count >= numberToShoot && (wait += Time.deltaTime) > timeBeforeLoad)
+                if (load && count >= numberToShoot && (wait += Time.deltaTime) > timeBeforeLoad)
+                {
+                    Managers.GameManager.Run();
                     UnityEngine.SceneManagement.SceneManager.LoadScene(levelToLoad);
+                }
             }
         }        
     }

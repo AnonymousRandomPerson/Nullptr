@@ -17,6 +17,8 @@ namespace Assets.Scripts.Enemy
         private GameObject[] cutScene;
         [SerializeField]
         private bool mf;
+        [SerializeField]
+        private bool k;
 
         /// <summary> Reference to EnemyManager to spawn things. </summary>
         private EnemyManager manager;
@@ -54,6 +56,13 @@ namespace Assets.Scripts.Enemy
                     Boss.MallocAndFree[] p = FindObjectsOfType<Boss.MallocAndFree>() as Boss.MallocAndFree[];
                     p[0].Partner = p[1];
                     p[1].Partner = p[0];
+                }
+                if (k)
+                {
+                    Boss.Kernel ke = FindObjectOfType<Boss.Kernel>();
+                    Boss.KernelHand[] kh = FindObjectsOfType<Boss.KernelHand>() as Boss.KernelHand[];
+                    ke.leftHand = kh[0];
+                    ke.rightHand = kh[1];
                 }
                 spawned = true;
             }

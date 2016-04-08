@@ -19,6 +19,8 @@ namespace Assets.Scripts.Enemy
         private bool mf;
         [SerializeField]
         private bool k;
+        [SerializeField]
+        private bool intro;
 
         /// <summary> Reference to EnemyManager to spawn things. </summary>
         private EnemyManager manager;
@@ -70,7 +72,9 @@ namespace Assets.Scripts.Enemy
 
         public void entityDied(Entity entity)
         {
-            if(mf)
+            if(intro)
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Secret");
+            if (mf)
             {
                 count++;
                 if (count < 2)

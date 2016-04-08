@@ -8,6 +8,9 @@ namespace Assets.Scripts.Managers
         [SerializeField]
         private Transform spawnPoint;
 
+        /// <summary> The camera following the player. </summary>
+        private CameraTracker camera;
+
         public GameObject deathHandler;
 
         private Player.Player player;
@@ -19,6 +22,7 @@ namespace Assets.Scripts.Managers
                 base.Start();
                 AquireEntity(0, spawnPoint, Enums.Direction.Right, deathHandler.GetComponent<Callback>());
                 player = FindObjectOfType<Player.Player>();
+                camera = FindObjectOfType<CameraTracker>();
             }
         }
 
@@ -32,6 +36,7 @@ namespace Assets.Scripts.Managers
         public void spawnAt(Transform spawnPoint)
         {
             AquireEntity(0, spawnPoint, Enums.Direction.Right, deathHandler.GetComponent<Callback>());
+            camera.Reset();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Assets.Scripts.Managers
     {
         [SerializeField]
         private PlayerManager manager;
+        /// <summary> The enemy manager in the scene. </summary>
+        private EnemyManager enemyManager;
 
         [SerializeField]
         private GameObject canvas;
@@ -26,6 +28,7 @@ namespace Assets.Scripts.Managers
         {
             dead = 0;
             checkpoint = 0;
+            enemyManager = FindObjectOfType<EnemyManager>();
         }
 
         void Update()
@@ -43,6 +46,7 @@ namespace Assets.Scripts.Managers
                 {
                     Entity.Reset = false;
                     manager.spawnAt(checkpoints[checkpoint]);
+                    enemyManager.Reset();
                     dead = 0;
                 }
             }

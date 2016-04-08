@@ -109,7 +109,7 @@ namespace Assets.Scripts.Player
         public override void InitData()
         {
             hit = false;
-            render = true;
+            render = false;
             invulerability = 0f;
             currentHealth = totalHealth;
             bulletManager = FindObjectOfType<BulletManager>();

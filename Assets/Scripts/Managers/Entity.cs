@@ -31,6 +31,11 @@ namespace Assets.Scripts.Managers
         /// <summary> Allows this entity to run during a cutscene. </summary>
         private bool isCutScene;
 
+        private bool paused;
+        private float animSpeed;
+        private float g;
+        private Vector2 vel;
+
         /// <summary> Reference to this entites manager for callbacks on death. </summary>
         protected EntityManager Manager
         {
@@ -67,6 +72,7 @@ namespace Assets.Scripts.Managers
             this.instance = instance;
             this.direction = direction;
             this.isCutScene = isCutScene;
+            paused = false;
             InitData();
         }
 
@@ -74,10 +80,44 @@ namespace Assets.Scripts.Managers
         {
             if (GameManager.IsRunning || (isCutScene && GameManager.IsCutScene))
             {
+                if (paused)
+                {
+                    paused = false;
+                    Animator anim = GetComponent<Animator>();
+                    if (anim != null)
+                        anim.speed = animSpeed;
+                    Rigidbody2D rgby2D = GetComponent<Rigidbody2D>();
+                    if (rgby2D != null)
+                    {
+                        rgby2D.gravityScale = g;
+                        rgby2D.velocity = vel;
+                    }
+                }
                 if (Reset)
                     Die();
                 else
                     RunEntity();
+            }
+            else
+            {
+                if (!paused)
+                {
+                    Animator anim = GetComponent<Animator>();
+                    if (anim != null)
+                    {
+                        animSpeed = anim.speed;
+                        anim.speed = 0.0000001f;
+                    }
+                    Rigidbody2D rgby2D = GetComponent<Rigidbody2D>();
+                    if (rgby2D != null)
+                    {
+                        g = rgby2D.gravityScale;
+                        rgby2D.gravityScale = 0;
+                        vel = rgby2D.velocity;
+                        rgby2D.velocity = Vector2.zero;
+                    }
+                    paused = true;
+                }
             }
         }
 

@@ -14,6 +14,11 @@ namespace Assets.Scripts.UI
             introSongs.loopSong = 0;
             introSongs.PlaySong(0);
         }
+        void Update()
+        {
+            if (Util.CustomInput.BoolFreshPressDeleteOnRead(Util.CustomInput.UserInput.Accept))
+                Navigator.CallSubmit();
+        }
 
         public void FakePlay()
         {

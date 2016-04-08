@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI
 {
     class Intro : MonoBehaviour
     {
-        public GameObject fakeTitle, Error, StartButton, kirbyButton;
+        public GameObject fakeTitle, startButton;
         public Util.SoundPlayer introSongs;
 
         void Start()
@@ -13,6 +14,7 @@ namespace Assets.Scripts.UI
             introSongs.loop = true;
             introSongs.loopSong = 0;
             introSongs.PlaySong(0);
+            EventSystem.current.SetSelectedGameObject(startButton);
         }
         void Update()
         {

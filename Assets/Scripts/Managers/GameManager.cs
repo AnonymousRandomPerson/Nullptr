@@ -29,8 +29,8 @@ namespace Assets.Scripts.Managers
                 prevState = Enums.GameStates.Running;
                 musicVol = .3f;
                 sfxVol = .3f;
-                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol, Enums.BulletTypes.Destroyer, Enums.BulletTypes.Malloc, Enums.BulletTypes.Free, Enums.BulletTypes.Launcher };
-                //weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
+                //weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol, Enums.BulletTypes.Destroyer, Enums.BulletTypes.Malloc, Enums.BulletTypes.Free, Enums.BulletTypes.Launcher };
+                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
             }
             else if (this != instance)
             {

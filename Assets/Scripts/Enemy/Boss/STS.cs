@@ -42,7 +42,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             base.InitData();
             bulletManager = FindObjectOfType<Managers.BulletManager>();
-            animDone = true;
+            animDone = false;
             done = false;
             doOnce = false;
             jump = false;
@@ -71,15 +71,11 @@ namespace Assets.Scripts.Enemy.Boss
                 doOnce = false;
                 jump = false;
                 wait = 0;
-                //anim.SetBool("walk", false);
-                //anim.SetBool("hurt", false);
-                //anim.SetBool("attack", false);
-                //anim.SetBool("jump", false);
-                //anim.SetBool("idle", false);
-                animDone = true;
+                anim.SetBool("Walking", false);
+                anim.SetBool("Hurt", false);
+                anim.SetBool("Jump", false);
+                animDone = false;
                 hit = false;
-                //if (state == MallocAndFreeStateMachine.State.AirAttack)
-                //    partner.SigWaitForAttack = true;
             }
             if (invulerability > 0)
             {
@@ -128,11 +124,6 @@ namespace Assets.Scripts.Enemy.Boss
 
         void Wait()
         {
-            if (!doOnce)
-            {
-                //anim.SetBool("idle", true);
-                doOnce = true;
-            }
             if ((wait += Time.deltaTime) > waitTime)
                 done = true;
         }
@@ -141,7 +132,7 @@ namespace Assets.Scripts.Enemy.Boss
         {
             if (!doOnce)
             {
-                //anim.SetBool("walk", true);
+                anim.SetBool("Walking", true);
                 doOnce = true;
             }
             if (animDone)
@@ -153,7 +144,7 @@ namespace Assets.Scripts.Enemy.Boss
             if (!doOnce)
             {
                 jump = true;
-                //anim.SetBool("jump", true);
+                anim.SetBool("Jump", true);
                 doOnce = true;
             }
             bool inAir = true, b = false;
@@ -164,22 +155,16 @@ namespace Assets.Scripts.Enemy.Boss
 
         void GroundAttack()
         {
-            if (!doOnce)
-            {
-                //anim.SetBool("attack", true);
-                bulletManager.Shoot(bullet, barrel,
+            bulletManager.Shoot(bullet, barrel,
                     transform.localScale.x < 0 ? Util.Enums.Direction.Left : Util.Enums.Direction.Right);
-                doOnce = true;
-            }
-            if (animDone)
-                done = true;
+            done = true;
         }
 
         void Hit()
         {
             if (!doOnce)
             {
-                //anim.SetBool("hurt", true);
+                anim.SetBool("Hurt", true);
                 doOnce = true;
             }
             if (invulerability <= 0)

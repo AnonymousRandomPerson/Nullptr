@@ -30,6 +30,10 @@ namespace Assets.Scripts.Enemy.Enemies
         [Tooltip("The position where the beam will originate from.")]
         private Transform wand;
 
+        /// <summary> The animator for the player sprite. </summary>
+        [SerializeField]
+        private Animator animator;
+
         /// <summary>
         /// Method to allow custom data initialization.
         /// </summary>
@@ -61,9 +65,11 @@ namespace Assets.Scripts.Enemy.Enemies
                     Enums.Direction direction = transform.localScale.x > 0 ? Enums.Direction.Left : Enums.Direction.Right;
                     bulletManager.Shoot(Enums.BulletTypes.Beam, wand, direction, ref beam);
                     attackStartTime = attackTimer;
+                    animator.SetBool("Attack", true);
                 }
                 else if (attackTimer < attackStartTime - 1)
                 {
+                    animator.SetBool("Attack", false);
                     // Resume walking.
                     SetAttackTimer();
                     beam = null;

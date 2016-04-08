@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI
@@ -29,40 +30,54 @@ namespace Assets.Scripts.UI
         void Start()
         {
             inMain = true;
+			inCredits = false;
             EventSystem.current.SetSelectedGameObject(mainSelected);
         }
 
         void Update()
         {
-            if (inMain)
-            {
-                if (Input.GetKey(KeyCode.Escape))
-                    Application.Quit();
-                if (inMain && EventSystem.current.currentSelectedGameObject == null)
-                {
-                    if (inCredits)
-                        EventSystem.current.SetSelectedGameObject(creditsSelected);
-                    else
-                        EventSystem.current.SetSelectedGameObject(mainSelected);
-                }
+			if (inMain) {
+				if (Input.GetKey (KeyCode.Escape))
+					Application.Quit ();
+				if (inMain && EventSystem.current.currentSelectedGameObject == null) {
+					if (inCredits)
+						EventSystem.current.SetSelectedGameObject (creditsSelected);
+					else
+						EventSystem.current.SetSelectedGameObject (mainSelected);
+				}
 
-                currentSelected = EventSystem.current.currentSelectedGameObject;
+				currentSelected = EventSystem.current.currentSelectedGameObject;
 
-                if (Util.CustomInput.BoolFreshPressDeleteOnRead(Util.CustomInput.UserInput.Up))
-                    Navigator.Navigate(Util.CustomInput.UserInput.Up, currentSelected);
-                if (Util.CustomInput.BoolFreshPressDeleteOnRead(Util.CustomInput.UserInput.Down))
-                    Navigator.Navigate(Util.CustomInput.UserInput.Down, currentSelected);
-                if (Util.CustomInput.BoolFreshPressDeleteOnRead(Util.CustomInput.UserInput.Accept))
-                    Navigator.CallSubmit();
-                if (inCredits && Util.CustomInput.BoolFreshPressDeleteOnRead(Util.CustomInput.UserInput.Cancel))
-                    GoToMain();
-            }
+				if (Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Up))
+					Navigator.Navigate (Util.CustomInput.UserInput.Up, currentSelected);
+				if (Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Down))
+					Navigator.Navigate (Util.CustomInput.UserInput.Down, currentSelected);
+				if (Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Accept))
+					Navigator.CallSubmit ();
+				if (inCredits && Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Cancel))
+					GoToMain ();
+			} 
+			else if (inCredits) {
+				if (Input.GetKey (KeyCode.Escape))
+					GoToMain();
+				
+				currentSelected = EventSystem.current.currentSelectedGameObject;
+
+				if (Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Up))
+					Navigator.Navigate (Util.CustomInput.UserInput.Up, currentSelected);
+				if (Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Down))
+					Navigator.Navigate (Util.CustomInput.UserInput.Down, currentSelected);
+				if (Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Accept))
+					Navigator.CallSubmit ();
+				if (inCredits && Util.CustomInput.BoolFreshPressDeleteOnRead (Util.CustomInput.UserInput.Cancel))
+					GoToMain ();
+			}
         }
         
         public void GoToMain()
         {
             inMain = true;
-            inCredits = false;
+			inCredits = false;
             mainParent.SetActive(true);
             levelsParent.SetActive(false);
             settingsParent.SetActive(false);
@@ -82,8 +97,7 @@ namespace Assets.Scripts.UI
 
         public void GoToCredits()
         {
-            inMain = true;
-            inCredits = true;
+            inMain = false;
             mainParent.SetActive(false);
             levelsParent.SetActive(false);
             settingsParent.SetActive(false);
@@ -94,6 +108,7 @@ namespace Assets.Scripts.UI
         public void GoToSettings()
         {
             inMain = false;
+			inCredits = true;
             mainParent.SetActive(false);
             levelsParent.SetActive(false);
             settingsParent.SetActive(true);

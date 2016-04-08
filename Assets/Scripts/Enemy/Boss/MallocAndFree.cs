@@ -36,6 +36,8 @@ namespace Assets.Scripts.Enemy.Boss
         private Animator anim;
         [SerializeField]
         private bool goFirst;
+        [SerializeField]
+        private Sprite backgroundSprite;
 
         private bool animDone;
         private bool done;
@@ -55,6 +57,7 @@ namespace Assets.Scripts.Enemy.Boss
         private MallocAndFree partner;
         /// <summary> The direction to travel in.</summary>
         private bool moveDirection;
+        private Util.Background background;
 
         public MallocAndFree Partner
         {
@@ -92,6 +95,7 @@ namespace Assets.Scripts.Enemy.Boss
             machine = new MallocAndFreeStateMachine();
             player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
             face.enabled = false;
+            background = FindObjectOfType<Util.Background>();
         }
 
         public override void RunEntity()
@@ -187,6 +191,12 @@ namespace Assets.Scripts.Enemy.Boss
 
         void GoToAir()
         {
+            if(!doOnce)
+            {
+                background.renderer.sprite = backgroundSprite;
+                background.spin.spinDirection = !background.spin.spinDirection;
+                doOnce = true;
+            }
             rgby2d.gravityScale = 0;
             rgby2d.velocity = Vector2.zero;
             face.enabled = false;

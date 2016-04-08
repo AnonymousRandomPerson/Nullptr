@@ -48,5 +48,11 @@ namespace Assets.Scripts.UI
             Managers.GameManager.Run();
             UnityEngine.SceneManagement.SceneManager.LoadScene(levels[i]);
         }
+
+        public void Intro()
+        {
+            Managers.GameManager.Run();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("IntroTitle");
+        }
     }
 }

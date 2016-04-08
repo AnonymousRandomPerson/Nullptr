@@ -52,5 +52,13 @@ namespace Assets.Scripts.Util
             this.upperBound = upperBound;
             this.lowerBound = lowerBound;
         }
+
+        /// <summary>
+        /// Centers the camera on the player immediately.
+        /// </summary>
+        public void Reset()
+        {
+            transform.position = new Vector3(player.position.x, transform.position.y, transform.position.z);
+        }
     }
 }

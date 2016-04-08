@@ -45,10 +45,7 @@ namespace Assets.Scripts.Enemy
         {
             manager = FindObjectOfType<EnemyManager>();
             target = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
-            timeWaited = 0f;
-            currentEnemy = 0;
-            numOfEnemies = 0;
-            failedAttempts = 0;
+            Reset();
         }
 
         void Update()
@@ -76,6 +73,17 @@ namespace Assets.Scripts.Enemy
         public void entityDied(Entity entity)
         {
             numOfEnemies--;
+        }
+
+        /// <summary>
+        /// Resets the spawner to spawn more enemies again.
+        /// </summary>
+        public void Reset()
+        {
+            timeWaited = 0f;
+            currentEnemy = 0;
+            numOfEnemies = 0;
+            failedAttempts = 0;
         }
     }
 }

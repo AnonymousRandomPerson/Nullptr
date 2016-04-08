@@ -70,6 +70,8 @@ namespace Assets.Scripts.Bullets
                     hit.collider.gameObject.layer = LayerMask.NameToLayer("Destroyed");
                     hit.collider.gameObject.GetComponent<SpriteRenderer>().enabled = false;
 
+                    PlayerDeathHandler.instance.AddDestroyed(hit.collider.gameObject);
+
                     Platforms.Destroyable destroyable = hit.collider.gameObject.GetComponent<Platforms.Destroyable>();
                     if (destroyable != null)
                     {

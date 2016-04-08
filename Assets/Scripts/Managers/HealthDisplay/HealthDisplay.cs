@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Scripts.Player;
 
 namespace Assets.Scripts.Managers
 {
@@ -21,7 +22,7 @@ namespace Assets.Scripts.Managers
 
         void Update()
         {
-            if (Entity == null || Entity.CurrentHealth <= 0)
+            if ((Entity == null || Entity.CurrentHealth <= 0) && !(Entity is Player.Player))
             {
                 this.gameObject.SetActive(false);
             } else

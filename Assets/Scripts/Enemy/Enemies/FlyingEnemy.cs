@@ -33,6 +33,7 @@ namespace Assets.Scripts.Enemy.Enemies
             {
                 player = FindObjectOfType<Managers.PlayerManager>().GetPlayer().gameObject;
             }
+            moveDirection = Vector3.zero;
         }
 
         /// <summary>

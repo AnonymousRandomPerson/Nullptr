@@ -36,6 +36,7 @@ namespace Assets.Scripts.Platforms
                         gameObject.layer = LayerMask.NameToLayer("Destroyed");
                         renderer.enabled = false;
                         gameObject.GetComponent<Collider2D>().enabled = false;
+                        PlayerDeathHandler.instance.AddDestroyed(gameObject);
                     }
                     countdown = false;
                 }

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using Assets.Scripts.Platforms;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Managers
 {
@@ -24,11 +26,26 @@ namespace Assets.Scripts.Managers
         private int checkpoint;
         private int dead;
 
+        /// <summary> A list of all destroyed objects. </summary>
+        private List<GameObject> destroyedObjects;
+
+        /// <summary> The singleton instance of the death handler. </summary>
+        public static PlayerDeathHandler instance;
+
+        /// <summary>
+        /// Initializes the singleton instance of the handler.
+        /// </summary>
+        private void Awake()
+        {
+            instance = this;
+        }
+
         void Start()
         {
             dead = 0;
             checkpoint = 0;
             enemyManager = FindObjectOfType<EnemyManager>();
+            destroyedObjects = new List<GameObject>();
         }
 
         void Update()
@@ -47,6 +64,11 @@ namespace Assets.Scripts.Managers
                     Entity.Reset = false;
                     manager.spawnAt(checkpoints[checkpoint]);
                     enemyManager.Reset();
+                    foreach (GameObject destroyed in destroyedObjects)
+                    {
+                        destroyed.GetComponent<SpriteRenderer>().enabled = true;
+                        destroyed.GetComponent<Collider2D>().enabled = true;
+                    }
                     dead = 0;
                 }
             }
@@ -93,6 +115,15 @@ namespace Assets.Scripts.Managers
             GameManager.Dead = false;
             GameManager.Run();
             UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+        }
+
+        /// <summary>
+        /// Adds a destroyed object to the list.
+        /// </summary>
+        /// <param name="destroyed">The destroyed object to add to the list. </param>
+        public void AddDestroyed(GameObject destroyed)
+        {
+            destroyedObjects.Add(destroyed);
         }
     }
 }

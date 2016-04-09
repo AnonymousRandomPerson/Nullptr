@@ -37,8 +37,11 @@ namespace Assets.Scripts.Bullets
             currentRaycastRadius = 0;
             currentSizeX = 0;
             currentSizeY = 0;
-            finalSizeX = transform.localScale.x;
-            finalSizeY = transform.localScale.y;
+            if (finalSizeX == 0)
+            {
+                finalSizeX = transform.localScale.x;
+                finalSizeY = transform.localScale.y;
+            }
             transform.localScale = Vector3.zero;
             transform.localScale = new Vector3(currentSizeX, currentSizeY, transform.localScale.z);
             sound.PlaySong(0);

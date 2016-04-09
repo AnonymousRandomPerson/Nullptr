@@ -35,7 +35,7 @@ namespace Assets.Scripts.Managers
 
         void SetHealth(int current, int total)
         {
-            this.fraction.text = string.Format("{0}/{1}", current, total);
+            this.fraction.text = string.Format("{0}/{1}", Math.Max(0, current), total);
             this.over.localScale = new Vector2((current + 0.0f) / total, 1);
         }
     }

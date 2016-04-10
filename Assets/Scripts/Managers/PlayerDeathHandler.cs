@@ -68,6 +68,7 @@ namespace Assets.Scripts.Managers
                     {
                         destroyed.GetComponent<SpriteRenderer>().enabled = true;
                         destroyed.GetComponent<Collider2D>().enabled = true;
+                        destroyed.layer = LayerMask.NameToLayer("Default");
                     }
                     dead = 0;
                 }

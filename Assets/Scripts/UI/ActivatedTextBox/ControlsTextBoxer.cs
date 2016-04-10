@@ -10,6 +10,10 @@ namespace Assets.Scripts.UI.ActivatedTextBox {
         private TextBox[] textBoxes;
 
         void Start() {
+
+        }
+
+        void Update() {
             int index = 0;
             foreach (CustomInput.UserInput input in Enum.GetValues(typeof(CustomInput.UserInput))) {
                 string key = CustomInput.UsingPad ? CustomInput.gamepadButton(input) : CustomInput.keyboardKey(input).ToString();

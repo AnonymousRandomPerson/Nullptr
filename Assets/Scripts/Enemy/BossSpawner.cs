@@ -21,6 +21,8 @@ namespace Assets.Scripts.Enemy
         private bool k;
         [SerializeField]
         private bool intro;
+        [SerializeField]
+        private GameObject text;
 
         /// <summary> Reference to EnemyManager to spawn things. </summary>
         private EnemyManager manager;
@@ -67,6 +69,8 @@ namespace Assets.Scripts.Enemy
                     ke.rightHand = kh[1];
                 }
                 spawned = true;
+                if (intro)
+                    text.SetActive(true);
             }
         }
 

@@ -27,7 +27,7 @@
     <Gamepad_Accept>A</Gamepad_Accept>
     <Gamepad_Cancel>B</Gamepad_Cancel>
     <Gamepad_Attack>RB</Gamepad_Attack>
-    <Gamepad_Jump>LB</Gamepad_Jump>
+    <Gamepad_Jump>A</Gamepad_Jump>
     <Gamepad_SwitchLeft>Left Trigger</Gamepad_SwitchLeft>
     <Gamepad_SwitchRight>Right Trigger</Gamepad_SwitchRight>
   </Player0>

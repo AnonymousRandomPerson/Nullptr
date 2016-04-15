@@ -84,7 +84,7 @@ namespace Assets.Scripts.Util
             gamepad[(int)UserInput.Accept, 0] = A;
             gamepad[(int)UserInput.Cancel, 0] = B;
             gamepad[(int)UserInput.Attack, 0] = RB;
-            gamepad[(int)UserInput.Jump, 0] = LB;
+            gamepad[(int)UserInput.Jump, 0] = A;
             gamepad[(int)UserInput.SwitchLeft, 0] = LEFT_TRIGGER;
             gamepad[(int)UserInput.SwitchRight, 0] = RIGHT_TRIGGER;
         }

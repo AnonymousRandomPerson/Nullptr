@@ -269,8 +269,10 @@ namespace Assets.Scripts.Enemy.Boss
             face.enabled = false;
             if (transform.position.y < hoverHeight)
                 transform.Translate(Vector2.up * 5 * Time.deltaTime);
-            if (transform.position.x < pointA.x || transform.position.x > pointB.x)
-                moveDirection = !moveDirection;
+            if (transform.position.x < pointA.x)
+                moveDirection = true;
+            else if (transform.position.x > pointB.x)
+                moveDirection = false;
             if (moveDirection)
                 transform.Translate(Vector2.right * Time.deltaTime * 2.5f);
             else

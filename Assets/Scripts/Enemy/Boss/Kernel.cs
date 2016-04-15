@@ -5,13 +5,18 @@ namespace Assets.Scripts.Enemy.Boss
     class Kernel : Enemy
     {
         [SerializeField]
-        private SpriteRenderer sprite;
+        private SpriteRenderer spriteR;
+        [SerializeField]
+        private Sprite sprite;
+        [SerializeField]
+        private Sprite spriteHurt;
         public KernelHand leftHand;
         public KernelHand rightHand;
 
         public override void InitData()
         {
             base.InitData();
+            spriteR.sprite = sprite;
         }
 
         public override void RunEntity()
@@ -20,6 +25,7 @@ namespace Assets.Scripts.Enemy.Boss
             {
                 if (invulerability <= 0)
                 {
+                    spriteR.sprite = spriteHurt;
                     invulerability = invulerabilityTime;
                 }
                 if (hit)
@@ -36,6 +42,7 @@ namespace Assets.Scripts.Enemy.Boss
                     invulerability -= Time.deltaTime;
                     if (invulerability <= 0)
                     {
+                        spriteR.sprite = sprite;
                         leftHand.Revive();
                         rightHand.Revive();
                     }
@@ -56,7 +63,7 @@ namespace Assets.Scripts.Enemy.Boss
 
         protected override void Render(bool render)
         {
-            sprite.enabled = render;
+            spriteR.enabled = render;
         }
     }
 }

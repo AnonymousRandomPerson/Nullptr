@@ -11,12 +11,16 @@ namespace Assets.Scripts.UI
         private GameObject cancelButton;
         [SerializeField]
         private string[] levels;
+        [SerializeField]
+        private GameObject KernelLevel;
 
         private GameObject currentSelected;
 
         void Start()
         {
             EventSystem.current.SetSelectedGameObject(startButton);
+            if (FindObjectOfType<Managers.GameManager>().Weapons.Length < 5)
+                KernelLevel.SetActive(false);
         }
 
         void Update()

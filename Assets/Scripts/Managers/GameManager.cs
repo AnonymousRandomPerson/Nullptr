@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Util;
+using System.Xml;
 
 namespace Assets.Scripts.Managers
 {
@@ -18,6 +19,8 @@ namespace Assets.Scripts.Managers
         private static float sfxVol;
         /// <summary> Holds all of the weapons the player has unlocked. </summary>
         private Enums.BulletTypes[] weapons;
+        /// <summary> The file to save the bindings to. </summary>
+        private const string filename = "sa.ve";
 
         void Awake()
         {
@@ -29,8 +32,15 @@ namespace Assets.Scripts.Managers
                 prevState = Enums.GameStates.Running;
                 musicVol = .3f;
                 sfxVol = .3f;
-                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol, Enums.BulletTypes.Destroyer, Enums.BulletTypes.Malloc, Enums.BulletTypes.Free, Enums.BulletTypes.Launcher };
-                //weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
+                if (FileExists())
+                    Load();
+                else
+                {
+                    //weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol, Enums.BulletTypes.Destroyer, Enums.BulletTypes.Malloc, Enums.BulletTypes.Free, Enums.BulletTypes.Launcher };
+                    weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
+                    Store();
+                }
+
             }
             else if (this != instance)
             {
@@ -157,6 +167,63 @@ namespace Assets.Scripts.Managers
                 temp[i] = weapons[i];
             temp[weapons.Length] = bullet;
             weapons = temp;
+            Store();
+        }
+
+        /// <summary> Determines if the Input bindings file exists. </summary>
+        /// <returns> True if the file exists. </returns>
+        public bool FileExists()
+        {
+            return System.IO.File.Exists(filename);
+        }
+
+        /// <summary> Loads the input bindings file from disk.  Assumes the file exists.  Any errors encounterd simply cause it to remake the file. </summary>
+        public void Load()
+        {
+            try
+            {
+                using (XmlReader reader = XmlReader.Create(filename))
+                {
+                    reader.ReadToFollowing("Count");
+                    weapons = new Enums.BulletTypes[reader.ReadElementContentAsInt()];
+                    for (int i = 0; i < weapons.Length; i++)
+                    {
+                        reader.ReadToFollowing("Bullet" + i);
+                        weapons[i] = (Enums.BulletTypes)System.Enum.Parse(typeof(Enums.BulletTypes), reader.ReadElementContentAsString());
+                    }
+                    reader.Close();
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e.Message + " occured and was caught");
+                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
+                Store();
+            }
+        }
+
+        /// <summary> Writes the current input bindings to a file on disk. </summary>
+        public void Store()
+        {
+            XmlDocument bindings = new XmlDocument();
+            XmlNode node;
+            XmlElement element;
+            XmlElement root = bindings.CreateElement("Save");
+            bindings.InsertAfter(root, bindings.DocumentElement);
+            element = bindings.CreateElement("Count");
+            node = bindings.CreateTextNode("Count");
+            node.Value = weapons.Length + "";
+            element.AppendChild(node);
+            root.AppendChild(element);
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                element = bindings.CreateElement("Bullet" + i);
+                node = bindings.CreateTextNode("Bullet" + i);
+                node.Value = weapons[i].ToString();
+                element.AppendChild(node);
+                root.AppendChild(element);
+            }
+            bindings.Save(filename);
         }
     }
 }

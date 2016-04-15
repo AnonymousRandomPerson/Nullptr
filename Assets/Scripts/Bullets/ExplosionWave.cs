@@ -42,7 +42,6 @@ namespace Assets.Scripts.Bullets
                 finalSizeX = transform.localScale.x;
                 finalSizeY = transform.localScale.y;
             }
-            transform.localScale = Vector3.zero;
             transform.localScale = new Vector3(currentSizeX, currentSizeY, transform.localScale.z);
             sound.PlaySong(0);
         }
@@ -52,7 +51,6 @@ namespace Assets.Scripts.Bullets
             if (currentSizeX < finalSizeX)
             {
                 currentRaycastRadius = (currentSizeX / finalSizeX);
-                Debug.DrawRay(this.transform.position, Vector3.right * currentRaycastRadius, Color.red);
                 currentSizeX += speed * Time.deltaTime;
                 currentSizeY += speed * Time.deltaTime;
                 transform.localScale = new Vector3(currentSizeX, currentSizeY, transform.localScale.z);

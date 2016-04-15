@@ -41,31 +41,34 @@ namespace Assets.Scripts.UI.BossTitle
 
         IEnumerator WriteText()
         {
-            char[] charsToWrite = fullText.ToCharArray();
-            Text[] characters = new Text[charsToWrite.Length];
-            for (int i = 0; i < charsToWrite.Length; i++)
+            if (Managers.GameManager.IsRunning)
             {
-                characters[i] = CreateCharacter(charsToWrite[i]).GetComponent<Text>();
-                characters[i].color = Color.clear;
-                Parent(characters[i].gameObject, characterHolder);
-            }
-            for (int i = 0; i < charsToWrite.Length; i++)
-            {
-                float timer = 0;
-                while ((timer += Time.deltaTime) < secondsPerCharacter)
+                char[] charsToWrite = fullText.ToCharArray();
+                Text[] characters = new Text[charsToWrite.Length];
+                for (int i = 0; i < charsToWrite.Length; i++)
                 {
-                    yield return null;
+                    characters[i] = CreateCharacter(charsToWrite[i]).GetComponent<Text>();
+                    characters[i].color = Color.clear;
+                    Parent(characters[i].gameObject, characterHolder);
                 }
-                //Parent(CreateCharacter(charsToWrite[i]), characterHolder);
-                if (soundEnabled && !SILENT_CHARACTERS.Contains(charsToWrite[i]))
+                for (int i = 0; i < charsToWrite.Length; i++)
                 {
-                    sound.Stop();
-                    sound.PlaySong(0);
+                    float timer = 0;
+                    while ((timer += Time.deltaTime) < secondsPerCharacter)
+                    {
+                        yield return null;
+                    }
+                    //Parent(CreateCharacter(charsToWrite[i]), characterHolder);
+                    if (soundEnabled && !SILENT_CHARACTERS.Contains(charsToWrite[i]))
+                    {
+                        sound.Stop();
+                        sound.PlaySong(0);
+                    }
+                    characters[i].color = new Color(255, 255, 255, characterAlpha);
                 }
-                characters[i].color = new Color(255, 255, 255, characterAlpha);
+                Destroy(this.gameObject, lingerDuration);
+                yield break;
             }
-            Destroy(this.gameObject, lingerDuration);
-            yield break;
         }
 
         GameObject CreateCharacter(char c)

@@ -10,6 +10,11 @@ namespace Assets.Scripts.UI
 
         void Start()
         {
+            if (FindObjectOfType<Managers.GameManager>().Weapons.Length > 1)
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+                return;
+            }
             Managers.GameManager.Menu();
             introSongs.loop = true;
             introSongs.loopSong = 0;

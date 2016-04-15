@@ -197,8 +197,7 @@ namespace Assets.Scripts.Managers
             catch (System.Exception e)
             {
                 Debug.LogError(e.Message + " occured and was caught");
-                weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
-                Store();
+                Reset();
             }
         }
 
@@ -224,6 +223,12 @@ namespace Assets.Scripts.Managers
                 root.AppendChild(element);
             }
             bindings.Save(filename);
+        }
+
+        public void Reset()
+        {
+            weapons = new Enums.BulletTypes[] { Enums.BulletTypes.Pistol };
+            Store();
         }
     }
 }

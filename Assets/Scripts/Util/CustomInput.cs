@@ -593,6 +593,31 @@ namespace Assets.Scripts.Util
             return true;
         }
 
+        /// <summary> Detect level loads to clear input buffers. </summary>
+        /// <param name="level"> Unused. </param>
+        void OnLevelWasLoaded(int level)
+        {
+            for(int r = 0; r < System.Enum.GetNames(typeof(UserInput)).Length; r++)
+            {
+                for(int c = 0; c < 7; c++)
+                {
+                    bools[r, c] = false;
+                    boolsUp[r, c] = false;
+                    boolsHeld[r, c] = false;
+                    boolsFreshPress[r, c] = false;
+                    boolsFreshPressAccessed[r, c] = false;
+                    boolsFreshPressDeleteOnRead[r, c] = false;
+
+                    raws[r, c] = 0;
+                    rawsUp[r, c] = 0;
+                    rawsHeld[r, c] = 0;
+                    rawsFreshPress[r, c] = 0;
+                    rawsFreshPressAccessed[r, c] = false;
+                    rawsFreshPressDeleteOnRead[r, c] = 0;
+                }
+            }            
+        }
+
         void Update()
         {
             if (AnyPadInput())

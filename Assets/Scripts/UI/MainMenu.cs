@@ -99,6 +99,7 @@ namespace Assets.Scripts.UI
         {
             inLevelSelect = true;
             inMain = false;
+            inCredits = false;
             mainParent.SetActive(false);
             levelsParent.SetActive(true);
             settingsParent.SetActive(false);
@@ -111,6 +112,7 @@ namespace Assets.Scripts.UI
         {
             inLevelSelect = false;
             inMain = false;
+            inCredits = true;
             mainParent.SetActive(false);
             levelsParent.SetActive(false);
             settingsParent.SetActive(false);
@@ -123,7 +125,7 @@ namespace Assets.Scripts.UI
         {
             inLevelSelect = false;
             inMain = false;
-			inCredits = true;
+			inCredits = false;
             mainParent.SetActive(false);
             levelsParent.SetActive(false);
             settingsParent.SetActive(true);
@@ -136,7 +138,7 @@ namespace Assets.Scripts.UI
         {
             inLevelSelect = false;
             inMain = false;
-            inCredits = true;
+            inCredits = false;
             mainParent.SetActive(false);
             levelsParent.SetActive(false);
             settingsParent.SetActive(false);

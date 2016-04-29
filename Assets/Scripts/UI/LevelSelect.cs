@@ -56,7 +56,7 @@ namespace Assets.Scripts.UI
         public void Intro()
         {
             Managers.GameManager.Run();
-            UnityEngine.SceneManagement.SceneManager.LoadScene("IntroTitle");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("IntroLevel");
         }
     }
 }
